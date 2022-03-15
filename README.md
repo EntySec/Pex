@@ -17,7 +17,6 @@ Python Exploitation is a collection of special tools for providing high quality 
 ### Tools
 
 * `pex.tool.db` - Database tools.
-* `pex.tool.fs` - Filesystem tools.
 * `pex.tool.payload` - Payload tools.
 * `pex.tool.ssl` - SSL tools.
 * `pex.tool.stream` - Streaming tools.
