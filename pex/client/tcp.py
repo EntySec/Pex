@@ -26,8 +26,6 @@
 
 import socket
 
-from hatsploit.core.cli.badges import Badges
-
 
 class TCPSocket:
     def __init__(self, host, port, timeout=10):
