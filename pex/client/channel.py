@@ -86,10 +86,15 @@ class ChannelSocket:
             return result
         return None
 
-    def print_until(self, token):
+    def print_until(self, token, printer=print):
         if self.sock.sock:
             token = token.encode()
-            print(self.stash().decode(errors='ignore'), end='')
+            data = self.stash().decode(errors='ignore')
+
+            if printer != print:
+                printer(data, start='', end='')
+            else:
+                printer(data, end='')
 
             while True:
                 data = self.read(self.read_size)
@@ -98,12 +103,19 @@ class ChannelSocket:
                     token_index = data.index(token)
                     token_size = len(token)
 
-                    self.badges.print_empty(data[:token_index].decode(errors='ignore'), start='', end='')
-                    self.stashed = data[token_index+token_size:]
+                    if printer != print:
+                        printer(data[:token_index].decode(errors='ignore'), start='', end='')
+                    else:
+                        printer(data[:token_index].decode(errors='ignore'), end='')
 
+                    self.stashed = data[token_index+token_size:]
                     break
 
-                print(data.decode(errors='ignore'), end='')
+                if printer != print:
+                    printer(data.decode(errors='ignore'), start='', end='')
+                else:
+                    printer(data.decode(errors='ignore'), end='')
+
             return True
         return False
 
@@ -147,14 +159,14 @@ class ChannelSocket:
             return None
         return None
 
-    def send_token_command(self, command, token, output=True, decode=True, display=False):
+    def send_token_command(self, command, token, output=True, decode=True, printer=None):
         if self.sock.sock:
             try:
                 buffer = command.encode()
                 self.send(buffer)
  
-                if display:
-                    self.print_until(token)
+                if printer:
+                    self.print_until(token, printer)
                 else:
                     data = self.read_until(token)
 
