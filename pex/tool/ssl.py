@@ -29,8 +29,6 @@ import OpenSSL
 
 
 class SSLTools:
-    loot = Loot().loot
-
     def wrap_client(self, client, keyfile='hatsploit.key', certfile='hatsploit.crt', protocol=ssl.PROTOCOL_TLS,
                     expire=365, nodename='HatSploit', country='US', state='HatSploit', location='HatSploit',
                     organization='HatSploit', unit='HatSploit'):
