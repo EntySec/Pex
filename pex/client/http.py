@@ -31,6 +31,8 @@ import urllib3
 
 import http.server
 
+from pex.tools.http import HTTPTools
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -44,7 +46,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
 
 
-class HTTPClient:
+class HTTPClient(HTTPTools):
     def http_server(self, host, port, methods={}, forever=False):
         try:
             for method in methods:
