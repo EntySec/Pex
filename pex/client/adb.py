@@ -38,8 +38,6 @@ class ADBSocket:
                                  self.port,
                                  default_transport_timeout_s=timeout)
 
-        self.badges = Badges()
-
     def connect(self):
         try:
             self.sock.connect()
