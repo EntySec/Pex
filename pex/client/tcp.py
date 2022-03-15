@@ -35,8 +35,6 @@ class TCPSocket:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(timeout)
 
-        self.badges = Badges()
-
     def connect(self):
         try:
             self.sock.connect((self.host, self.port))
