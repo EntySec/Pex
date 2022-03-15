@@ -33,7 +33,6 @@ class WPSocket:
         self.port = int(port)
 
         self.timeout = timeout
-        self.badges = Badges()
 
     def login(self, username, password):
         pass
