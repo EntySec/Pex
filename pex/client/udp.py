@@ -35,8 +35,6 @@ class UDPSocket:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.settimeout(timeout)
 
-        self.badges = Badges()
-
     def send(self, data):
         try:
             self.sock.sendto(data, (self.host, self.port))
