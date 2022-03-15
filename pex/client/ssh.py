@@ -39,8 +39,6 @@ class SSHSocket:
         self.sock = paramiko.SSHClient()
         self.sock.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-        self.badges = Badges()
-
     def connect(self):
         try:
             self.sock.connect(
