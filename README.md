@@ -13,11 +13,13 @@ Python Exploitation is a collection of special tools for providing high quality 
 * `pex.client.tcp` - TCP client.
 * `pex.client.udp` - UDP client.
 * `pex.client.wp` - WordPress client.
+* `pex.client.stream` - Stream client.
 
 ### Tools
 
-* `pex.tool.db` - Database tools.
-* `pex.tool.payload` - Payload tools.
-* `pex.tool.ssl` - SSL tools.
-* `pex.tool.stream` - Streaming tools.
-* `pex.tool.string` - String tools.
+* `pex.tools.tcp` - TCP tools.
+* `pex.tools.http` - HTTP tools.
+* `pex.tools.db` - Database tools.
+* `pex.tools.payload` - Payload tools.
+* `pex.tools.ssl` - SSL tools.
+* `pex.tools.string` - String tools.
