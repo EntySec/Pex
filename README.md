@@ -1,8 +1,14 @@
 # Pex
 
-Python Exploitation is a collection of special tools for providing high quality penetration testing using pure python programming language.
+Python Exploitation is a collection of special utilities for providing high quality penetration testing using pure python programming language.
 
-## Tools
+## Installation
+
+```
+pip3 install git+https://github.com/EntySec/Pex
+```
+
+## Utilities
 
 ### Client
 
