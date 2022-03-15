@@ -25,10 +25,11 @@
 #
 
 import requests
-import http.server
 import socket
 import socketserver
 import urllib3
+
+import http.server
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -78,14 +79,3 @@ class HTTPClient:
             return getattr(session, method.lower())(url, **kwargs)
         except Exception:
             return None
-
-    @staticmethod
-    def normalize_url(host, port, path, ssl=False):
-        if ssl:
-            url = "https://"
-        else:
-            url = "http://"
-
-        url += "{}:{}{}".format(host, port, path)
-
-        return url
