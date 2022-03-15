@@ -40,9 +40,7 @@ class ChannelSocket:
         self.read_delay = 1
 
         self.stashed = b""
-
         self.terminated = False
-        self.badges = Badges()
 
     def stash(self):
         stashed_data = self.stashed
