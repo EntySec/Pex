@@ -37,6 +37,8 @@ setup(name='pex',
       packages=find_packages(),
       include_package_data=True,
       install_requires=[
+          'adb-shell', 'requests', 'paramiko',
+
           'hatvenom @ git+https://github.com/EntySec/HatVenom',
           'hatloads @ git+https://github.com/EntySec/HatLoads',
           'hatasm @ git+https://github.com/EntySec/HatAsm'
