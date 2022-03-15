@@ -6,19 +6,19 @@ Python Exploitation is a collection of special tools for providing high quality 
 
 ### Client
 
-* `pex.adb` - ADB client.
-* `pex.channel` - TCP interactive wrapper.
-* `pex.http` - HTTP client.
-* `pex.ssh` - SSH client.
-* `pex.tcp` - TCP client.
-* `pex.udp` - UDP client.
-* `pex.wp` - WordPress client.
+* `pex.client.adb` - ADB client.
+* `pex.client.channel` - TCP interactive wrapper.
+* `pex.client.http` - HTTP client.
+* `pex.client.ssh` - SSH client.
+* `pex.client.tcp` - TCP client.
+* `pex.client.udp` - UDP client.
+* `pex.client.wp` - WordPress client.
 
 ### Tools
 
-* `pex.db` - Database tools.
-* `pex.fs` - Filesystem tools.
-* `pex.payload` - Payload tools.
-* `pex.ssl` - SSL tools.
-* `pex.stream` - Streaming tools.
-* `pex.string` - String tools.
+* `pex.tool.db` - Database tools.
+* `pex.tool.fs` - Filesystem tools.
+* `pex.tool.payload` - Payload tools.
+* `pex.tool.ssl` - SSL tools.
+* `pex.tool.stream` - Streaming tools.
+* `pex.tool.string` - String tools.
