@@ -196,7 +196,7 @@ class ChannelSocket:
                             self.terminated = True
                             return False
                         if response:
-                            self.badges.print_empty(response.decode(errors='ignore'), start='', end='')
+                            print(response.decode(errors='ignore'), end='')
                     elif key.fileobj is sys.stdin:
                         line = sys.stdin.readline().strip()
                         if not line:
