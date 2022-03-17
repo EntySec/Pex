@@ -39,11 +39,12 @@ Collection of tools for special reasons.
 
 Collection of methods for pushing files to or pulling files from compromised platform.
 
-* `pex.post.pull`
-    * `pex.post.pull.cat` - Pull file using `cat`.
+* `pex.post`
+   * `pex.post.pull`
+      * `pex.post.pull.cat` - Pull file using `cat`.
 
-* `pex.post.push`
-    * `pex.post.push.echo` - Push file using `echo -e`.
-    * `pex.post.push.bash_echo` - Push file using `echo -en`.
-    * `pex.post.push.printf` - Push file using `printf`.
-    * `pex.post.push.certutil` - Push file using `certutil`.
+   * `pex.post.push`
+      * `pex.post.push.echo` - Push file using `echo -e`.
+      * `pex.post.push.bash_echo` - Push file using `echo -en`.
+      * `pex.post.push.printf` - Push file using `printf`.
+      * `pex.post.push.certutil` - Push file using `certutil`.
