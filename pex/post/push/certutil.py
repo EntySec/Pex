@@ -24,6 +24,8 @@
 # SOFTWARE.
 #
 
+from alive_progress import alive_bar
+
 from pex.tools.string import StringTools
 
 
@@ -39,17 +41,20 @@ class Certutil(StringTools):
         size = len(data)
         num_parts = int(size / echo_max_length) + 1
 
-        for i in range(0, num_parts):
-            current = i * echo_max_length
-            block = data[current:current + echo_max_length]
+        with alive_bar(num_parts, ctrl_c=False, title="Pushing") as bar:
+            for i in range(0, num_parts):
+                bar()
 
-            if block:
-                command = echo_stream.format(block, location)
+                current = i * echo_max_length
+                block = data[current:current + echo_max_length]
 
-                if isinstance(args, dict):
-                    sender(command, **args)
-                else:
-                    sender(*args, command)
+                if block:
+                    command = echo_stream.format(block, location)
+
+                    if isinstance(args, dict):
+                        sender(command, **args)
+                    else:
+                        sender(*args, command)
 
         command = decode_stream.format(location, location, location)
         if isinstance(args, dict):
