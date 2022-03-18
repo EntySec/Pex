@@ -34,10 +34,9 @@ from pex.tools.channel import ChannelTools
 class DD(PostTools, StringTools, ChannelTools):
     @staticmethod
     def pull(sender, location, args=[]):
-        token = self.random_string(8)
         result = b""
 
-        dd_stream = "dd if={} of=/dev/stdout bs={} count=1 skip={} 2>/dev/null"
+        dd_stream = "dd if={} of=/dev/stdout bs={} count=1 skip={} 2>/dev/null && echo {}"
         dd_chunk_size = 1024
 
         with alive_bar(None, receipt=False, ctrl_c=False, title="Pulling") as bar:
@@ -46,10 +45,12 @@ class DD(PostTools, StringTools, ChannelTools):
             while True:
                 bar()
 
+                token = self.random_string(8)
                 command = dd_stream.format(
                     location,
                     str(dd_chunk_size),
-                    str(dd_counter)
+                    str(dd_counter),
+                    token
                 )
 
                 data = self.post_command(sender, command, args)
