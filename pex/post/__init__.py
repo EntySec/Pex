@@ -28,8 +28,15 @@ from pex.post.push import Push
 from pex.tools.type import TypeTools
 from pex.tools.string import StringTools
 
+class PostTools:
+    def post_command(sender, command, args):
+        sender(**{
+            'command': command,
+            **args
+        })
 
-class Post(Push, StringTools):
+
+class Post(Push, PostTools, StringTools):
     types = TypeTools()
 
     post_methods = Push().push_methods
@@ -89,10 +96,7 @@ class Post(Push, StringTools):
                 linemax=linemax
             )
 
-            sender(**{
-                'command': command,
-                **args
-            })
+            self.post_command(sender, command, args)
 
             return True
         return False
