@@ -26,10 +26,11 @@
 
 from alive_progress import alive_bar
 
+from pex.post import PostTools
 from pex.tools.string import StringTools
 
 
-class Certutil(StringTools):
+class Certutil(PostTools, StringTools):
     def push(self, sender, data, location, args=[], linemax=100):
         decode_stream = "certutil -decode {}.b64 {}.exe & del {}.b64"
 
@@ -50,14 +51,7 @@ class Certutil(StringTools):
 
                 if block:
                     command = echo_stream.format(block, location)
-
-                    if isinstance(args, dict):
-                        sender(command, **args)
-                    else:
-                        sender(*args, command)
+                    self.post_command(sender, command, args)
 
         command = decode_stream.format(location, location, location)
-        if isinstance(args, dict):
-            sender(command, **args)
-        else:
-            sender(*args, command)
+        self.post_command(sender, command, args)
