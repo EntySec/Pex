@@ -42,6 +42,7 @@ Collection of methods for pushing files to or pulling files from compromised pla
 
 * `pex.post` - `Post` sends data to target system and executes it. `PostTools` contains useful tools for `Post`.
    * `pex.post.pull` - `Pull` pulls data from target system using specified method.
+      * `pex.post.pull.dd` - Pull file using `dd`.
       * `pex.post.pull.cat` - Pull file using `cat`.
    * `pex.post.push` - `Push` pushes data to target system using specified method.
       * `pex.post.push.echo` - Push file using `echo -e`.
