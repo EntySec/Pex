@@ -24,7 +24,7 @@
 # SOFTWARE.
 #
 
-from pex.post import PostTools
+from pex.tools.post import PostTools
 from pex.tools.string import StringTools
 from pex.tools.channel import ChannelTools
 
