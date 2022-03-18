@@ -27,6 +27,7 @@ Collection of client implementations for several protocols.
 
 Collection of tools for special reasons.
 
+* `pex.tools.channel` - Channel tools.
 * `pex.tools.tcp` - TCP tools.
 * `pex.tools.http` - HTTP tools.
 * `pex.tools.db` - Database tools.
@@ -39,7 +40,7 @@ Collection of tools for special reasons.
 
 Collection of methods for pushing files to or pulling files from compromised platform.
 
-* `pex.post` - `Post` sends data to target system and executes it.
+* `pex.post` - `Post` sends data to target system and executes it. `PostTools` contains useful tools for `Post`.
    * `pex.post.pull` - `Pull` pulls data from target system using specified method.
       * `pex.post.pull.cat` - Pull file using `cat`.
    * `pex.post.push` - `Push` pushes data to target system using specified method.
