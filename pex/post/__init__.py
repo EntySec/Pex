@@ -89,7 +89,10 @@ class Post(Push, StringTools):
                 linemax=linemax
             )
 
-            sender(*args, command)
+            sender(**{
+                'command': command,
+                **args
+            })
 
             return True
         return False
