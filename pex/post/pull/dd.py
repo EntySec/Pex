@@ -26,10 +26,15 @@
 
 from alive_progress import alive_bar
 
+from pex.post import PostTools
+from pex.tools.string impoty StringTools
+from pex.tools.channel import ChannelTools
 
-class DD:
+
+class DD(PostTools, StringTools, ChannelTools):
     @staticmethod
     def pull(sender, location, args=[]):
+        token = self.random_string(8)
         result = b""
 
         dd_stream = "dd if={} of=/dev/stdout bs={} count=1 skip={} 2>/dev/null"
@@ -39,22 +44,19 @@ class DD:
             dd_counter = 0
 
             while True:
+                bar()
+
                 command = dd_stream.format(
                     location,
                     str(dd_chunk_size),
                     str(dd_counter)
                 )
-                
-                if isinstance(args, dict):
-                    data = sender(command, **args)
-                else:
-                    data = sender(*args, command)
-                    
-                if data:
-                    result += data
-                    dd_counter += 1
 
-                    continue
-                break
+                data = self.post_command(sender, command, args)
+                block, _ = self.token_extract(data, token.encode())
 
+                result += block
+
+                if block != data:
+                    break
         return result
