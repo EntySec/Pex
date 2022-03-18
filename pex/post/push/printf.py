@@ -43,7 +43,7 @@ class Printf:
         size = len(data)
         num_parts = int(size / printf_max_length) + 1
 
-        with alive_bar(num_parts, ctrl_c=False, title="Pushing") as bar:
+        with alive_bar(num_parts, receipt=False, ctrl_c=False, title="Pushing") as bar:
             for i in range(0, num_parts):
                 bar()
 
