@@ -30,7 +30,7 @@ from pex.tools.string import StringTools
 
 class PostTools:
     def post_command(sender, command, args):
-        sender(**{
+        return sender(**{
             'command': command,
             **args
         })
