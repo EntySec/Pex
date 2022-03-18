@@ -25,15 +25,10 @@
 #
 
 from pex.post.push import Push
+
+from pex.tools.post import PostTools
 from pex.tools.type import TypeTools
 from pex.tools.string import StringTools
-
-class PostTools:
-    def post_command(sender, command, args):
-        return sender(**{
-            'command': command,
-            **args
-        })
 
 
 class Post(Push, PostTools, StringTools):
