@@ -26,8 +26,10 @@
 
 from alive_progress import alive_bar
 
+from pex.post import PostTools
 
-class Printf:
+
+class Printf(PostTools):
     @staticmethod
     def bytes_to_octal(bytes_obj):
         byte_octals = []
@@ -52,8 +54,4 @@ class Printf:
 
                 if block:
                     command = printf_stream.format(block, location)
-
-                    if isinstance(args, dict):
-                        sender(command, **args)
-                    else:
-                        sender(*args, command)
+                    self.post_command(sender, command, args)
