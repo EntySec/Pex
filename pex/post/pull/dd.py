@@ -26,7 +26,7 @@
 
 from alive_progress import alive_bar
 
-from pex.post import PostTools
+from pex.tools.post import PostTools
 from pex.tools.string impoty StringTools
 from pex.tools.channel import ChannelTools
 
