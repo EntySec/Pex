@@ -24,20 +24,18 @@
 # SOFTWARE.
 #
 
+from pex.post import PostTools
 from pex.tools.string import StringTools
 from pex.tools.channel import ChannelTools
 
 
-class Cat(StringTools, ChannelTools):
+class Cat(PostTools, StringTools, ChannelTools):
     @staticmethod
     def pull(sender, location, args=[]):
         token = self.random_string(8)
         command = f'cat "{location}" && echo {token}'
 
-        if isinstance(args, dict):
-            data = sender(command, **args)
-        else:
-            data = sender(*args, command)
-
+        data = self.post_command(sender, command, args)
         block, _ = self.token_extract(data, token.encode())
+
         return block
