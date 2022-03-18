@@ -38,6 +38,10 @@ class Pull:
         'cat': [
             type_tools.platforms['unix'],
             Cat()
+        ],
+        'dd': [
+            type_tools.platforms['unix'],
+            DD()
         ]
     })
 
