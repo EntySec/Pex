@@ -30,8 +30,10 @@ import sys
 import telnetlib
 import time
 
+from pex.tools.channel import ChannelTools
 
-class ChannelSocket:
+
+class ChannelSocket(ChannelTools):
     def __init__(self, client):
         self.sock = telnetlib.Telnet()
         self.sock.sock = client
@@ -98,23 +100,16 @@ class ChannelSocket:
 
             while True:
                 data = self.read(self.read_size)
-
-                if token in data:
-                    token_index = data.index(token)
-                    token_size = len(token)
-
-                    if printer != print:
-                        printer(data[:token_index].decode(errors='ignore'), start='', end='')
-                    else:
-                        printer(data[:token_index].decode(errors='ignore'), end='')
-
-                    self.stashed = data[token_index+token_size:]
-                    break
+                block, stash = self.token_extract(data, token)
 
                 if printer != print:
-                    printer(data.decode(errors='ignore'), start='', end='')
+                    printer(block.decode(errors='ignore'), start='', end='')
                 else:
-                    printer(data.decode(errors='ignore'), end='')
+                    printer(block.decode(errors='ignore'), end='')
+
+                if block != data:
+                    self.stashed = stash
+                    break
 
             return True
         return False
@@ -126,17 +121,13 @@ class ChannelSocket:
 
             while True:
                 data = self.read(self.read_size)
+                block, stash = self.token_extract(data, token)
 
-                if token in data:
-                    token_index = data.index(token)
-                    token_size = len(token)
+                result += block
 
-                    result += data[:token_index]
-                    self.stashed = data[token_index+token_size:]
-
+                if block != data:
+                    self.stashed = stash
                     break
-
-                result += data
 
             return result
         return None
