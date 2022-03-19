@@ -31,10 +31,14 @@ from pex.tools.type import TypeTools
 from pex.tools.string import StringTools
 
 
-class Post(Push, PostTools, StringTools):
-    types = TypeTools()
+class Post():
+    push = Push()
 
-    post_methods = Push().push_methods
+    post_tools = PostTools()
+    type_tools = TypeTools()
+    string_tools = StringTools()
+
+    post_methods = push.push_methods
 
     def post(self, platform, sender, payload, args=[], arguments=None, method=None,
              location=None, concat=None, background=None, linemax=100):
@@ -50,9 +54,9 @@ class Post(Push, PostTools, StringTools):
                 if platform not in self.post_methods[method][0]:
                     return False
 
-            filename = self.random_string(8)
+            filename = self.string_tools.random_string(8)
 
-            if platform in self.types.platforms['unix']:
+            if platform in self.type_tools.platforms['unix']:
                 if not location:
                     location = '/tmp'
                 if not concat:
@@ -66,7 +70,7 @@ class Post(Push, PostTools, StringTools):
                     command = f"sh -c 'chmod 777 {path} {concat} {path} {concat} rm {path}' {background}"
                 else:
                     command = f"sh -c 'chmod 777 {path} {concat} {path} {arguments} {concat} rm {path}' {background}"
-            elif platform in self.types.platforms['windows']:
+            elif platform in self.type_tools.platforms['windows']:
                 if not location:
                     location = '%TEMP%'
                 if not concat:
@@ -91,7 +95,7 @@ class Post(Push, PostTools, StringTools):
                 linemax=linemax
             )
 
-            self.post_command(sender, command, args)
+            self.post_tools.post_command(sender, command, args)
 
             return True
         return False
