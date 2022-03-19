@@ -33,8 +33,10 @@ import time
 from pex.tools.channel import ChannelTools
 
 
-class ChannelSocket(ChannelTools):
+class ChannelSocket:
     def __init__(self, client):
+        self.channel_tools = ChannelTools()
+
         self.sock = telnetlib.Telnet()
         self.sock.sock = client
 
@@ -100,7 +102,7 @@ class ChannelSocket(ChannelTools):
 
             while True:
                 data = self.read(self.read_size)
-                block, stash = self.token_extract(data, token)
+                block, stash = self.channel_tools.token_extract(data, token)
 
                 if printer != print:
                     printer(block.decode(errors='ignore'), start='', end='')
@@ -121,7 +123,7 @@ class ChannelSocket(ChannelTools):
 
             while True:
                 data = self.read(self.read_size)
-                block, stash = self.token_extract(data, token)
+                block, stash = self.channel_tools.token_extract(data, token)
 
                 result += block
 
