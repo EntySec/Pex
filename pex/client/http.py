@@ -46,7 +46,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
 
 
-class HTTPClient(HTTPTools):
+class HTTPClient:
+    http_tools = HTTPTools()
+
     def http_server(self, host, port, methods={}, forever=False):
         try:
             for method in methods:
@@ -75,7 +77,7 @@ class HTTPClient(HTTPTools):
 
         if not ssl:
             ssl = int(port) in [443]
-        url = self.normalize_url(host, port, path, ssl)
+        url = self.http_tools.normalize_url(host, port, path, ssl)
 
         try:
             return getattr(session, method.lower())(url, **kwargs)
