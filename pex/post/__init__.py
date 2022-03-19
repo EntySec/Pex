@@ -31,7 +31,7 @@ from pex.tools.type import TypeTools
 from pex.tools.string import StringTools
 
 
-class Post():
+class Post:
     push = Push()
 
     post_tools = PostTools()
