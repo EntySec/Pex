@@ -164,7 +164,7 @@ class StringTools:
     @staticmethod
     def base64_decode(string, decode=True):
         string = base64.b64decode(string)
-        return string.decode if decode else string
+        return string.decode() if decode else string
 
     @staticmethod
     def base64_string(string, encoded=False):
