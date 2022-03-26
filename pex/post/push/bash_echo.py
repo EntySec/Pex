@@ -44,7 +44,7 @@ class BashEcho:
                 bar()
 
                 current = i * echo_max_length
-                block = self.post_tools.bytes_to_octal(data[current:current + echo_max_length], 'echo')
+                block = self.post_tools.bytes_to_octal(data[current:current + echo_max_length], True)
 
                 if block:
                     command = echo_stream.format(block, location)
