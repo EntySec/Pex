@@ -79,5 +79,5 @@ class TCPListen:
 
 class TCPListener:
     @staticmethod
-    def listen_tcp(host, port, timeout=10):
+    def listener(host, port, timeout=10):
         return TCPListen(host, port, timeout)
