@@ -29,14 +29,8 @@ from alive_progress import alive_bar
 from pex.tools.post import PostTools
 
 
-class Printf(PostTools):
-    @staticmethod
-    def bytes_to_octal(bytes_obj):
-        byte_octals = []
-        for byte in bytes_obj:
-            byte_octal = '\\' + oct(byte)[2:]
-            byte_octals.append(byte_octal)
-        return ''.join(byte_octals)
+class Printf:
+    post_tools = PostTools()
 
     def push(self, sender, data, location, args=[], linemax=100):
         printf_stream = "printf '{}' >> {}"
@@ -50,8 +44,8 @@ class Printf(PostTools):
                 bar()
 
                 current = i * printf_max_length
-                block = self.bytes_to_octal(data[current:current + printf_max_length])
+                block = self.post_tools.bytes_to_octal(data[current:current + printf_max_length])
 
                 if block:
                     command = printf_stream.format(block, location)
-                    self.post_command(sender, command, args)
+                    self.post_tools.post_command(sender, command, args)
