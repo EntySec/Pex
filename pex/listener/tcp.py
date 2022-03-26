@@ -49,6 +49,13 @@ class TCPListen:
         except Exception:
             return False
 
+    def stop(self):
+        try:
+            self.sock.close()
+            return True
+        except Exception:
+            return False
+
     def accept(self):
         try:
             self.client, self.address = self.sock.accept()
