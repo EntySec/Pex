@@ -28,6 +28,7 @@ Collection of client implementations for several protocols.
 Collection of listeners for several protocols.
 
 * `pex.listener.tcp` - TCP listener.
+* `pex.listener.ldap` - LDAP listener.
 * `pex.listener.http` - HTTP listener.
 
 ### Tools
