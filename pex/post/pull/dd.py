@@ -31,9 +31,12 @@ from pex.tools.string import StringTools
 from pex.tools.channel import ChannelTools
 
 
-class DD(PostTools, StringTools, ChannelTools):
-    @staticmethod
-    def pull(sender, location, args=[]):
+class DD:
+    post_tools = PostTools()
+    string_tools = StringTools()
+    channel_tools = ChannelTools()
+
+    def pull(self, sender, location, args=[]):
         result = b""
 
         dd_stream = "dd if={} of=/dev/stdout bs={} count=1 skip={} 2>/dev/null && echo {}"
@@ -45,7 +48,7 @@ class DD(PostTools, StringTools, ChannelTools):
             while True:
                 bar()
 
-                token = self.random_string(8)
+                token = self.string_tools.random_string(8)
                 command = dd_stream.format(
                     location,
                     str(dd_chunk_size),
@@ -53,8 +56,8 @@ class DD(PostTools, StringTools, ChannelTools):
                     token
                 )
 
-                data = self.post_command(sender, command, args)
-                block, _ = self.token_extract(data, token.encode())
+                data = self.post_tools.post_command(sender, command, args)
+                block, _ = self.channel_tools.token_extract(data, token.encode())
 
                 result += block
 
