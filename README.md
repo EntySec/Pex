@@ -23,31 +23,12 @@ Collection of client implementations for several protocols.
 * `pex.client.wp` - WordPress client.
 * `pex.client.stream` - Stream client.
 
-#### Example
+### Listener
 
-```python3
-from pex.client.tcp import TCPClient
+Collection of listeners for several protocols.
 
-
-class Connection(TCPClient):
-    def run(self, host, port, timeout=10):
-        client = self.open_tcp(host, port, timeout)
-
-        if client.connect():
-            client.send(b'abcd')
-            client.disconnect()
-
-            return True
-        return False
-
-
-connection = Connection()
-
-if connection.run('127.0.0.1', 8888):
-    print('Data sent!')
-else:
-    print('Failed to send data!')
-```
+* `pex.listener.tcp` - TCP listener.
+* `pex.listener.http` - HTTP listener.
 
 ### Tools
 
