@@ -34,8 +34,7 @@ class Cat:
     string_tools = StringTools()
     channel_tools = ChannelTools()
 
-    @staticmethod
-    def pull(sender, location, args=[]):
+    def pull(self, sender, location, args=[]):
         token = self.string_tools.random_string(8)
         command = f'cat "{location}" && echo {token}'
 
