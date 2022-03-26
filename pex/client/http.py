@@ -26,46 +26,15 @@
 
 import requests
 import socket
-import socketserver
 import urllib3
-
-import http.server
 
 from pex.tools.http import HTTPTools
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-class Handler(http.server.SimpleHTTPRequestHandler):
-    def log_request(self, fmt, *args):
-        return
-
-    def send_status(self, code=200):
-        self.send_response(int(code))
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
-
-
 class HTTPClient:
     http_tools = HTTPTools()
-
-    def http_server(self, host, port, methods={}, forever=False):
-        try:
-            for method in methods:
-                setattr(Handler, f"do_{method.upper()}", methods[method])
-                
-            httpd = socketserver.TCPServer((host, int(port)), Handler)
-            
-            if forever:
-                while True:
-                    httpd.handle_request()
-            else:
-                httpd.handle_request()
-                
-            httpd.server_close()
-            return True
-        except Exception:
-            return False
 
     def http_request(self, method, host, port, path='/', ssl=False, timeout=10, output=True, session=requests,
                      **kwargs):
