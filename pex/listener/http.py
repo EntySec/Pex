@@ -62,6 +62,13 @@ class HTTPListen:
         except Exception:
             return False
 
+    def stop(self):
+        try:
+            self.sock.server_close()
+            return True
+        except Exception:
+            return False
+
     def accept(self):
         try:
             self.sock.handle_request()
