@@ -57,7 +57,7 @@ class HTTPListen:
             for method in self.methods:
                 setattr(self.handler, f"do_{method.upper()}", self.methods[method])
 
-            self.sock = socketserver.TCPServer((host, int(port)), Handler)
+            self.sock = socketserver.TCPServer((self.host, self.port), self.handler)
             return True
         except Exception:
             return False
