@@ -29,14 +29,26 @@ import ftplib
 
 
 class FTPSocket:
-    def __init__(self, host, port, timeout=10):
+    def __init__(self, host, port, timeout=10, ssl=False):
         self.host = host
         self.port = int(port)
 
-    
+        self.timeout = float(timeout)
+
+        if ssl:
+            self.client = ftplib.FTP_TLS()
+        else:
+            self.client = ftplib.FTP()
+
+    def connect(self):
+        try:
+            self.client.connect(self.host, self.port, timeout=self.timeout)
+            return True
+        except Exception:
+            return False
 
 
 class FTPClient:
     @staticmethod
-    def open_ftp(host, port):
-        return FTPSocket(host, port)
+    def open_ftp(host, port, timeout=10, ssl=False):
+        return FTPSocket(host, port, timeout, ssl)
