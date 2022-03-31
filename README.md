@@ -16,6 +16,8 @@ Collection of client implementations for several protocols.
 
 * `pex.client.adb` - ADB client.
 * `pex.client.channel` - TCP interactive wrapper.
+* `pex.client.ftp` - FTP client.
+* `pex.client.smtp` - SMTP client.
 * `pex.client.http` - HTTP client.
 * `pex.client.ssh` - SSH client.
 * `pex.client.tcp` - TCP client.
