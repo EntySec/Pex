@@ -32,7 +32,7 @@ class FTPSocket:
         self.host = host
         self.port = int(port)
 
-        self.timeout = timeout
+        self.timeout = float(timeout)
 
     def get(self, community, oid, version):
         cmd_gen = cmdgen.CommandGenerator()
