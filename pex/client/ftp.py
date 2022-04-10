@@ -47,6 +47,28 @@ class FTPSocket:
         except Exception:
             return False
 
+    def close(self):
+        try:
+            self.client.close()
+            return True
+        except Exception:
+            return False
+
+    def login(self, username, password):
+        try:
+            self.client.login(username, password)
+            return True
+        except Exception:
+            return False
+
+    def get_file(self, remote_file):
+        try:
+            fp_content = io.BytesIO()
+            self.client.retrbinary(f"RETR {remote_file}", fp_content.write)
+            return fp_content.getvalue()
+        except Exception:
+            return None
+
 
 class FTPClient:
     @staticmethod
