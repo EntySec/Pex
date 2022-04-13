@@ -28,8 +28,9 @@ import base64
 import collections
 import random
 import re
-
 import string
+
+from itertools import cycle
 
 ##############################################################
 # Lempel-Ziv-Stac decompression
@@ -160,6 +161,14 @@ class StringTools:
         for c in string:
             result += chr(ord(c) ^ len(string))
         return result
+
+    @staticmethod
+    def xor_key_string(string, key):
+        return ''.join([chr(ord(a) ^ ord(b)) for a, b in zip(string, cycle(key))])
+
+    @staticmethod
+    def xor_key_bytes(buffer, key):
+        return bytes([a ^ b for a, b in zip(buffer, cycle(key))])
 
     @staticmethod
     def base64_decode(string, decode=True):
