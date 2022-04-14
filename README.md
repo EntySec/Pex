@@ -43,6 +43,7 @@ Collection of tools for special reasons.
 * `pex.tools.http` - HTTP tools.
 * `pex.tools.db` - Database tools.
 * `pex.tools.payload` - Payload tools.
+* `pex.tools.encoder` - Encoder tools.
 * `pex.tools.ssl` - SSL tools.
 * `pex.tools.string` - String tools.
 * `pex.tools.type` - Type tools.
