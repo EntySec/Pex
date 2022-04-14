@@ -32,8 +32,10 @@ class EncoderTools:
     hatasm = HatAsm()
     string_tools = StringTools()
 
-    def encode(self, arch, shellcode, decoder, key):
-        encoded = self.hatasm.assemble(arch, decoder)
-        encoded += self.string_tools.xor_key_bytes(shellcode, key)
+    def encode(self, arch, shellcode, decoder, key, iterations=1):
+        decoder = self.hatasm.assemble(arch, decoder)
 
-        return encoded
+        for i in range(int(iterations)):
+            shellcode = decoder + self.string_tools.xor_key_bytes(shellcode, key)
+
+        return shellcode
