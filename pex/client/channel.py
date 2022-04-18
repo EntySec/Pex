@@ -52,10 +52,9 @@ class ChannelSocket:
         return stashed_data
 
     def disconnect(self):
-        try:
+        if self.sock.sock:
             self.sock.close()
-        except Exception:
-            raise RuntimeError("Channel closed connection!")
+        raise RuntimeError("Socket is not connected!")
 
     def send(self, data):
         if self.sock.sock:
@@ -144,7 +143,7 @@ class ChannelSocket:
 
                     return data
             except Exception:
-                raise RuntimeError("Channel closed connection!")
+                raise RuntimeError("Channel closed connection unexpectedly!")
             return None
         raise RuntimeError("Socket is not connected!")
 
@@ -165,7 +164,7 @@ class ChannelSocket:
 
                         return data
             except Exception:
-                raise RuntimeError("Channel closed connection!")
+                raise RuntimeError("Channel closed connection unexpectedly!")
             return None
         raise RuntimeError("Socket is not connected!")
 
@@ -182,7 +181,7 @@ class ChannelSocket:
                         try:
                             response = self.stash() + self.sock.read_eager()
                         except Exception:
-                            raise RuntimeError("Channel closed connection!")
+                            raise RuntimeError("Channel closed connection unexpectedly!")
                         if response:
                             print(response.decode(errors='ignore'), end='')
                     elif key.fileobj is sys.stdin:
