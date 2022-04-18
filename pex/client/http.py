@@ -54,7 +54,5 @@ class HTTPClient:
             raise RuntimeError(f"Invalid URL schema in {url}!")
         except requests.exceptions.ConnectionError:
             raise RuntimeError(f"Connection failed for {url}!")
-        except requests.RequestException as e:
-            raise RuntimeError(str(e) + '!')
-        except socket.error as e:
-            raise RuntimeError(str(e) + '!')
+        except Exception:
+            return None
