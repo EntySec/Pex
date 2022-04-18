@@ -34,6 +34,8 @@ class ADBSocket:
         self.host = host
         self.port = int(port)
 
+        self.pair = f"{self.host}:{str(self.port)}"
+
         self.sock = AdbDeviceTcp(self.host,
                                  self.port,
                                  default_transport_timeout_s=timeout)
@@ -41,19 +43,17 @@ class ADBSocket:
     def connect(self):
         try:
             self.sock.connect()
-            return True
         except Exception:
-            return False
+            raise RuntimeError(f"Connection failed for {self.pair}!")
 
     def disconnect(self):
         self.sock.close()
-        return True
 
     def send_command(self, command):
         try:
             return self.sock.shell(command)
         except Exception:
-            return None
+            raise RuntimeError(f"Socket {self.pair} closed connection!")
 
 
 class ADBClient:
