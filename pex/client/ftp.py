@@ -33,6 +33,7 @@ class FTPSocket:
         self.host = host
         self.port = int(port)
 
+        self.pair = f"{self.host}:{str(self.port)}"
         self.timeout = float(timeout)
 
         if ssl:
@@ -43,23 +44,20 @@ class FTPSocket:
     def connect(self):
         try:
             self.client.connect(self.host, self.port, timeout=self.timeout)
-            return True
         except Exception:
-            return False
+            raise RuntimeError(f"Connection failed for {self.pair}!")
 
     def close(self):
         try:
             self.client.close()
-            return True
         except Exception:
-            return False
+            raise RuntimeError(f"Socket closed connection!")
 
     def login(self, username, password):
         try:
             self.client.login(username, password)
-            return True
         except Exception:
-            return False
+            raise RuntimeError(f"Login via {self.username}:{self.password} failed for {self.pair}!")
 
     def get_file(self, remote_file):
         try:
@@ -67,7 +65,7 @@ class FTPSocket:
             self.client.retrbinary(f"RETR {remote_file}", fp_content.write)
             return fp_content.getvalue()
         except Exception:
-            return None
+            return b""
 
 
 class FTPClient:
