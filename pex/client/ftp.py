@@ -51,7 +51,7 @@ class FTPSocket:
         try:
             self.client.close()
         except Exception:
-            raise RuntimeError(f"Socket closed connection!")
+            raise RuntimeError(f"Socket is not connected!")
 
     def login(self, username, password):
         try:
