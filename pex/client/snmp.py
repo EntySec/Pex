@@ -44,10 +44,11 @@ class FTPSocket:
                 oid
             )
         except Exception:
-            return None
+            raise RuntimeError(f"Connection failed for {self.pair}!")
 
         if not err_ind or not err_stat:
             return var_binds
+        raise RuntimeError(f"Invalid community string in {community}!")
 
 
 class SNMPClient:
