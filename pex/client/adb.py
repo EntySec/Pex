@@ -53,7 +53,7 @@ class ADBSocket:
         try:
             return self.sock.shell(command)
         except Exception:
-            raise RuntimeError(f"Socket {self.pair} closed connection!")
+            raise RuntimeError(f"Socket {self.pair} is not connected!")
 
 
 class ADBClient:
