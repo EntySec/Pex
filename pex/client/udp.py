@@ -32,21 +32,22 @@ class UDPSocket:
         self.host = host
         self.port = int(port)
 
+        self.pair = f"{self.host}:{str(self.port)}"
+
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.settimeout(timeout)
 
     def send(self, data):
         try:
             self.sock.sendto(data, (self.host, self.port))
-            return True
         except Exception:
-            return False
+            raise RuntimeError(f"Connection failed for {self.pair}!")
 
     def recv(self, size):
         try:
             return self.sock.recv(size)
         except Exception:
-            return b""
+            raise RuntimeError(f"Socket {self.pair} is not connected!")
 
 
 class UDPClient:
