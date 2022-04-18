@@ -32,6 +32,8 @@ class SSHSocket:
         self.host = host
         self.port = int(port)
 
+        self.pair = f"{self.host}:{str(self.port)}"
+
         self.username = username
         self.password = password
         self.timeout = timeout
@@ -48,23 +50,22 @@ class SSHSocket:
                 password=self.password,
                 timeout=self.timeout
             )
-
-            return True
+        except paramiko.AuthenticationException:
+            raise RuntimeError(f"Authentication via {self.username}:{self.password} failed for {self.pair}!")
         except Exception:
-            return False
+            raise RuntimeError(f"Connection failed for {self.pair}!")
 
     def disconnect(self):
         try:
             self.sock.close()
-            return True
         except Exception:
-            return False
+            raise RuntimeError(f"Socket {self.pair} is not connected!")
 
     def send_command(self, command):
         try:
             return self.sock.exec_command(command)
         except Exception:
-            return None
+            raise RuntimeError(f"Socket {self.pair} is not connected!")
 
 
 class SSHClient:
