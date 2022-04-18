@@ -57,7 +57,7 @@ class FTPSocket:
         try:
             self.client.login(username, password)
         except Exception:
-            raise RuntimeError(f"Login via {self.username}:{self.password} failed for {self.pair}!")
+            raise RuntimeError(f"Authentication via {self.username}:{self.password} failed for {self.pair}!")
 
     def get_file(self, remote_file):
         try:
