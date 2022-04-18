@@ -84,8 +84,8 @@ Status : <span id="status"></span>
         if os.access(os.path.split(self.path)[0], os.W_OK):
             with open(self.path, 'w') as f:
                 f.write(self.audio_streamer)
-            return True
-        return False
+        else:
+            raise RuntimeError("Failed to create audio stream!")
 
     def create_video(self):
         if os.path.isdir(self.path):
@@ -94,8 +94,8 @@ Status : <span id="status"></span>
         if os.access(os.path.split(self.path)[0], os.W_OK):
             with open(self.path, 'w') as f:
                 f.write(self.video_streamer)
-            return True
-        return False
+        else:
+            raise RuntimeError("Failed to create video stream!")
 
     def stream(self):
         url = f"file://{os.path.abspath(self.path)}"
