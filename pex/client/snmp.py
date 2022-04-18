@@ -32,6 +32,7 @@ class FTPSocket:
         self.host = host
         self.port = int(port)
 
+        self.pair = f"{self.host}:{str(self.port)}"
         self.timeout = float(timeout)
 
     def get(self, community, oid, version):
