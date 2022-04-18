@@ -49,10 +49,10 @@ class Post:
                         method = post_method
 
                 if not method:
-                    return False
+                    raise RuntimeError(f"No supported post methods found for {platform} platform!")
             else:
                 if platform not in self.post_methods[method][0]:
-                    return False
+                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
 
             filename = self.string_tools.random_string(8)
 
@@ -85,7 +85,7 @@ class Post:
                 else:
                     command = f"{background} {path} {arguments} {concat} del {path}"
             else:
-                return False
+                raise RuntimeError(f"Platform {platform} is unsupported!")
 
             self.post_methods[method][1].push(
                 sender=sender,
@@ -96,6 +96,5 @@ class Post:
             )
 
             self.post_tools.post_command(sender, command, args)
-
-            return True
-        return False
+        else:
+            raise RuntimeError(f"Post method {method} is unsupported!")
