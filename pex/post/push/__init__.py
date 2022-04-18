@@ -64,10 +64,10 @@ class Push:
                         method = push_method
 
                 if not method:
-                    return None
+                    raise RuntimeError(f"No supported post methods found for {platform} platform!")
             else:
                 if platform not in self.push_methods[method][0]:
-                    return None
+                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
 
             self.push_methods[method][1].push(
                 sender=sender,
@@ -77,4 +77,4 @@ class Push:
                 linemax=linemax
             )
             return location
-        return None
+        raise RuntimeError(f"Post method {method} is unsupported!")
