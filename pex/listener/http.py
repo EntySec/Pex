@@ -58,23 +58,20 @@ class HTTPListen:
                 setattr(self.handler, f"do_{method.upper()}", self.methods[method])
 
             self.sock = socketserver.TCPServer((self.host, self.port), self.handler)
-            return True
         except Exception:
-            return False
+            raise RuntimeError(f"Failed to start HTTP listener on port {str(self.port)}!")
 
     def stop(self):
         try:
             self.sock.server_close()
-            return True
         except Exception:
-            return False
+            raise RuntimeError(f"HTTP listener is not started!")
 
     def accept(self):
         try:
             self.sock.handle_request()
-            return True
         except Exception:
-            return False
+            raise RuntimeError(f"HTTP listener is not started!")
 
 
 class HTTPListener:
