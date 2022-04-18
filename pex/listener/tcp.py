@@ -44,44 +44,38 @@ class TCPListen:
         try:
             self.sock.bind((self.host, self.port))
             self.sock.listen(1)
-
-            return True
         except Exception:
-            return False
+            raise RuntimeError(f"Failed to start TCP listener on port {str(self.port)}!")
 
     def stop(self):
         try:
             self.sock.close()
-            return True
         except Exception:
-            return False
+            raise RuntimeError("TCP listener is not started!")
 
     def accept(self):
         try:
             self.client, self.address = self.sock.accept()
-            return True
         except Exception:
-            return False
+            raise RuntimeError("TCP listener is not started!")
 
     def disconnect(self):
         try:
             self.client.close()
-            return True
         except Exception:
-            return False
+            raise RuntimeError(f"Socket {self.address[0]}:{self.address[1]} is not connected!")
 
     def send(self, data):
         try:
             self.client.send(data)
-            return True
         except Exception:
-            return False
+            raise RuntimeError(f"Socket {self.address[0]}:{self.address[1]} is not connected!")
 
     def recv(self, size):
         try:
             return self.client.recv(size)
         except Exception:
-            return b""
+            raise RuntimeError(f"Socket {self.address[0]}:{self.address[1]} is not connected!")
 
 
 class TCPListener:
