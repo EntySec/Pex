@@ -56,7 +56,6 @@ class ChannelSocket:
     def disconnect(self):
         if self.sock.sock:
             self.sock.close()
-        raise RuntimeError("Socket is not connected!")
 
     def send(self, data):
         if self.sock.sock:
