@@ -44,7 +44,6 @@ class ChannelSocket:
         self.read_delay = 1
 
         self.stashed = b""
-        self.terminated = False
 
     def stash(self):
         stashed_data = self.stashed
@@ -55,20 +54,18 @@ class ChannelSocket:
     def disconnect(self):
         try:
             self.sock.close()
-            return True
         except Exception:
-            return False
+            raise RuntimeError("Channel closed connection!")
 
     def send(self, data):
         if self.sock.sock:
-            self.sock.write(data)
-            return True
-        return False
+            return self.sock.write(data)
+        raise RuntimeError("Socket is not connected!")
 
     def read(self, size):
         if self.sock.sock:
             return self.sock.sock.recv(size)
-        return b""
+        raise RuntimeError("Socket is not connected!")
 
     def readall(self):
         if self.sock.sock:
@@ -88,7 +85,7 @@ class ChannelSocket:
 
             self.sock.sock.setblocking(True)
             return result
-        return None
+        raise RuntimeError("Socket is not connected!")
 
     def print_until(self, token, printer=print):
         if self.sock.sock:
@@ -112,9 +109,8 @@ class ChannelSocket:
                 if block != data:
                     self.stashed = stash
                     break
-
-            return True
-        return False
+        else:
+            raise RuntimeError("Socket is not connected!")
 
     def read_until(self, token):
         if self.sock.sock:
@@ -132,7 +128,7 @@ class ChannelSocket:
                     break
 
             return result
-        return None
+        raise RuntimeError("Socket is not connected!")
 
     def send_command(self, command, output=True, decode=True):
         if self.sock.sock:
@@ -148,9 +144,9 @@ class ChannelSocket:
 
                     return data
             except Exception:
-                self.terminated = True
+                raise RuntimeError("Channel closed connection!")
             return None
-        return None
+        raise RuntimeError("Socket is not connected!")
 
     def send_token_command(self, command, token, output=True, decode=True, printer=None):
         if self.sock.sock:
@@ -169,9 +165,9 @@ class ChannelSocket:
 
                         return data
             except Exception:
-                self.terminated = True
+                raise RuntimeError("Channel closed connection!")
             return None
-        return None
+        raise RuntimeError("Socket is not connected!")
 
     def interact(self, terminator='\n'):
         if self.sock.sock:
@@ -186,8 +182,7 @@ class ChannelSocket:
                         try:
                             response = self.stash() + self.sock.read_eager()
                         except Exception:
-                            self.terminated = True
-                            return False
+                            raise RuntimeError("Channel closed connection!")
                         if response:
                             print(response.decode(errors='ignore'), end='')
                     elif key.fileobj is sys.stdin:
@@ -198,7 +193,7 @@ class ChannelSocket:
                             return True
                         self.sock.write((line + terminator).encode())
         else:
-            return False
+            raise RuntimeError("Socket is not connected!")
 
 
 class ChannelClient:
