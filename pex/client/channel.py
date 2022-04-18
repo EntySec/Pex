@@ -40,6 +40,8 @@ class ChannelSocket:
         self.sock = telnetlib.Telnet()
         self.sock.sock = client
 
+        self.terminated = False
+
         self.read_size = 1024 ** 2
         self.read_delay = 1
 
@@ -143,6 +145,7 @@ class ChannelSocket:
 
                     return data
             except Exception:
+                self.terminated = True
                 raise RuntimeError("Channel closed connection unexpectedly!")
             return None
         raise RuntimeError("Socket is not connected!")
@@ -164,6 +167,7 @@ class ChannelSocket:
 
                         return data
             except Exception:
+                self.terminated = True
                 raise RuntimeError("Channel closed connection unexpectedly!")
             return None
         raise RuntimeError("Socket is not connected!")
@@ -181,6 +185,7 @@ class ChannelSocket:
                         try:
                             response = self.stash() + self.sock.read_eager()
                         except Exception:
+                            self.terminated = True
                             raise RuntimeError("Channel closed connection unexpectedly!")
                         if response:
                             print(response.decode(errors='ignore'), end='')
