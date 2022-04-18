@@ -54,15 +54,14 @@ class Pull:
                         method = pull_method
 
                 if not method:
-                    return None
+                    raise RuntimeError(f"No supported post methods found for {platform} platform!")
             else:
                 if platform not in self.pull_methods[method][0]:
-                    return None
+                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
 
             return self.pull_methods[method][1].pull(
                 sender=sender,
                 location=location,
                 args=args
             )
-
-        return None
+        raise RuntimeError(f"Post method {method} is unsupported!")
