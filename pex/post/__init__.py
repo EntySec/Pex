@@ -24,11 +24,11 @@
 # SOFTWARE.
 #
 
-from pex.post.push import Push
+from .push import Push
+from .tools import PostTools
 
-from pex.tools.post import PostTools
-from pex.tools.type import TypeTools
-from pex.tools.string import StringTools
+from pex.type import TypeTools
+from pex.string import StringTools
 
 
 class Post:

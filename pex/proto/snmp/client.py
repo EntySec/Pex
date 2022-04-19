@@ -24,28 +24,35 @@
 # SOFTWARE.
 #
 
-from alive_progress import alive_bar
-
-from pex.post import PostTools
+from pysnmp.entity.rfc3413.oneliner import cmdgen
 
 
-class Printf:
-    post_tools = PostTools()
+class FTPSocket:
+    def __init__(self, host, port, timeout=10):
+        self.host = host
+        self.port = int(port)
 
-    def push(self, sender, data, location, args=[], linemax=100):
-        printf_stream = "printf '{}' >> {}"
-        printf_max_length = linemax
+        self.pair = f"{self.host}:{str(self.port)}"
+        self.timeout = float(timeout)
 
-        size = len(data)
-        num_parts = int(size / printf_max_length) + 1
+    def get(self, community, oid, version):
+        cmd_gen = cmdgen.CommandGenerator()
 
-        with alive_bar(num_parts, receipt=False, ctrl_c=False, title="Pushing") as bar:
-            for i in range(0, num_parts):
-                bar()
+        try:
+            err_ind, err_stat, err_i, var_binds = cmd_gen.getcmd(
+                cmdgen.CommunityData(community, mp_model=version),
+                cmdgen.UdpTransportTarget((self.host, self.port), self.timeout),
+                oid
+            )
+        except Exception:
+            raise RuntimeError(f"Connection failed for {self.pair}!")
 
-                current = i * printf_max_length
-                block = self.post_tools.bytes_to_octal(data[current:current + printf_max_length])
+        if not err_ind or not err_stat:
+            return var_binds
+        raise RuntimeError(f"Invalid community string in {community}!")
 
-                if block:
-                    command = printf_stream.format(block, location)
-                    self.post_tools.post_command(sender, command, args)
+
+class SNMPClient:
+    @staticmethod
+    def open_snmp(host, port, timeout=10):
+        return SNMPSocket(host, port, timeout)

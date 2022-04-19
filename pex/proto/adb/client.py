@@ -24,28 +24,39 @@
 # SOFTWARE.
 #
 
-from alive_progress import alive_bar
+import socket
 
-from pex.post import PostTools
+from adb_shell.adb_device import AdbDeviceTcp
 
 
-class Printf:
-    post_tools = PostTools()
+class ADBSocket:
+    def __init__(self, host, port, timeout=10):
+        self.host = host
+        self.port = int(port)
 
-    def push(self, sender, data, location, args=[], linemax=100):
-        printf_stream = "printf '{}' >> {}"
-        printf_max_length = linemax
+        self.pair = f"{self.host}:{str(self.port)}"
 
-        size = len(data)
-        num_parts = int(size / printf_max_length) + 1
+        self.sock = AdbDeviceTcp(self.host,
+                                 self.port,
+                                 default_transport_timeout_s=timeout)
 
-        with alive_bar(num_parts, receipt=False, ctrl_c=False, title="Pushing") as bar:
-            for i in range(0, num_parts):
-                bar()
+    def connect(self):
+        try:
+            self.sock.connect()
+        except Exception:
+            raise RuntimeError(f"Connection failed for {self.pair}!")
 
-                current = i * printf_max_length
-                block = self.post_tools.bytes_to_octal(data[current:current + printf_max_length])
+    def disconnect(self):
+        self.sock.close()
 
-                if block:
-                    command = printf_stream.format(block, location)
-                    self.post_tools.post_command(sender, command, args)
+    def send_command(self, command):
+        try:
+            return self.sock.shell(command)
+        except Exception:
+            raise RuntimeError(f"Socket {self.pair} is not connected!")
+
+
+class ADBClient:
+    @staticmethod
+    def open_adb(host, port, timeout=10):
+        return ADBSocket(host, port, timeout)

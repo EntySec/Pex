@@ -24,28 +24,18 @@
 # SOFTWARE.
 #
 
-from alive_progress import alive_bar
+from hatasm import HatAsm
+from hatvenom import HatVenom
+from hatloads import HatLoads
 
-from pex.post import PostTools
 
+class PayloadTools:
+    hatasm = HatAsm()
+    hatvenom = HatVenom()
+    hatloads = HatLoads()
 
-class Printf:
-    post_tools = PostTools()
+    def assemble(self, arch, code):
+        return self.hatasm.assemble(arch, code)
 
-    def push(self, sender, data, location, args=[], linemax=100):
-        printf_stream = "printf '{}' >> {}"
-        printf_max_length = linemax
-
-        size = len(data)
-        num_parts = int(size / printf_max_length) + 1
-
-        with alive_bar(num_parts, receipt=False, ctrl_c=False, title="Pushing") as bar:
-            for i in range(0, num_parts):
-                bar()
-
-                current = i * printf_max_length
-                block = self.post_tools.bytes_to_octal(data[current:current + printf_max_length])
-
-                if block:
-                    command = printf_stream.format(block, location)
-                    self.post_tools.post_command(sender, command, args)
+    def get_payload(self, platform, arch, payload, options={}):
+        return self.hatloads.get_payload(platform, arch, payload, options)

@@ -26,8 +26,8 @@
 
 from alive_progress import alive_bar
 
-from pex.tools.post import PostTools
-from pex.tools.string import StringTools
+from pex.post import PostTools
+from pex.string import StringTools
 
 
 class Certutil:

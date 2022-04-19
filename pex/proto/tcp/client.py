@@ -24,28 +24,45 @@
 # SOFTWARE.
 #
 
-from alive_progress import alive_bar
-
-from pex.post import PostTools
+import socket
 
 
-class Printf:
-    post_tools = PostTools()
+class TCPSocket:
+    def __init__(self, host, port, timeout=10):
+        self.host = host
+        self.port = int(port)
 
-    def push(self, sender, data, location, args=[], linemax=100):
-        printf_stream = "printf '{}' >> {}"
-        printf_max_length = linemax
+        self.pair = f"{self.host}:{str(self.port)}"
 
-        size = len(data)
-        num_parts = int(size / printf_max_length) + 1
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.settimeout(timeout)
 
-        with alive_bar(num_parts, receipt=False, ctrl_c=False, title="Pushing") as bar:
-            for i in range(0, num_parts):
-                bar()
+    def connect(self):
+        try:
+            self.sock.connect((self.host, self.port))
+        except Exception:
+            raise RuntimeError(f"Connection failed for {self.pair}!")
 
-                current = i * printf_max_length
-                block = self.post_tools.bytes_to_octal(data[current:current + printf_max_length])
+    def disconnect(self):
+        try:
+            self.sock.close()
+        except Exception:
+            raise RuntimeError(f"Socket {self.pair} is not connected!")
 
-                if block:
-                    command = printf_stream.format(block, location)
-                    self.post_tools.post_command(sender, command, args)
+    def send(self, data):
+        try:
+            self.sock.send(data)
+        except Exception:
+            raise RuntimeError(f"Socket {self.pair} is not connected!")
+
+    def recv(self, size):
+        try:
+            return self.sock.recv(size)
+        except Exception:
+            raise RuntimeError(f"Socket {self.pair} is not connected!")
+
+
+class TCPClient:
+    @staticmethod
+    def open_tcp(host, port, timeout=10):
+        return TCPSocket(host, port, timeout)

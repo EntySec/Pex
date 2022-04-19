@@ -26,10 +26,10 @@
 
 from collections import OrderedDict
 
-from pex.tools.type import TypeTools
+from pex.type import TypeTools
 
-from pex.post.pull.dd import DD
-from pex.post.pull.cat import Cat
+from .dd import DD
+from .cat import Cat
 
 
 class Pull:

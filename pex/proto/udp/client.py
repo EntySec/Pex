@@ -24,28 +24,33 @@
 # SOFTWARE.
 #
 
-from alive_progress import alive_bar
-
-from pex.post import PostTools
+import socket
 
 
-class Printf:
-    post_tools = PostTools()
+class UDPSocket:
+    def __init__(self, host, port, timeout=10):
+        self.host = host
+        self.port = int(port)
 
-    def push(self, sender, data, location, args=[], linemax=100):
-        printf_stream = "printf '{}' >> {}"
-        printf_max_length = linemax
+        self.pair = f"{self.host}:{str(self.port)}"
 
-        size = len(data)
-        num_parts = int(size / printf_max_length) + 1
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.settimeout(timeout)
 
-        with alive_bar(num_parts, receipt=False, ctrl_c=False, title="Pushing") as bar:
-            for i in range(0, num_parts):
-                bar()
+    def send(self, data):
+        try:
+            self.sock.sendto(data, (self.host, self.port))
+        except Exception:
+            raise RuntimeError(f"Connection failed for {self.pair}!")
 
-                current = i * printf_max_length
-                block = self.post_tools.bytes_to_octal(data[current:current + printf_max_length])
+    def recv(self, size):
+        try:
+            return self.sock.recv(size)
+        except Exception:
+            raise RuntimeError(f"Socket {self.pair} is not connected!")
 
-                if block:
-                    command = printf_stream.format(block, location)
-                    self.post_tools.post_command(sender, command, args)
+
+class UDPClient:
+    @staticmethod
+    def open_udp(host, port, timeout=10):
+        return UDPSocket(host, port, timeout)

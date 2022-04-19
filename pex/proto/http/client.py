@@ -24,28 +24,35 @@
 # SOFTWARE.
 #
 
-from alive_progress import alive_bar
+import requests
+import socket
+import urllib3
 
-from pex.post import PostTools
+from .tools import HTTPTools
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-class Printf:
-    post_tools = PostTools()
+class HTTPClient:
+    http_tools = HTTPTools()
 
-    def push(self, sender, data, location, args=[], linemax=100):
-        printf_stream = "printf '{}' >> {}"
-        printf_max_length = linemax
+    def http_request(self, method, host, port, path='/', ssl=False, timeout=10, output=True, session=requests,
+                     **kwargs):
+        if not output:
+            timeout = 0
+        kwargs.setdefault("timeout", timeout)
+        kwargs.setdefault("verify", False)
+        kwargs.setdefault("allow_redirects", True)
 
-        size = len(data)
-        num_parts = int(size / printf_max_length) + 1
+        if not ssl:
+            ssl = int(port) in [443]
+        url = self.http_tools.normalize_url(host, port, path, ssl)
 
-        with alive_bar(num_parts, receipt=False, ctrl_c=False, title="Pushing") as bar:
-            for i in range(0, num_parts):
-                bar()
-
-                current = i * printf_max_length
-                block = self.post_tools.bytes_to_octal(data[current:current + printf_max_length])
-
-                if block:
-                    command = printf_stream.format(block, location)
-                    self.post_tools.post_command(sender, command, args)
+        try:
+            return getattr(session, method.lower())(url, **kwargs)
+        except (requests.exceptions.MissingSchema, requests.exceptions.InvalidSchema):
+            raise RuntimeError(f"Invalid URL schema in {url}!")
+        except requests.exceptions.ConnectionError:
+            raise RuntimeError(f"Connection failed for {url}!")
+        except Exception:
+            return None

@@ -26,12 +26,12 @@
 
 from collections import OrderedDict
 
-from pex.tools.type import TypeTools
+from pex.type import TypeTools
 
-from pex.post.push.echo import Echo
-from pex.post.push.bash_echo import BashEcho
-from pex.post.push.printf import Printf
-from pex.post.push.certutil import Certutil
+from .echo import Echo
+from .bash_echo import BashEcho
+from .printf import Printf
+from .certutil import Certutil
 
 
 class Push:

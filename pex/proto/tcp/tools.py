@@ -24,28 +24,37 @@
 # SOFTWARE.
 #
 
-from alive_progress import alive_bar
-
-from pex.post import PostTools
+import socket
 
 
-class Printf:
-    post_tools = PostTools()
+class TCPTools:
+    @staticmethod
+    def get_local_host():
+        try:
+            server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            server.connect(("8.8.8.8", 53))
 
-    def push(self, sender, data, location, args=[], linemax=100):
-        printf_stream = "printf '{}' >> {}"
-        printf_max_length = linemax
+            local_host = server.getsockname()[0]
+            server.close()
 
-        size = len(data)
-        num_parts = int(size / printf_max_length) + 1
+            local_host = local_host
 
-        with alive_bar(num_parts, receipt=False, ctrl_c=False, title="Pushing") as bar:
-            for i in range(0, num_parts):
-                bar()
+        except Exception:
+            local_host = "127.0.0.1"
 
-                current = i * printf_max_length
-                block = self.post_tools.bytes_to_octal(data[current:current + printf_max_length])
+        return local_host
 
-                if block:
-                    command = printf_stream.format(block, location)
-                    self.post_tools.post_command(sender, command, args)
+    def convert_to_local(self, host):
+        if host in ['0.0.0.0']:
+            return self.get_local_host()
+
+        return host
+
+    @staticmethod
+    def check_tcp_port(host, port, timeout=1):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.settimeout(timeout)
+
+            if sock.connect_ex((host, int(port))) == 0:
+                return True
+        return False
