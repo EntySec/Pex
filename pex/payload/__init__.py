@@ -24,21 +24,4 @@
 # SOFTWARE.
 #
 
-import socket
-
-
-class WPSocket:
-    def __init__(self, host, port, timeout=10):
-        self.host = host
-        self.port = int(port)
-
-        self.timeout = timeout
-
-    def login(self, username, password):
-        pass
-
-
-class WPClient:
-    @staticmethod
-    def open_wp(host, port, timeout=10):
-        return WPSocket(host, port, timeout)
+from .tools import PayloadTools

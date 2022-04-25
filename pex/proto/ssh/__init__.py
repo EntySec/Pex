@@ -24,18 +24,4 @@
 # SOFTWARE.
 #
 
-from hatasm import HatAsm
-from hatvenom import HatVenom
-from hatloads import HatLoads
-
-
-class PayloadTools:
-    hatasm = HatAsm()
-    hatvenom = HatVenom()
-    hatloads = HatLoads()
-
-    def assemble(self, arch, code):
-        return self.hatasm.assemble(arch, code)
-
-    def get_payload(self, platform, arch, payload, options={}):
-        return self.hatloads.get_payload(platform, arch, payload, options)
+from .client import SSHClient

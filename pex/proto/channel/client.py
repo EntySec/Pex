@@ -30,7 +30,7 @@ import sys
 import telnetlib
 import time
 
-from pex.tools.channel import ChannelTools
+from .tools import ChannelTools
 
 
 class ChannelSocket:

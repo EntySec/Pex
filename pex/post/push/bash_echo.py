@@ -26,7 +26,7 @@
 
 from alive_progress import alive_bar
 
-from pex.tools.post import PostTools
+from pex.post import PostTools
 
 
 class BashEcho:

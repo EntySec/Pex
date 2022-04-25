@@ -28,7 +28,7 @@ import socketserver
 
 import http.server
 
-from pex.tools.http import HTTPTools
+from .tools import HTTPTools
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):

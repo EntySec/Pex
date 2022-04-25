@@ -24,35 +24,4 @@
 # SOFTWARE.
 #
 
-import requests
-import socket
-import urllib3
-
-from pex.tools.http import HTTPTools
-
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-
-class HTTPClient:
-    http_tools = HTTPTools()
-
-    def http_request(self, method, host, port, path='/', ssl=False, timeout=10, output=True, session=requests,
-                     **kwargs):
-        if not output:
-            timeout = 0
-        kwargs.setdefault("timeout", timeout)
-        kwargs.setdefault("verify", False)
-        kwargs.setdefault("allow_redirects", True)
-
-        if not ssl:
-            ssl = int(port) in [443]
-        url = self.http_tools.normalize_url(host, port, path, ssl)
-
-        try:
-            return getattr(session, method.lower())(url, **kwargs)
-        except (requests.exceptions.MissingSchema, requests.exceptions.InvalidSchema):
-            raise RuntimeError(f"Invalid URL schema in {url}!")
-        except requests.exceptions.ConnectionError:
-            raise RuntimeError(f"Connection failed for {url}!")
-        except Exception:
-            return None
+from .client import StreamClient

@@ -24,8 +24,8 @@
 # SOFTWARE.
 #
 
-from pex.tools.ldap import LDAPTools
-from pex.tools.string import StringTools
+from .tools import LDAPTools
+from pex.string import StringTools
 
 from twisted.application import service
 from twisted.internet.endpoints import serverFromString
@@ -104,19 +104,19 @@ class LDAPListen:
 
     def listen(self):
         try:
-            
+            pass
         except Exception:
             return False
 
     def stop(self):
         try:
-            
+            pass
         except Exception:
             return False
 
     def accept(self):
         try:
-            
+            pass
         except Exception:
             return False
 

@@ -25,17 +25,10 @@
 #
 
 from hatasm import HatAsm
-from pex.tools.string import StringTools
 
 
-class EncoderTools:
+class AssemblerTools:
     hatasm = HatAsm()
-    string_tools = StringTools()
 
-    def encode(self, arch, shellcode, decoder, key, iterations=1):
-        decoder = self.hatasm.assemble(arch, decoder)
-
-        for i in range(int(iterations)):
-            shellcode = decoder + self.string_tools.xor_key_bytes(shellcode, key)
-
-        return shellcode
+    def assemble(self, arch, code):
+        return self.hatasm.assemble(arch, code)
