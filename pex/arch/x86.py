@@ -27,7 +27,7 @@
 import struct
 
 
-class X86Tools:
+class X86:
     EAX = AL = AX = ES = 0
     ECX = CL = CX = CS = 1
     EDX = DL = DX = SS = 2
