@@ -26,12 +26,8 @@
 
 import struct
 
-from hatasm import HatAsm
-
 
 class X86:
-    hatasm = HatAsm()
-
     EAX = AL = AX = ES = 0
     ECX = CL = CX = CS = 1
     EDX = DL = DX = SS = 2
