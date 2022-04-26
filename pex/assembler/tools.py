@@ -32,3 +32,6 @@ class AssemblerTools:
 
     def assemble(self, arch, code):
         return self.hatasm.assemble(arch, code)
+
+    def hexdump(self, code):
+        return self.hatasm.hexdump(code)
