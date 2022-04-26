@@ -134,17 +134,17 @@ class X86:
 
         return num + delta
 
-  def copy_to_stack(length):
-      length = (length + 3) & ~0x3
+    def copy_to_stack(length):
+        length = (length + 3) & ~0x3
 
-      return (
-          b"\xeb\x0f" +
-          self.push_dword(length) +
-          b"\x59"
-          b"\x5e"
-          b"\x29\xcc"
-          b"\x89\xe7"
-          b"\xf3\xa4"
-          b"\xff\xe4"
-          b"\xe8\xec\xff\xff\xff"
-      )
+        return (
+            b"\xeb\x0f" +
+            self.push_dword(length) +
+            b"\x59"
+            b"\x5e"
+            b"\x29\xcc"
+            b"\x89\xe7"
+            b"\xf3\xa4"
+            b"\xff\xe4"
+            b"\xe8\xec\xff\xff\xff"
+        )
