@@ -42,7 +42,7 @@ class FS:
         return False, False
 
     @staticmethod
-    def exists_dir(path):
+    def check_dir(path):
         if os.path.exists(path):
             if not os.path.isdir(path):
                 raise RuntimeError(f"Local path: {path}: is not a directory!")
@@ -50,7 +50,8 @@ class FS:
 
         raise RuntimeError(f"Local directory: {directory}: does not exist!")
 
-    def exists_file(self, path):
+    @staticmethod
+    def check_file(path):
         if os.path.exists(path):
             if os.path.isdir(path):
                 raise RuntimeError(f"Local path: {path}: is a directory!")
