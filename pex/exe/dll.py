@@ -57,7 +57,7 @@ class Dll:
         )
     }
 
-    def pack_dll(self, arch, data, dll_inj_funcs=[], filename='kernel32.dll'):
+    def pack_dll(self, arch, data, dll_inj_funcs=[], filename='kernel32'):
         if arch in self.headers.keys():
             pe = self.headers[arch] + b'\x00' * 546 + data
 
