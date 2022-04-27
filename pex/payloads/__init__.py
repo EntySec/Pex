@@ -24,12 +24,10 @@
 # SOFTWARE.
 #
 
-from hatvenom import HatVenom
 from hatloads import HatLoads
 
 
 class Payloads:
-    hatvenom = HatVenom()
     hatloads = HatLoads()
 
     def get_payload(self, platform, arch, payload, options={}):
