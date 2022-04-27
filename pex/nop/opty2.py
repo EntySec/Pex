@@ -45,7 +45,9 @@ class Opty2:
         counts = [0 for i in range(prev)]
 
         mask = 0
-        [mask |= 1 << self.x86.get_reg_num(i) for i in save_registers]
+        for i in save_registers:
+            mask |= 1 << self.x86.get_reg_num(i)
+
         mask = mask << 16
 
         bad_bytes = [1 for i in range(len(badchars))]
