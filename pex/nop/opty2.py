@@ -24,13 +24,15 @@
 # SOFTWARE.
 #
 
+import random
+
 from pex.arch import X86
 from .opty2_tables import Opty2Tables
 
 
 class Opty2:
     x86 = X86()
-    table = Opty2Tables().state_table
+    table = Opty2Tables().StateTable
 
     def generate_sled(self, length, save_registers=[]):
         return b'' if length <= 0
