@@ -25,4 +25,5 @@
 #
 
 from .pe import Pe
+from .dll import Dll
 from .elf import Elf
