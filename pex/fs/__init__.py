@@ -37,7 +37,7 @@ class FS:
         if not directory:
             return True, False
 
-        if self.exists_dir(directory):
+        if os.path.isdir(directory):
             return True, False
         return False, False
 
