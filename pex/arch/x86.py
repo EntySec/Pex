@@ -50,8 +50,8 @@ class X86:
                 return reg
         raise RuntimeError(f"Invalid register {reg}!")
 
-    def jmp_reg(self, reg):
-        return b"\xff" + struct.pack('B', 224 + self.get_reg_num(reg))
+    def jmp_reg(self, dest):
+        return b"\xff" + struct.pack('B', 224 + self.get_reg_num(dest))
 
     @staticmethod
     def pack_dword(num):
@@ -77,19 +77,19 @@ class X86:
     @staticmethod
     def push_byte(byte):
         if byte < 128 and byte >= -128:
-            return b"\x6a" + chr(byte & 0xff).encode()
+            return b"\x6a" + bytes([byte & 0xff])
         raise RuntimeError("Only signed byte values allowed!")
 
-    def mov_byte(self, byte, reg):
-        return (chr(0xb0 | self.get_reg_num(reg)) + chr(byte)).encode()
+    def mov_byte(self, byte, dest):
+        return bytes([0xb0 | self.get_reg_num(dest)]) + bytes([byte])
 
-    def mov_word(self, num, reg):
+    def mov_word(self, num, dest):
         if num < 0 or num > 0xffff:
             raise RuntimeError("Only unsigned word values allowed!")
-        return b"\x66" + chr(0xb8 | self.get_reg_num(reg)).encode() + self.pack_word(num)
+        return b"\x66" + bytes([0xb8 | self.get_reg_num(dest)]) + self.pack_word(num)
 
-    def mov_dword(self, num, reg):
-        return chr(0xb8 | self.get_reg_num(reg)).encode() + self.pack_dword(num)
+    def mov_dword(self, num, dest):
+        return bytes([0xb8 | self.get_reg_num(dest)]) + self.pack_dword(num)
 
     def push_dword(self, num):
         return b"\x68" + self.pack_dword(num)
@@ -97,8 +97,8 @@ class X86:
     def push_word(self, num):
         return b"\x66\x68" + self.pack_word(num)
 
-    def pop_dword(self, reg):
-        return chr(0x58 | self.get_reg_num(reg)).encode()
+    def pop_dword(self, dest):
+        return bytes([0x58 | self.get_reg_num(dest)])
 
     def dword_adjust(self, dword, num=0):
         return self.pack_dword(self.unpack_dword(dword) + num)
@@ -163,4 +163,25 @@ class X86:
         )
 
     def encode_effective(self, shift, reg):
-        return (0xc0 | (shift << 3) | self.get_reg_num(reg))
+        return bytes[0xc0 | (shift << 3) | self.get_reg_num(reg)]
+
+    def encode_modrm(self, src, dest):
+        return bytes([0xc0 | self.get_reg_num(src) | self.get_reg_num(dest) << 3])
+
+    @staticmethod
+    def fpu_instructions():
+        fpus = []
+
+        [fpus.append(b"\xd9" + bytes([i])) for i in range(0xe8, 0xef)]
+        [fpus.append(b"\xd9" + bytes([i])) for i in range(0xc0, 0xd0)]
+        [fpus.append(b"\xda" + bytes([i])) for i in range(0xc0, 0xe0)]
+        [fpus.append(b"\xdb" + bytes([i])) for i in range(0xc0, 0xe0)]
+        [fpus.append(b"\xdd" + bytes([i])) for i in range(0xc0, 0xc8)]
+
+        fpus.append(b"\xd9\xd0")
+        fpus.append(b"\xd9\xe1")
+        fpus.append(b"\xd9\xf6")
+        fpus.append(b"\xd9\xf7")
+        fpus.append(b"\xd9\xe5")
+
+        return fpus
