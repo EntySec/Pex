@@ -55,7 +55,7 @@ class Opty2:
             low = -1
             lows = []
 
-            for i in table[prev]:
+            for i in self.table[prev]:
                 for j in i:
                     if (j & mask) != 0:
                         continue
