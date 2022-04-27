@@ -35,7 +35,8 @@ class Opty2:
     table = Opty2Tables().StateTable
 
     def generate_sled(self, length, save_registers=[]):
-        return b'' if length <= 0
+        if length <= 0:
+            return b''
 
         sled = b''
         prev = 256
