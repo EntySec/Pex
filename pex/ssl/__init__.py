@@ -24,4 +24,4 @@
 # SOFTWARE.
 #
 
-from .tools import SSLTools
+from .openssl import OpenSSL
