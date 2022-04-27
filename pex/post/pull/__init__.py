@@ -26,14 +26,14 @@
 
 from collections import OrderedDict
 
-from pex.type import TypeTools
+from pex.type import Type
 
 from .dd import DD
 from .cat import Cat
 
 
 class Pull:
-    type_tools = TypeTools()
+    type_tools = Type()
 
     pull_methods = OrderedDict({
         'cat': [

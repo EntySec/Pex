@@ -27,13 +27,13 @@
 from alive_progress import alive_bar
 
 from pex.post.tools import PostTools
-from pex.string import StringTools
+from pex.string import String
 from pex.proto.channel import ChannelTools
 
 
 class DD:
     post_tools = PostTools()
-    string_tools = StringTools()
+    string_tools = String()
     channel_tools = ChannelTools()
 
     def pull(self, sender, location, args=[]):

@@ -26,7 +26,7 @@
 
 from collections import OrderedDict
 
-from pex.type import TypeTools
+from pex.type import Type
 
 from .echo import Echo
 from .bash_echo import BashEcho
@@ -35,7 +35,7 @@ from .certutil import Certutil
 
 
 class Push:
-    type_tools = TypeTools()
+    type_tools = Type()
 
     push_methods = OrderedDict({
         'printf': [

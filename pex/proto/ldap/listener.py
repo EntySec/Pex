@@ -25,7 +25,7 @@
 #
 
 from .tools import LDAPTools
-from pex.string import StringTools
+from pex.string import String
 
 from twisted.application import service
 from twisted.internet.endpoints import serverFromString
@@ -43,7 +43,7 @@ from ldaptor.protocols import pureldap, pureber
 
 class Handler(LDAPServer):
     def __init__(self, host, port, payload):
-        self.string_tools = StringTools()
+        self.string_tools = String()
 
         self.host = host
         self.port = int(port)        

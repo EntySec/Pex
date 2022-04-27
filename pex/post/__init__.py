@@ -27,16 +27,16 @@
 from .push import Push
 from .tools import PostTools
 
-from pex.type import TypeTools
-from pex.string import StringTools
+from pex.type import Type
+from pex.string import String
 
 
 class Post:
     push = Push()
 
     post_tools = PostTools()
-    type_tools = TypeTools()
-    string_tools = StringTools()
+    type_tools = Type()
+    string_tools = String()
 
     post_methods = push.push_methods
 
