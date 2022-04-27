@@ -25,3 +25,8 @@
 #
 
 from .x86 import X86
+from .sparc import Sparc
+
+
+class Arch:
+    pass
