@@ -24,6 +24,9 @@
 # SOFTWARE.
 #
 
+import struct
+
+
 class Elf:
     magic = [
         b"\x7f\x45\x4c\x46"
