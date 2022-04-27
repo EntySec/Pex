@@ -24,6 +24,7 @@
 # SOFTWARE.
 #
 
+
 class Pe:
     magic = [
         b"\x4d\x5a"
