@@ -34,7 +34,7 @@ class Opty2:
     x86 = X86()
     table = Opty2Tables().StateTable
 
-    def generate_sled(self, length, save_registers=[]):
+    def generate_sled(self, length, save_registers=[], badchars=b''):
         if length <= 0:
             return b''
 
