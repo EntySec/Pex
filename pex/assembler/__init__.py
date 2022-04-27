@@ -24,4 +24,14 @@
 # SOFTWARE.
 #
 
-from .tools import AssemblerTools
+from hatasm import HatAsm
+
+
+class Assembler:
+    hatasm = HatAsm()
+
+    def assemble(self, arch, code):
+        return self.hatasm.assemble(arch, code)
+
+    def hexdump(self, code):
+        return self.hatasm.hexdump(code)
