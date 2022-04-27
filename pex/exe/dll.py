@@ -57,7 +57,7 @@ class Dll:
         )
     }
 
-    def pack_dll(self, arch, data, dll_inj_funcs=b'', filename=''):
+    def pack_dll(self, arch, data, dll_inj_funcs=[], filename='kernel32.dll'):
         if arch in self.headers.keys():
             pe = self.headers[arch] + b'\x00' * 546 + data
 
@@ -84,7 +84,7 @@ class Dll:
                 for i in range(len(dll_inj_funcs)):
                     content += struct.pack('<H', i)
 
-                content += filename + '.dll\x00'
+                content += filename.encode() + b'.dll\x00'
                 for func_name in dll_inj_funcs:
                     content += func_name + b'\x00'
 
