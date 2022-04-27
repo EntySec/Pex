@@ -24,4 +24,13 @@
 # SOFTWARE.
 #
 
-from .tools import PayloadTools
+from hatvenom import HatVenom
+from hatloads import HatLoads
+
+
+class Payload:
+    hatvenom = HatVenom()
+    hatloads = HatLoads()
+
+    def get_payload(self, platform, arch, payload, options={}):
+        return self.hatloads.get_payload(platform, arch, payload, options)
