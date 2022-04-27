@@ -42,9 +42,16 @@ class X86:
     REG_NAMES8L = ['al', 'cl', 'dl', 'bl', None, None, None, None]
 
     @staticmethod
-    def check_reg(reg):
-        if reg > 7 or reg < 0:
-            raise RuntimeError(f"Invalid register {str(reg)}!")
+    def get_reg_num(reg):
+        if reg in self.REG_NAMES32:
+            reg = self.REG_NAMES32.index(reg)
+
+            if reg <= 7 or reg >= 0:
+                return reg
+        raise RuntimeError(f"Invalid register {reg}!")
+
+    def jmp_reg(self, reg):
+        return b"\xff" + struct.pack('B', 224 + self.get_reg_num(reg))
 
     @staticmethod
     def pack_dword(num):
@@ -73,19 +80,16 @@ class X86:
             return b"\x6a" + chr(byte & 0xff).encode()
         raise RuntimeError("Only signed byte values allowed!")
 
-    def mov_byte(self, byte, dest):
-        self.check_reg(dest)
-        return (chr(0xb0 | dest) + chr(byte)).encode()
+    def mov_byte(self, byte, reg):
+        return (chr(0xb0 | self.get_reg_num(reg)) + chr(byte)).encode()
 
-    def mov_word(self, num, dest):
-        self.check_reg(dest)
+    def mov_word(self, num, reg):
         if num < 0 or num > 0xffff:
             raise RuntimeError("Only unsigned word values allowed!")
-        return b"\x66" + chr(0xb8 | dest).encode() + self.pack_word(num)
+        return b"\x66" + chr(0xb8 | self.get_reg_num(reg)).encode() + self.pack_word(num)
 
-    def mov_dword(self, num, dest):
-        self.check_reg(dest)
-        return chr(0xb8 | dest).encode() + self.pack_dword(num)
+    def mov_dword(self, num, reg):
+        return chr(0xb8 | self.get_reg_num(reg)).encode() + self.pack_dword(num)
 
     def push_dword(self, num):
         return b"\x68" + self.pack_dword(num)
@@ -93,9 +97,8 @@ class X86:
     def push_word(self, num):
         return b"\x66\x68" + self.pack_word(num)
 
-    def pop_dword(self, dest):
-        self.check_reg(dest)
-        return chr(0x58 | dest).encode()
+    def pop_dword(self, reg):
+        return chr(0x58 | self.get_reg_num(reg)).encode()
 
     def dword_adjust(self, dword, num=0):
         return self.pack_dword(self.unpack_dword(dword) + num)
@@ -108,10 +111,6 @@ class X86:
 
     def jmp(self, addr):
         return b"\xe9" + self.pack_dword(self.rel_number(addr))
-
-    def jmp_reg(self, dest):
-        self.check_reg(dest)
-        return b"\xff" + struct.pack('B', 224 + dest)
 
     def jmp_short(self, addr):
         return b"\xeb" + self.pack_lsb(self.rel_number(addr, -2))
@@ -148,3 +147,20 @@ class X86:
             b"\xff\xe4"
             b"\xe8\xec\xff\xff\xff"
         )
+
+    def searcher(self, tag):
+        return (
+            b"\xbe" + self.dword_adjust(tag, -1) +
+            b"\x46"
+            b"\x47"
+            b"\x39\x37"
+            b"\x75\xfb"
+            b"\x46"
+            b"\x4f"
+            b"\x39\x77\xfc"
+            b"\x75\xfa" +
+            self.jmp_reg('edi')
+        )
+
+    def encode_effective(self, shift, reg):
+        return (0xc0 | (shift << 3) | self.get_reg_num(reg))
