@@ -63,7 +63,7 @@ class Opty2:
                         continue
 
                     byte = j & 0xff
-                    if bad_bytes[byte] == 1:
+                    if byte in bad_bytes:
                         continue
 
                     if low == -1 or low > counts[byte]:
