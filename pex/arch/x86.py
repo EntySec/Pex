@@ -41,8 +41,7 @@ class X86:
     REG_NAMES16 = ['ax', 'cx', 'dx', 'bx', 'sp', 'bp', 'si', 'di']
     REG_NAMES8L = ['al', 'cl', 'dl', 'bl', None, None, None, None]
 
-    @staticmethod
-    def get_reg_num(reg):
+    def get_reg_num(self, reg):
         if reg in self.REG_NAMES32:
             reg = self.REG_NAMES32.index(reg)
 
