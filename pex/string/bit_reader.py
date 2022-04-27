@@ -24,13 +24,28 @@
 # SOFTWARE.
 #
 
-from hatvenom import HatVenom
-from hatloads import HatLoads
+import collections
 
 
-class PayloadTools:
-    hatvenom = HatVenom()
-    hatloads = HatLoads()
+class BitReader:
+    def __init__(self, data_bytes):
+        self._bits = collections.deque()
 
-    def get_payload(self, platform, arch, payload, options={}):
-        return self.hatloads.get_payload(platform, arch, payload, options)
+        for byte in data_bytes:
+            for n in range(8):
+                self._bits.append(bool((byte >> (7 - n)) & 1))
+
+    def getBit(self):
+        return self._bits.popleft()
+
+    def getBits(self, num):
+        res = 0
+        for i in range(num):
+            res += self.getBit() << num - 1 - i
+        return res
+
+    def getByte(self):
+        return self.getBits(8)
+
+    def __len__(self):
+        return len(self._bits)

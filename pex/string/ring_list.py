@@ -24,4 +24,32 @@
 # SOFTWARE.
 #
 
-from .tools import PayloadTools
+import collections
+
+
+class RingList:
+    def __init__(self, length):
+        self.__data__ = collections.deque()
+        self.__full__ = False
+        self.__max__ = length
+
+    def append(self, x):
+        if self.__full__:
+            self.__data__.popleft()
+        self.__data__.append(x)
+        if self.size() == self.__max__:
+            self.__full__ = True
+
+    def get(self):
+        return self.__data__
+
+    def size(self):
+        return len(self.__data__)
+
+    def maxsize(self):
+        return self.__max__
+
+    def __getitem__(self, n):
+        if n >= self.size():
+            return None
+        return self.__data__[n]
