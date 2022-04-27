@@ -28,7 +28,7 @@ from hatvenom import HatVenom
 from hatloads import HatLoads
 
 
-class Payload:
+class Payloads:
     hatvenom = HatVenom()
     hatloads = HatLoads()
 
