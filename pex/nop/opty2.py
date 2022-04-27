@@ -75,7 +75,7 @@ class Opty2:
             if low == -1:
                 raise RuntimeError("Failed to find a valid byte!")
 
-            prev = lows[random.randint(len(lows))]
+            prev = lows[random.randint(0, len(lows))]
             counts[prev] += 1
             sled = bytes([prev]) + sled
 
