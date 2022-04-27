@@ -25,10 +25,11 @@
 #
 
 import ssl
-import OpenSSL
+
+from OpenSSL import crypto
 
 
-class SSLTools:
+class OpenSSL:
     def wrap_client(self, client, keyfile='hatsploit.key', certfile='hatsploit.crt', protocol=ssl.PROTOCOL_TLS,
                     expire=365, nodename='HatSploit', country='US', state='HatSploit', location='HatSploit',
                     organization='HatSploit', unit='HatSploit'):
@@ -65,19 +66,19 @@ class SSLTools:
 
     @staticmethod
     def dump_key(key):
-        TYPE_PEM = OpenSSL.crypto.FILETYPE_PEM
-        return OpenSSL.crypto.dump_privatekey(TYPE_PEM, key)
+        TYPE_PEM = crypto.FILETYPE_PEM
+        return crypto.dump_privatekey(TYPE_PEM, key)
 
     @staticmethod
     def dump_cert(cert):
-        TYPE_PEM = OpenSSL.crypto.FILETYPE_PEM
-        return OpenSSL.crypto.dump_certificate(TYPE_PEM, cert)
+        TYPE_PEM = crypto.FILETYPE_PEM
+        return crypto.dump_certificate(TYPE_PEM, cert)
 
     @staticmethod
     def generate_key():
-        TYPE_RSA = OpenSSL.crypto.TYPE_RSA
+        TYPE_RSA = crypto.TYPE_RSA
 
-        key = OpenSSL.crypto.PKey()
+        key = crypto.PKey()
         key.generate_key(TYPE_RSA, 2048)
 
         return key
@@ -85,7 +86,7 @@ class SSLTools:
     @staticmethod
     def generate_cert(key, expire=365, nodename='HatSploit', country='US', state='HatSploit',
                       location='HatSploit', organization='HatSploit', unit='HatSploit'):
-        cert = OpenSSL.crypto.X509()
+        cert = crypto.X509()
         cert.get_subject().CN = nodename
         cert.get_subject().C = country
         cert.get_subject().ST = state
