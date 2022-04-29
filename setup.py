@@ -40,7 +40,6 @@ setup(name='pex',
           'adb-shell', 'requests', 'paramiko',
           'alive_progress',
 
-          'hatloads @ git+https://github.com/EntySec/HatLoads',
           'hatasm @ git+https://github.com/EntySec/HatAsm'
       ],
       zip_safe=False
