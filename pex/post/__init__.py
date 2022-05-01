@@ -40,8 +40,11 @@ class Post:
 
     post_methods = push.push_methods
 
-    def post(self, platform, sender, payload, args=[], arguments=None, method=None,
-             location=None, concat=None, background=None, linemax=100):
+    def post(self, stage, sender, platform, architecture, args=[], arguments='',
+             method=None, location=None, concat=None, background=None, linemax=100):
+        platforms = self.type_tools.platforms
+        architectures = self.type_tools.architectures
+
         if method in self.post_methods or not method:
             if not method:
                 for post_method in self.post_methods:
@@ -56,7 +59,7 @@ class Post:
 
             filename = self.string_tools.random_string(8)
 
-            if platform in self.type_tools.platforms['unix']:
+            if platform in platforms['unix']:
                 if not location:
                     location = '/tmp'
                 if not concat:
@@ -66,11 +69,7 @@ class Post:
 
                 path = location + '/' + filename
 
-                if not arguments:
-                    command = f"sh -c 'chmod 777 {path} {concat} {path} {concat} rm {path}' {background}"
-                else:
-                    command = f"sh -c 'chmod 777 {path} {concat} {path} {arguments} {concat} rm {path}' {background}"
-            elif platform in self.type_tools.platforms['windows']:
+            elif platform in platforms['windows']:
                 if not location:
                     location = '%TEMP%'
                 if not concat:
@@ -80,16 +79,21 @@ class Post:
 
                 path = location + '\\' + filename
 
-                if not arguments:
-                    command = f"{background} {path} {concat} del {path}"
-                else:
+                if architecture in architectures['cpu']:
                     command = f"{background} {path} {arguments} {concat} del {path}"
+
+                elif architecture in architectures['generic']:
+                    executer = architectures['generic'][architecture]
+                    command = f"{background} {executer} {path} {arguments} {concat} del {path}"
+
+                else:
+                    raise RuntimeError(f"Architecture {architecture} is unsupported!")
             else:
-                raise RuntimeError(f"Platform {platform} is unsupported!")
+                raise RuntimeError(f"Platform {platform} in unsupported!")
 
             self.post_methods[method][1].push(
                 sender=sender,
-                data=payload,
+                data=stage,
                 location=path,
                 args=args,
                 linemax=linemax
