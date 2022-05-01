@@ -69,6 +69,15 @@ class Post:
 
                 path = location + '/' + filename
 
+                if architecture in architectures['cpu']:
+                    command = f"sh -c 'chmod 777 {path} {concat} {path} {arguments} {concat} rm {path}' {background}"
+
+                elif architecture in architectures['generic']:
+                    command = f"{architecture} {path} {arguments} {concat} rm {path}"
+
+                else:
+                    raise RuntimeError(f"Architecture {architecture} in unsupported!")
+
             elif platform in platforms['windows']:
                 if not location:
                     location = '%TEMP%'
@@ -83,8 +92,7 @@ class Post:
                     command = f"{background} {path} {arguments} {concat} del {path}"
 
                 elif architecture in architectures['generic']:
-                    executer = architectures['generic'][architecture]
-                    command = f"{background} {executer} {path} {arguments} {concat} del {path}"
+                    command = f"{background} {architecture} {path} {arguments} {concat} del {path}"
 
                 else:
                     raise RuntimeError(f"Architecture {architecture} is unsupported!")
@@ -93,7 +101,7 @@ class Post:
 
             self.post_methods[method][1].push(
                 sender=sender,
-                data=stage,
+                data=stage if isinstance(stage, bytes) else stage.encode(),
                 location=path,
                 args=args,
                 linemax=linemax
