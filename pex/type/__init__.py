@@ -57,12 +57,18 @@ class Type:
 
     architectures = {
         'generic': [
-            'x64',
-            'x86',
-            'aarch64',
-            'armle',
-            'mipsle',
-            'mipsbe'
+            'cmd',
+            'php',
+            'java',
+            'ruby',
+            'bash',
+            'zsh',
+            'sh',
+            'fish',
+            'ksh',
+            'nodejs',
+            'python3',
+            'python2'
         ],
         'intel': [
             'x64',
@@ -70,11 +76,24 @@ class Type:
         ],
         'arm': [
             'aarch64',
-            'armle'
+            'armle',
+            'armbe'
         ],
         'mips': [
             'mipsle',
-            'mipsbe'
+            'mipsbe',
+            'mips64'
+        ],
+        'ppc': [
+            'ppc',
+            'ppc64'
+        ],
+        'cbea': [
+            'cbea',
+            'cbea64'
+        ],
+        'sparc': [
+            'sparc'
         ]
     }
 
