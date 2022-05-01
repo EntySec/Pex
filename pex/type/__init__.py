@@ -57,44 +57,37 @@ class Type:
 
     architectures = {
         'generic': [
-            'cmd',
+            'python',
             'php',
             'java',
             'ruby',
             'bash',
-            'zsh',
             'sh',
-            'fish',
             'ksh',
-            'nodejs',
-            'python3',
-            'python2'
+            'nodejs'
         ],
-        'intel': [
+        'cpu': [
+            'x86',
             'x64',
-            'x86'
-        ],
-        'arm': [
+
             'aarch64',
             'armle',
-            'armbe'
-        ],
-        'mips': [
+            'armbe',
+
+            'mips64'
             'mipsle',
             'mipsbe',
-            'mips64'
-        ],
-        'ppc': [
+
             'ppc',
-            'ppc64'
-        ],
-        'cbea': [
-            'cbea',
-            'cbea64'
-        ],
-        'sparc': [
+            'ppc64',
+
+            'sh4',
+
+            'zarch',
+
             'sparc'
-        ]
+        ],
+        'cmd': []
     }
 
     formats = {
