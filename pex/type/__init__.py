@@ -40,6 +40,10 @@ class Type:
             'android',
             'windows'
         ],
+        'xnu': [
+            'macos',
+            'apple_ios'
+        ],
         'unix': [
             'unix',
             'linux',
@@ -57,14 +61,38 @@ class Type:
 
     architectures = {
         'generic': [
-            'python',
-            'php',
-            'java',
-            'ruby',
-            'bash',
-            'sh',
-            'ksh',
-            'nodejs'
+            'python': {
+                'command': 'python3',
+                'platforms': platforms['generic']
+            },
+            'php': {
+                'command': 'php',
+                'platforms': platforms['generic']
+            },
+            'perl': {
+                'command': 'perl',
+                'platforms': platforms['generic']
+            },
+            'ruby': {
+                'command': 'ruby',
+                'platforms': platforms['generic']
+            },
+            'bash': {
+                'command': 'bash',
+                'platforms': platforms['unix']
+            },
+            'sh': {
+                'command': 'sh',
+                'platforms': platforms['unix']
+            },
+            'ksh': {
+                'command': 'ksh',
+                'platforms': platforms['unix']
+            },
+            'applescript': {
+                'alias': 'osascript',
+                'platforms': platforms['xnu']
+            }
         ],
         'cpu': [
             'x86',
