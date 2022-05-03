@@ -59,6 +59,13 @@ class Type:
         ]
     }
 
+    shells = {
+        'sh': '/bin/sh',
+        'bash': '/bin/bash',
+        'ash': '/bin/ash',
+        'ksh': '/bin/ksh'
+    }
+
     architectures = {
         'generic': [
             'python': {
