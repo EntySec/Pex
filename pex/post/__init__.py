@@ -73,7 +73,10 @@ class Post:
                     command = f"sh -c 'chmod 777 {path} {concat} {path} {arguments} {concat} rm {path}' {background}"
 
                 elif architecture in architectures['generic']:
-                    command = f"{architecture} {path} {arguments} {concat} rm {path}"
+                    if platform in architectures['generic'][architecture]['platforms']:
+                        command = f"{architectures['generic'][architecture]['command']} {path} {arguments} {concat} rm {path}"
+                    else:
+                        raise RuntimeError(f"Platform {platform} is not supported by {architecture} architecture!")
 
                 else:
                     raise RuntimeError(f"Architecture {architecture} in unsupported!")
@@ -92,7 +95,10 @@ class Post:
                     command = f"{background} {path} {arguments} {concat} del {path}"
 
                 elif architecture in architectures['generic']:
-                    command = f"{background} {architecture} {path} {arguments} {concat} del {path}"
+                    if platform in architectures['generic'][architecture]['platforms']:
+                        command = f"{background} {architectures['generic'][architecture]['command']} {path} {arguments} {concat} del {path}"
+                    else:
+                        raise RuntimeError(f"Platform {platform} is not supported by {architecture} architecture!")
 
                 else:
                     raise RuntimeError(f"Architecture {architecture} is unsupported!")
