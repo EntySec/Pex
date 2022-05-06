@@ -67,7 +67,7 @@ class Type:
     }
 
     architectures = {
-        'generic': [
+        'generic': {
             'python': {
                 'command': 'python3',
                 'platforms': platforms['generic']
@@ -100,7 +100,7 @@ class Type:
                 'alias': 'osascript',
                 'platforms': platforms['xnu']
             }
-        ],
+        },
         'cpu': [
             'x86',
             'x64',
