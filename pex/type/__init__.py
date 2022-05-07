@@ -121,8 +121,7 @@ class Type:
             'zarch',
 
             'sparc'
-        ],
-        'cmd': []
+        ]
     }
 
     formats = {
