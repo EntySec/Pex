@@ -40,6 +40,10 @@ class Type:
             'android',
             'windows'
         ],
+        'xnu': [
+            'macos',
+            'apple_ios'
+        ],
         'unix': [
             'unix',
             'linux',
@@ -55,27 +59,70 @@ class Type:
         ]
     }
 
+    shells = {
+        'sh': '/bin/sh',
+        'bash': '/bin/bash',
+        'ash': '/bin/ash',
+        'ksh': '/bin/ksh'
+    }
+
     architectures = {
-        'generic': [
-            'x64',
+        'generic': {
+            'python': {
+                'command': 'python3',
+                'platforms': platforms['generic']
+            },
+            'php': {
+                'command': 'php',
+                'platforms': platforms['generic']
+            },
+            'perl': {
+                'command': 'perl',
+                'platforms': platforms['generic']
+            },
+            'ruby': {
+                'command': 'ruby',
+                'platforms': platforms['generic']
+            },
+            'bash': {
+                'command': 'bash',
+                'platforms': platforms['unix']
+            },
+            'sh': {
+                'command': 'sh',
+                'platforms': platforms['unix']
+            },
+            'ksh': {
+                'command': 'ksh',
+                'platforms': platforms['unix']
+            },
+            'applescript': {
+                'command': 'osascript',
+                'platforms': platforms['xnu']
+            }
+        },
+        'cpu': [
             'x86',
+            'x64',
+
             'aarch64',
             'armle',
+            'armbe',
+
+            'mips64'
             'mipsle',
-            'mipsbe'
+            'mipsbe',
+
+            'ppc',
+            'ppc64',
+
+            'sh4',
+
+            'zarch',
+
+            'sparc'
         ],
-        'intel': [
-            'x64',
-            'x86'
-        ],
-        'arm': [
-            'aarch64',
-            'armle'
-        ],
-        'mips': [
-            'mipsle',
-            'mipsbe'
-        ]
+        'cmd': []
     }
 
     formats = {
