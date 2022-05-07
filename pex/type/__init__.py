@@ -97,7 +97,7 @@ class Type:
                 'platforms': platforms['unix']
             },
             'applescript': {
-                'alias': 'osascript',
+                'command': 'osascript',
                 'platforms': platforms['xnu']
             }
         },
