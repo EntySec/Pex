@@ -55,8 +55,7 @@ class Post:
                     raise RuntimeError(f"No supported post methods found for {platform} platform!")
             else:
                 if platform not in self.post_methods[method][0]:
-                    self.post_tools.post_command(sender, stage, args)
-                    return
+                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
 
             filename = self.string_tools.random_string(8)
 
@@ -118,4 +117,4 @@ class Post:
 
             self.post_tools.post_command(sender, command, args)
         else:
-            raise RuntimeError(f"Post method {method} is unsupported!")
+            self.post_tools.post_command(sender, stage, args)
