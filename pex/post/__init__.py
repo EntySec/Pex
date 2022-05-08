@@ -55,7 +55,8 @@ class Post:
                     raise RuntimeError(f"No supported post methods found for {platform} platform!")
             else:
                 if platform not in self.post_methods[method][0]:
-                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
+                    self.post_tools.post_command(sender, stage, args)
+                    return
 
             filename = self.string_tools.random_string(8)
 
@@ -79,7 +80,8 @@ class Post:
                         raise RuntimeError(f"Platform {platform} is not supported by {architecture} architecture!")
 
                 else:
-                    raise RuntimeError(f"Architecture {architecture} in unsupported!")
+                    self.post_tools.post_command(sender, stage, args)
+                    return
 
             elif platform in platforms['windows']:
                 if not location:
@@ -101,7 +103,8 @@ class Post:
                         raise RuntimeError(f"Platform {platform} is not supported by {architecture} architecture!")
 
                 else:
-                    raise RuntimeError(f"Architecture {architecture} is unsupported!")
+                    self.post_tools.post_command(sender, stage, args)
+                    return
             else:
                 raise RuntimeError(f"Platform {platform} in unsupported!")
 
