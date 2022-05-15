@@ -222,14 +222,14 @@ class Type:
 
     types = {
         'mac': is_mac.__func__,
-        'ip': is_ip.__func__,
+        'ip': is_ip,
         'ipv4': is_ipv4.__func__,
         'ipv6': is_ipv6.__func__,
-        'ipv4_range': is_ipv4_range.__func__,
+        'ipv4_range': is_ipv4_range,
         'ipv6_range': is_ipv6_range.__func__,
-        'port': is_port.__func__,
-        'port_range': is_port_range.__func__,
-        'number': is_number.__func__,
+        'port': is_port,
+        'port_range': is_port_range,
+        'number': is_number,
         'integer': is_integer.__func__,
         'float': is_float.__func__,
         'boolean': is_boolean.__func__
