@@ -24,10 +24,12 @@
 # SOFTWARE.
 #
 
-import re
+from .casting import Casting
 
 
 class Type:
+    casting = Casting()
+
     platforms = {
         'generic': [
             'unix',
@@ -142,95 +144,17 @@ class Type:
         ]
     }
 
-    @staticmethod
-    def is_mac(mac):
-        regexp = r"^[a-f\d]{1,2}:[a-f\d]{1,2}:[a-f\d]{1,2}:[a-f\d]{1,2}:[a-f\d]{1,2}:[a-f\d]{1,2}$"
-        if re.match(regexp, mac.lower()):
-            return True
-        return False
-
-    @staticmethod
-    def is_ipv4(host):
-        regexp = "^(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
-        if re.match(regexp, host):
-            return True
-        return False
-
-    @staticmethod
-    def is_ipv6(host):
-        regexp = "^(?:(?:[0-9A-Fa-f]{1,4}:){6}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|::(?:[0-9A-Fa-f]{1,4}:){5}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:){4}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:){3}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:(?:[0-9A-Fa-f]{1,4}:){,2}[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:){2}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:(?:[0-9A-Fa-f]{1,4}:){,3}[0-9A-Fa-f]{1,4})?::[0-9A-Fa-f]{1,4}:(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:(?:[0-9A-Fa-f]{1,4}:){,4}[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:(?:[0-9A-Fa-f]{1,4}:){,5}[0-9A-Fa-f]{1,4})?::[0-9A-Fa-f]{1,4}|(?:(?:[0-9A-Fa-f]{1,4}:){,6}[0-9A-Fa-f]{1,4})?::)%.*$"
-        if re.match(regexp, host):
-            return True
-        return False
-
-    def is_ip(self, value):
-        if self.is_ipv4(value) or self.is_ipv6(value):
-            return True
-        return False
-
-    def is_ipv4_range(self, value):
-        value = value.split('/')
-        if len(value) == 2:
-            if self.is_ipv4(value[0]) and int(value[1]) in [8, 16, 24, 32]:
-                return True
-        return False
-
-    @staticmethod
-    def is_ipv6_range(value):
-        # NOT IMPLEMENTED YET!
-        return False
-
-    def is_port(self, value):
-        if self.is_integer(value):
-            if 0 < int(value) <= 65535:
-                return True
-        return False
-
-    def is_port_range(self, value):
-        value = value.split('-')
-        if len(value) == 2:
-            if int(value[0]) <= int(value[1]):
-                if self.is_port(value[0]) and self.is_port(value[1]):
-                    return True
-        return False
-
-    @staticmethod
-    def is_integer(value):
-        value = str(value)
-        if value.isdigit():
-            return True
-        return False
-
-    @staticmethod
-    def is_float(value):
-        value = str(value)
-        if re.match(r'^-?\d+(?:\.\d+)$', value):
-            return True
-        return False
-
-    def is_number(self, value):
-        if self.is_integer(value) or self.is_float(value):
-            return True
-        return False
-
-    @staticmethod
-    def is_boolean(value):
-        value = value.lower()
-        if value in ['yes', 'no', 'y', 'n']:
-            return True
-        return False
-
     types = {
-        'mac': is_mac.__func__,
-        'ip': is_ip,
-        'ipv4': is_ipv4.__func__,
-        'ipv6': is_ipv6.__func__,
-        'ipv4_range': is_ipv4_range,
-        'ipv6_range': is_ipv6_range.__func__,
-        'port': is_port,
-        'port_range': is_port_range,
-        'number': is_number,
-        'integer': is_integer.__func__,
-        'float': is_float.__func__,
-        'boolean': is_boolean.__func__
+        'mac': casting.is_mac,
+        'ip': casting.is_ip,
+        'ipv4': casting.is_ipv4,
+        'ipv6': casting.is_ipv6,
+        'ipv4_range': casting.is_ipv4_range,
+        'ipv6_range': casting.is_ipv6_range,
+        'port': casting.is_port,
+        'port_range': casting.is_port_range,
+        'number': casting.is_number,
+        'integer': casting.is_integer,
+        'float': casting.is_float,
+        'boolean': casting.is_boolean
     }
