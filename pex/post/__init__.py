@@ -50,6 +50,7 @@ class Post:
                 for post_method in self.post_methods:
                     if platform in self.post_methods[post_method][0]:
                         method = post_method
+                        break
 
                 if not method:
                     raise RuntimeError(f"No supported post methods found for {platform} platform!")
