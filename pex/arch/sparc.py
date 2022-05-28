@@ -28,6 +28,12 @@ import struct
 
 
 class Sparc:
+    """ Subclass for pex.arch base class.
+
+    Subclass of pex.arch module which is intended in providing
+    implementations of some sparc architecture features.
+    """
+
     registers = {
         'g0': 0, 'g1': 1, 'g2': 2, 'g3': 3,
         'g4': 4, 'g5': 5, 'g6': 6, 'g7': 7,
@@ -40,14 +46,29 @@ class Sparc:
         'sp': 14, 'fp': 30
     }
 
-    def sethi(self, const, dest):
+    def sethi(self, const: int, dest: str) -> bytes:
+        """ Pack sethi sparc assembler instruction.
+
+        :param int const: contant, can be an address.
+        :param str dest: destination register name.
+        :return bytes: packed sethi sparc assembler instruction.
+        """
+
         return struct.pack('>i',
                            (self.registers[dest] << 25) |
                            (4 << 22) |
                            (const >> 10)
                           )
 
-    def ori(self, src, const, dest):
+    def ori(self, src: str, const: int, dest: str) -> bytes:
+        """ Pack ori sparc assembler instruction.
+        
+        :param str src: source register name.
+        :param int const: contant, can be an address.
+        :param str dest: destination register name.
+        :return bytes: packed ori sparc assembler instruction.
+        """
+
         return struct.pack('>i',
                            (2 << 30) |
                            (self.registers[dest] << 25) |
@@ -57,7 +78,14 @@ class Sparc:
                            (const & 0x1fff)
                           )
 
-    def set(self, const, dest):
+    def set(self, const: int, dest: str) -> bytes:
+        """ Pack sparc assembler instruction sethi or ori depending on const size.
+
+        :param int const: contant, can be an address.
+        :param str dest: destination register name.
+        :return bytes: packed sethi or ori sparc assembler instruction.
+        """
+
         if const <= 4096 and const >= 0:
             return self.ori('g0', const, dest)
         elif const & 0x3ff != 0:
@@ -65,5 +93,12 @@ class Sparc:
         else:
             return self.sethi(const, dest)
 
-    def set_dword(self, const, dest):
+    def set_dword(self, const: int, dest: str) -> bytes:
+        """ Pack sparc assembler instruction sethi and ori with const as double word.
+
+        :param int const: contant, can be an address.
+        :param str dest: destination register name.
+        :return bytes: packed sethi and ori sparc assembler instruction.
+        """
+
         return self.sethi(const, dest) + self.ori(dest, const & 0x3ff, dest)
