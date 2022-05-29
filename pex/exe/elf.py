@@ -28,7 +28,7 @@ import struct
 
 
 class Elf:
-    """ Subclass for pex.exe base class.
+    """ Subclass of pex.exe module.
 
     This subclass of pex.exe module is intended in providing
     implementation of Linux executable and linkable format generator.
@@ -98,7 +98,6 @@ class Elf:
 
         :param str arch: architecture to pack for
         :param bytes data: data to pack
-
         :return bytes: packed Linux executable and linkable format
         :raises RuntimeError: with trailing error message
         """
