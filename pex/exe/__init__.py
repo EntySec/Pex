@@ -24,6 +24,6 @@
 # SOFTWARE.
 #
 
-from .pe import Pe
-from .dll import Dll
-from .elf import Elf
+from .pe import PE
+from .dll import DLL
+from .elf import ELF
