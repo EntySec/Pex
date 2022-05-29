@@ -25,14 +25,38 @@
 #
 
 import ssl
+import socket
 
 from OpenSSL import crypto
 
 
 class OpenSSL:
-    def wrap_client(self, client, keyfile='hatsploit.key', certfile='hatsploit.crt', protocol=ssl.PROTOCOL_TLS,
-                    expire=365, nodename='HatSploit', country='US', state='HatSploit', location='HatSploit',
-                    organization='HatSploit', unit='HatSploit'):
+    """ Subclass of pex.ssl module.
+
+    This subclass of pex.ssl module is intended in providing
+    Python realization of OpenSSL library.
+    """
+
+    def wrap_client(self, client: socket.socket, keyfile: str = 'hatsploit.key', certfile: str = 'hatsploit.crt',
+                    protocol: ssl._SSLMethod = ssl.PROTOCOL_TLS, expire: int = 365, nodename: str = 'HatSploit',
+                    country: str = 'US', state: str = 'HatSploit', location: str = 'HatSploit',
+                    organization: str = 'HatSploit', unit: str = 'HatSploit') -> ssl.SSLSocket:
+        """ Generate a certificate and wrap a socket with it.
+
+        :param socket.socket client: socket client
+        :param str keyfile: path to the output key file
+        :param str certfile: path to the output certificate file
+        :param ssl._SSLMethod protocol: protocol type
+        :param int expire: certificate expiration limit
+        :param str nodename: certificate nodename
+        :param str country: certificate country
+        :param str state: certificate state
+        :param str location: certificate location
+        :param str organization: certificate organization
+        :param str unit: certificate unit
+        :return ssl.SSLSocket: wrapped socket
+        """
+
         key = self.generate_key()
         cert = self.generate_cert(
             key,
@@ -56,26 +80,57 @@ class OpenSSL:
             ssl_version=protocol
         )
 
-    def write_key(self, key, filename):
+    def write_key(self, key: crypto.PKey, filename: str) -> None:
+        """ Write generated key to a file.
+
+        :param crypto.PKey key: generated key to write
+        :param str filename: name of file to write to
+        :return None: None
+        """
+
         with open(filename, 'wb') as f:
             f.write(self.dump_key(key))
 
-    def write_cert(self, cert, filename):
+    def write_cert(self, cert: crypto.X509, filename: str) -> None:
+        """ Write generated certificate to a file.
+
+        :param crypto.X509 cert: generated certificate to write
+        :param str filename: name of file to write to
+        :return None: None
+        """
+
         with open(filename, 'wb') as f:
             f.write(self.dump_cert(cert))
 
     @staticmethod
-    def dump_key(key):
+    def dump_key(key: crypto.PKey) -> bytes:
+        """ Dump generated key contents.
+
+        :param crypto.PKey key: generated key to dump
+        :return bytes: generated key contents
+        """
+
         TYPE_PEM = crypto.FILETYPE_PEM
         return crypto.dump_privatekey(TYPE_PEM, key)
 
     @staticmethod
-    def dump_cert(cert):
+    def dump_cert(cert: crypto.X509) -> bytes:
+        """ Dump generated certificate contents.
+
+        :param crypto.X509 cert: generated certificate to dump
+        :return bytes: generated certificate contents
+        """
+
         TYPE_PEM = crypto.FILETYPE_PEM
         return crypto.dump_certificate(TYPE_PEM, cert)
 
     @staticmethod
-    def generate_key():
+    def generate_key() -> crypto.PKey:
+        """ Generate key.
+
+        :return crypto.PKey: generated key
+        """
+
         TYPE_RSA = crypto.TYPE_RSA
 
         key = crypto.PKey()
@@ -84,8 +139,22 @@ class OpenSSL:
         return key
 
     @staticmethod
-    def generate_cert(key, expire=365, nodename='HatSploit', country='US', state='HatSploit',
-                      location='HatSploit', organization='HatSploit', unit='HatSploit'):
+    def generate_cert(key: crypto.PKey, expire: int = 365, nodename: str = 'HatSploit', country: str = 'US',
+                      state: str = 'HatSploit', location: str = 'HatSploit', organization: str = 'HatSploit',
+                      unit: str = 'HatSploit') -> crypto.X509:
+        """ Generate certificate.
+
+        :param crypto.PKey key: generated key
+        :param int expire: certificate expiration limit
+        :param str nodename: certificate nodename
+        :param str country: certificate country
+        :param str state: certificate state
+        :param str location: certificate location
+        :param str organization: certificate organization
+        :param str unit: certificate unit
+        :return crypto.X509: generated certificate
+        """
+
         cert = crypto.X509()
         cert.get_subject().CN = nodename
         cert.get_subject().C = country
