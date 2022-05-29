@@ -26,6 +26,12 @@
 
 
 class Pe:
+    """ Subclass of pex.exe module.
+
+    This subclass of pex.exe module is intended in providing
+    implementation of Windows portable executable generator.
+    """
+
     magic = [
         b"\x4d\x5a"
     ]
@@ -81,7 +87,15 @@ class Pe:
         )
     }
 
-    def pack_pe(self, arch, data):
+    def pack_pe(self, arch: str, data: bytes) -> bytes:
+        """ Pack data to a Windows portable executable.
+
+        :param str arch: architecture to pack for
+        :param bytes data: data to pack
+        :return bytes: packed Windows portable executable
+        :raises RuntimeError: with trailing error message
+        """
+
         if arch in self.headers.keys():
             pe = self.headers[arch] + data
 
