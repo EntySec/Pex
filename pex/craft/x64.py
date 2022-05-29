@@ -30,7 +30,7 @@ from pex.assembler import Assembler
 class X64:
     """ Subclass of pex.craft module.
 
-    This subclass of pex.craft module is intended in providing
+    This subclass of pex.craft module is intended for providing
     implementations of some x64 CPU features and models.
     """
 

@@ -30,7 +30,7 @@ import os
 class FS:
     """ Subclass of pex.fs module.
 
-    This subclass of pex.fs module is intended in providing
+    This subclass of pex.fs module is intended for providing
     implementations of filesystem features.
     """
 

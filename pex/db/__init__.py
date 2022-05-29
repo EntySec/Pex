@@ -30,7 +30,7 @@ import sqlite3
 class DB:
     """ Subclass of pex.db module.
 
-    This subclass of pex.db module is intended in providing
+    This subclass of pex.db module is intended for providing
     implementations of some database parsing methods.
     """
 

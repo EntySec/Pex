@@ -33,7 +33,7 @@ from .opty2_tables import Opty2Tables
 class Opty2:
     """ Subclass of pex.nop module.
 
-    This subclass of pex.nop module is intended in providing
+    This subclass of pex.nop module is intended for providing
     implementation of Opty2 NOP sled generator.
     """
 
@@ -57,7 +57,7 @@ class Opty2:
         prev = 256
         slen = 0
 
-        counts = [0 for i in range(prev)]
+        counts = [0 for _ in range(prev)]
 
         mask = 0
         for i in save_registers:
@@ -65,7 +65,7 @@ class Opty2:
 
         mask = mask << 16
 
-        bad_bytes = [1 for i in range(len(badchars))]
+        bad_bytes = [1 for _ in range(len(badchars))]
         while length > 0:
             low = -1
             lows = []

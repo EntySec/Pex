@@ -32,7 +32,7 @@ from typing import Any
 class RingList:
     """ Subclass of pex.string module.
 
-    This subclass of pex.string module is intended in providing
+    This subclass of pex.string module is intended for providing
     RingList Python implementation.
     """
 

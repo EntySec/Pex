@@ -30,7 +30,7 @@ import re
 class Casting:
     """ Subclass of pex.type module.
 
-    This subclass of pex.type module is intended in providing
+    This subclass of pex.type module is intended for providing
     implementations of some type casting methods.
     """
 

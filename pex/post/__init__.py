@@ -34,7 +34,7 @@ from pex.string import String
 class Post:
     """ Subclass of pex.post module.
 
-    This subclass of pex.post module is intended in providing
+    This subclass of pex.post module is intended for providing
     an implementation of post function that sends a data to the target.
     """
 

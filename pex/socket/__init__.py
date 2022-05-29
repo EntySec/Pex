@@ -31,7 +31,7 @@ import socket
 class Socket:
     """ Subclass of pex.socket module.
 
-    This subclass of pex.socket module is intended in providing
+    This subclass of pex.socket module is intended for providing
     implementations of socket features.
     """
 

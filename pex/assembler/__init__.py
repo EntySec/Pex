@@ -30,7 +30,7 @@ from hatasm import HatAsm
 class Assembler:
     """ Subclass of pex.assembler module.
 
-    This subclass of pex.assembler module is intended in providing
+    This subclass of pex.assembler module is intended for providing
     implementation of native assembler.
     """
 

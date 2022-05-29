@@ -30,7 +30,7 @@ from .casting import Casting
 class Type:
     """ Subclass of pex.type module.
 
-    This subclass of pex.type module is intended in providing
+    This subclass of pex.type module is intended for providing
     some important constants and type casting methods.
     """
 

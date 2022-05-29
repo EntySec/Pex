@@ -30,7 +30,7 @@ import collections
 class BitReader:
     """ Subclass of pex.string module.
 
-    This subclass of pex.string module is intended in providing
+    This subclass of pex.string module is intended for providing
     BitReader Python implementation.
     """
 

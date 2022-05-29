@@ -28,7 +28,7 @@
 class PostTools:
     """ Subclass of pex.post module.
 
-    This subclass of pex.post module is intended in providing
+    This subclass of pex.post module is intended for providing
     implementations of some helpful tools for pex.post.
     """
 

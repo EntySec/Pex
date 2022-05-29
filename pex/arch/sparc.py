@@ -30,7 +30,7 @@ import struct
 class Sparc:
     """ Subclass of pex.arch module.
 
-    This subclass of pex.arch module is intended in providing
+    This subclass of pex.arch module is intended for providing
     implementations of some sparc architecture features.
     """
 

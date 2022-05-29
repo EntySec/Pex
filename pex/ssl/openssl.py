@@ -33,7 +33,7 @@ from OpenSSL import crypto
 class OpenSSL:
     """ Subclass of pex.ssl module.
 
-    This subclass of pex.ssl module is intended in providing
+    This subclass of pex.ssl module is intended for providing
     Python realization of OpenSSL library.
     """
 

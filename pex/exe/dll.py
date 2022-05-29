@@ -30,7 +30,7 @@ import struct
 class DLL:
     """ Subclass of pex.exe module.
 
-    This subclass of pex.exe module is intended in providing
+    This subclass of pex.exe module is intended for providing
     implementation of Windows dynamic library generator.
     """
 

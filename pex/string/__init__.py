@@ -40,7 +40,7 @@ from .lzs_decompress import LZSDecompress
 class String:
     """ Subclass of pex.string module.
 
-    This subclass of pex.string module is intended in providing
+    This subclass of pex.string module is intended for providing
     implementations of some string features and methods.
     """
 

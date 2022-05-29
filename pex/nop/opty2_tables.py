@@ -28,7 +28,7 @@
 class Opty2Tables:
     """ Subclass of pex.nop module.
 
-    This subclass of pex.nop module is intended in providing
+    This subclass of pex.nop module is intended for providing
     Opty2 NOP sled tables used to generate Opty2 NOP sled.
     """
 
