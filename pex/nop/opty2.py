@@ -64,8 +64,8 @@ class Opty2:
             mask |= 1 << self.x86.get_reg_num(i)
 
         mask = mask << 16
+        bad_bytes = [i for i in badchars]
 
-        bad_bytes = [1 for _ in range(len(badchars))]
         while length > 0:
             low = -1
             lows = []
@@ -84,6 +84,7 @@ class Opty2:
                     if low == -1 or low > counts[byte]:
                         low = counts[byte]
                         lows = [byte]
+
                     elif low == counts[byte]:
                         lows.append(byte)
 
