@@ -28,8 +28,21 @@ import os
 
 
 class FS:
+    """ Subclass of pex.fs module.
+
+    This subclass of pex.fs module is intended in providing
+    implementations of filesystem features.
+    """
+
     @staticmethod
-    def exists(path):
+    def exists(path: str) -> tuple:
+        """ Check if path exist in the filesystem.
+
+        :param str path: path to check
+        :return tuple: first entry is True if path exists
+        second entry is True if path is directory
+        """
+
         if os.path.isdir(path):
             return True, True
         directory = os.path.split(path)[0]
@@ -42,7 +55,14 @@ class FS:
         return False, False
 
     @staticmethod
-    def check_dir(path):
+    def check_dir(path: str) -> None:
+        """ Check if directory exist in the filesystem.
+
+        :param str path: path to check
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         if os.path.exists(path):
             if not os.path.isdir(path):
                 raise RuntimeError(f"Local path: {path}: is not a directory!")
@@ -51,7 +71,14 @@ class FS:
         raise RuntimeError(f"Local directory: {directory}: does not exist!")
 
     @staticmethod
-    def check_file(path):
+    def check_file(path: str) -> None:
+        """ Check if file exist in the filesystem.
+
+        :param str path: path to check
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         if os.path.exists(path):
             if os.path.isdir(path):
                 raise RuntimeError(f"Local path: {path}: is a directory!")
