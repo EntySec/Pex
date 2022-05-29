@@ -49,7 +49,7 @@ class Sparc:
     def sethi(self, const: int, dest: str) -> bytes:
         """ Pack sethi sparc assembler instruction.
 
-        :param int const: contant, can be an address
+        :param int const: constant, can be an address
         :param str dest: destination register name
         :return bytes: packed sethi sparc assembler instruction
         """
@@ -64,7 +64,7 @@ class Sparc:
         """ Pack ori sparc assembler instruction.
         
         :param str src: source register name
-        :param int const: contant, can be an address
+        :param int const: constant, can be an address
         :param str dest: destination register name
         :return bytes: packed ori sparc assembler instruction
         """
@@ -81,7 +81,7 @@ class Sparc:
     def set(self, const: int, dest: str) -> bytes:
         """ Pack sparc assembler instruction sethi or ori depending on const size.
 
-        :param int const: contant, can be an address
+        :param int const: constant, can be an address
         :param str dest: destination register name
         :return bytes: packed sethi or ori sparc assembler instruction
         """
@@ -96,7 +96,7 @@ class Sparc:
     def set_dword(self, const: int, dest: str) -> bytes:
         """ Pack sparc assembler instruction sethi and ori with const as double word.
 
-        :param int const: contant, can be an address
+        :param int const: constant, can be an address
         :param str dest: destination register name
         :return bytes: packed sethi and ori sparc assembler instruction
         """
