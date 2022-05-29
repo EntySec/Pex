@@ -28,6 +28,12 @@ import struct
 
 
 class X86:
+    """ Subclass for pex.arch base class.
+
+    Subclass of pex.arch module which is intended in providing
+    implementations of some x86 architecture features.
+    """
+
     EAX = AL = AX = ES = 0
     ECX = CL = CX = CS = 1
     EDX = DL = DX = SS = 2
@@ -41,7 +47,13 @@ class X86:
     REG_NAMES16 = ['ax', 'cx', 'dx', 'bx', 'sp', 'bp', 'si', 'di']
     REG_NAMES8L = ['al', 'cl', 'dl', 'bl', None, None, None, None]
 
-    def get_reg_num(self, reg):
+    def get_reg_num(self, reg: str) -> int:
+        """ Get register number from a register name.
+
+        :param str reg: register name
+        :return int: register number
+        """
+
         if reg in self.REG_NAMES32:
             reg = self.REG_NAMES32.index(reg)
 
@@ -49,37 +61,86 @@ class X86:
                 return reg
         raise RuntimeError(f"Invalid register {reg}!")
 
-    def jmp_reg(self, dest):
+    def jmp_reg(self, dest: str) -> bytes:
+        """ Pack jmp x86 assembler instruction.
+
+        :param str dest: destination register name
+        :return bytes: packed jmp x86 assembler instruction
+        """
+
         return b"\xff" + struct.pack('B', 224 + self.get_reg_num(dest))
 
     @staticmethod
-    def pack_dword(num):
+    def pack_dword(num: int) -> bytes:
+        """ Pack integer as double word.
+
+        :param int num: integer to pack
+        :return bytes: packed dword
+        """
+
         return struct.pack('i', num)
 
     @staticmethod
-    def pack_word(num):
+    def pack_word(num: int) -> bytes:
+        """ Pack integer as word.
+
+        :param int num: integer to pack
+        :return bytes: packed word
+        """
+
         return struct.pack('h', num)
 
-    def pack_lsb(self, num):
+    def pack_lsb(self, num: int) -> bytes:
+        """ Pack integer as least significant bit.
+
+        :param int num: integer to pack
+        :return bytes: packed lsb
+        """
+
         return self.pack_dword(num)[0]
 
     @staticmethod
-    def unpack_dword(dword):
+    def unpack_dword(dword: bytes) -> int:
+        """ Unpack double word as integer.
+
+        :param bytes dword: double word to unpack
+        :return int: unpacked integer
+        """
+
         res, _ = struct.unpack('i', dword)
         return res
 
     @staticmethod
-    def unpack_word(word):
+    def unpack_word(word: bytes) -> int:
+        """ Unpack word as integer.
+
+        :param bytes word: word to unpack
+        :return int: unpacked integer
+        """
+
         res, _ = struct.unpack('h', word)
         return res
 
     @staticmethod
-    def push_byte(byte):
+    def push_byte(byte: int) -> bytes:
+        """ Pack push byte x86 assembler instruction.
+
+        :param int byte: byte to push
+        :return bytes: packed push byte x86 assembler instruction.
+        """
+
         if byte < 128 and byte >= -128:
             return b"\x6a" + bytes([byte & 0xff])
         raise RuntimeError("Only signed byte values allowed!")
 
-    def mov_byte(self, byte, dest):
+    def mov_byte(self, byte: int, dest: str) -> bytes:
+        """ Pack mov byte x86 assembler instruction.
+
+        :param int byte: byte to mov
+        :param str dest: destination register name
+        :return bytes: packed mov byte x86 assembler instruction
+        """
+
         return bytes([0xb0 | self.get_reg_num(dest)]) + bytes([byte])
 
     def mov_word(self, num, dest):
@@ -118,7 +179,14 @@ class X86:
         return b"\xe8" + self.pack_dword(self.rel_number(addr, -5))
 
     @staticmethod
-    def rel_number(num, delta=0):
+    def rel_number(num: int, delta: int = 0) -> int:
+        """ Get a number offset to the supplied string.
+
+        :param int num: number
+        :param int delta: delta to add to a result
+        :return int: offset
+        """
+
         s = str(num)
 
         if s[0:2] == '$+':
@@ -132,7 +200,15 @@ class X86:
 
         return num + delta
 
-    def copy_to_stack(length):
+    def copy_to_stack(length: int) -> bytes:
+        """ Generate a buffer that will copy memory immediately following
+        the stub that is generated to be copied to the stack.
+
+        :param int length: length of a stub
+        :return bytes: buffer that will copy memory immediately following
+        the stub that us generated to be copied to the stack
+        """
+
         length = (length + 3) & ~0x3
 
         return (
@@ -147,7 +223,12 @@ class X86:
             b"\xe8\xec\xff\xff\xff"
         )
 
-    def searcher(self, tag):
+    def searcher(self, tag: bytes) -> bytes:
+        """ Generate a tag-based search routine.
+
+        :param bytes tag: tag to search for
+        :return bytes: tag-based search routine
+        """
         return (
             b"\xbe" + self.dword_adjust(tag, -1) +
             b"\x46"
@@ -161,14 +242,33 @@ class X86:
             self.jmp_reg('edi')
         )
 
-    def encode_effective(self, shift, reg):
+    def encode_effective(self, shift: int, reg: str) -> bytes:
+        """ Generate encoded effective value for a register.
+
+        :param int shift: effective encoding shift
+        :param str reg: register name
+        :return bytes: encoded effective value
+        """
+
         return bytes[0xc0 | (shift << 3) | self.get_reg_num(reg)]
 
-    def encode_modrm(self, src, dest):
+    def encode_modrm(self, src: str, dest: str) -> bytes:
+        """ Generate mod r/m characted for a source and destination registers.
+
+        :param str src: source register name
+        :param str dest: destination register name
+        :return bytes: mod r/m character
+        """
+
         return bytes([0xc0 | self.get_reg_num(src) | self.get_reg_num(dest) << 3])
 
     @staticmethod
-    def fpu_instructions():
+    def fpu_instructions() -> list:
+        """ Get all floating-point unit x86 assembler instructions.
+
+        :return list: list of FPU instructions as bytes
+        """
+
         fpus = []
 
         [fpus.append(b"\xd9" + bytes([i])) for i in range(0xe8, 0xef)]
