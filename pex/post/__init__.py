@@ -32,6 +32,12 @@ from pex.string import String
 
 
 class Post:
+    """ Subclass of pex.post module.
+
+    This subclass of pex.post module is intended in providing
+    an implementation of post function that sends a data to the target.
+    """
+
     push = Push()
 
     post_tools = PostTools()
@@ -40,8 +46,25 @@ class Post:
 
     post_methods = push.push_methods
 
-    def post(self, stage, sender, platform, architecture, args=[], arguments='',
-             method=None, location=None, concat=None, background=None, linemax=100):
+    def post(self, stage: bytes, sender, platform: str, architecture: str, args: dict = {}, arguments: str = '',
+             method: str = '', location: str = '', concat: str = '', background: str = '', linemax: int = 100):
+        """ Post a stage through the sender function.
+
+        :param bytes stage: stage to post
+        :param sender: sender function to port through
+        :param str platform: target platform
+        :param str architecture: target architecture
+        :param dict args: sender function arguments
+        :param str arguments: stage arguments
+        :param str method: post method to use
+        :param str location: path to save stage
+        :param str concat: post command concat operator
+        :param str background: post command background operator
+        :param int linemax: maximum size of a post command
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         platforms = self.type_tools.platforms
         architectures = self.type_tools.architectures
 
