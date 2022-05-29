@@ -28,6 +28,12 @@ from .casting import Casting
 
 
 class Type:
+    """ Subclass of pex.type module.
+
+    This subclass of pex.type module is intended in providing
+    some important constants and type casting methods.
+    """
+
     casting = Casting()
 
     platforms = {
