@@ -64,7 +64,6 @@ class Opty2:
             mask |= 1 << self.x86.get_reg_num(i)
 
         mask = mask << 16
-        bad_bytes = [i for i in badchars]
 
         while length > 0:
             low = -1
@@ -74,11 +73,13 @@ class Opty2:
                 for j in i:
                     if (j & mask) != 0:
                         continue
+
                     if ((j >> 8) & 0xff) > slen:
                         continue
 
                     byte = j & 0xff
-                    if byte in bad_bytes:
+
+                    if byte in badchars:
                         continue
 
                     if low == -1 or low > counts[byte]:
