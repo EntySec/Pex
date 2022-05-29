@@ -28,7 +28,7 @@ import struct
 
 
 class Dll:
-    """ Subclass for pex.exe base class.
+    """ Subclass of pex.exe module.
 
     This subclass of pex.exe module is intended in providing
     implementation of Windows dynamic library generator.
@@ -70,7 +70,6 @@ class Dll:
         :param bytes data: data to pack
         :param list dll_inj_funcs: list of functions to inject
         :param str filename: filename specified in dynamic library
-
         :return bytes: packed Windows dynamic library
         :raises RuntimeError: with trailing error message
         """
