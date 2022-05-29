@@ -27,7 +27,7 @@
 import struct
 
 
-class Dll:
+class DLL:
     """ Subclass of pex.exe module.
 
     This subclass of pex.exe module is intended in providing
