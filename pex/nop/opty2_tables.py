@@ -26,6 +26,12 @@
 
 
 class Opty2Tables:
+    """ Subclass of pex.nop module.
+
+    This subclass of pex.nop module is intended in providing
+    Opty2 NOP sled tables used to generate Opty2 NOP sled.
+    """
+
     SharedShift0 = [
         65796, 66565, 1048582, 65804, 66573, 1048590, 65812, 66581, 1048598, 65820, 66589,
         1048606, 65828, 66597, 65575, 65836, 66605, 65583, 65844, 66613, 65591, 316, 1085,
