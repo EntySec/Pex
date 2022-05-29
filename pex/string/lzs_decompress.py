@@ -28,7 +28,14 @@ from .bit_reader import BitReader
 from .ring_list import RingList
 
 
-def LZSDecompress(data, window=RingList(2048)):
+def LZSDecompress(data: bytes, window: RingList = RingList(2048)) -> tuple:
+    """ Decompress LZS compressed data.
+
+    :param bytes data: LZS compressed data to decompress
+    :param RingList window: RingList list
+    :return tuple: decompressed data and RingList
+    """
+
     reader = BitReader(data)
     result = ''
 
