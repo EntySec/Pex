@@ -28,6 +28,12 @@ import struct
 
 
 class Elf:
+    """ Subclass for pex.exe base class.
+
+    This subclass of pex.exe module is intended in providing
+    implementation of Linux executable and linkable format generator.
+    """
+
     magic = [
         b"\x7f\x45\x4c\x46"
     ]
@@ -87,7 +93,16 @@ class Elf:
         )
     }
 
-    def pack_elf(self, arch, data):
+    def pack_elf(self, arch: str, data: bytes) -> bytes:
+        """ Pack data to a Linux executable and linkable format.
+
+        :param str arch: architecture to pack for
+        :param bytes data: data to pack
+
+        :return bytes: packed Linux executable and linkable format
+        :raises RuntimeError: with trailing error message
+        """
+
         if arch in self.headers.keys():
             elf = self.headers[arch] + data
 
