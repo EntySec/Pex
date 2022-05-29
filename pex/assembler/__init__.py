@@ -28,10 +28,29 @@ from hatasm import HatAsm
 
 
 class Assembler:
+    """ Subclass of pex.assembler module.
+
+    This subclass of pex.assembler module is intended in providing
+    implementation of native assembler.
+    """
+
     hatasm = HatAsm()
 
-    def assemble(self, arch, code):
+    def assemble(self, arch: str, code: str) -> bytes:
+        """ Assemble code for specified architecture.
+
+        :param str arch: architecture to assemble for
+        :param str code: code to assemble
+        :return bytes: assembled code for specified architecture
+        """
+
         return self.hatasm.assemble(arch, code)
 
-    def hexdump(self, code):
+    def hexdump(self, code: bytes) -> list:
+        """ Dump assembled code as hex.
+
+        :param bytes code: assembled code to dump
+        :return list: list of hexdump strings
+        """
+
         return self.hatasm.hexdump(code)
