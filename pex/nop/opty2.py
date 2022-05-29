@@ -31,10 +31,25 @@ from .opty2_tables import Opty2Tables
 
 
 class Opty2:
+    """ Subclass of pex.nop module.
+
+    This subclass of pex.nop module is intended in providing
+    implementation of Opty2 NOP sled generator.
+    """
+
     x86 = X86()
     table = Opty2Tables().StateTable
 
-    def generate_sled(self, length, save_registers=[], badchars=b''):
+    def generate_sled(self, length: int, save_registers: list = [], badchars: bytes = b'') -> bytes:
+        """ Generate Opty2 NOP sled.
+
+        :param int length: length of a generated NOP sled
+        :param list save_registers: list of registers to save
+        :param bytes badchars: chars to avoid while generating NOP sled
+        :return bytes: generated Opty2 NOP sled
+        :raises RuntimeError: with trailing error message
+        """
+
         if length <= 0:
             return b''
 
