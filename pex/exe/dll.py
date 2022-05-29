@@ -70,7 +70,9 @@ class Dll:
         :param bytes data: data to pack
         :param list dll_inj_funcs: list of functions to inject
         :param str filename: filename specified in dynamic library
+
         :return bytes: packed Windows dynamic library
+        :raises RuntimeError: with trailing error message
         """
 
         if arch in self.headers.keys():
