@@ -26,8 +26,21 @@
 
 
 class PostTools:
+    """ Subclass of pex.post module.
+
+    This subclass of pex.post module is intended in providing
+    implementations of some helpful tools for pex.post.
+    """
+
     @staticmethod
-    def bytes_to_octal(bytes_obj, extra_zero=False):
+    def bytes_to_octal(bytes_obj: bytes, extra_zero: bool = False) -> str:
+        """ Convert bytes to their octal representation.
+
+        :param bytes bytes_obj: bytes to convert
+        :param bool extra_zero: add extra_zero to the result
+        :return str: octal representation of bytes
+        """
+
         byte_octals = []
         for byte in bytes_obj:
             byte_octal = '\\0' if extra_zero else '\\'
@@ -37,7 +50,15 @@ class PostTools:
         return ''.join(byte_octals)
 
     @staticmethod
-    def post_command(sender, command, args):
+    def post_command(sender, command: str, args: dict) -> str:
+        """ Post command to sender and recieve the result.
+
+        :param sender: sender function
+        :param str command: command to post
+        :param dict args: sender function arguments
+        :return str: post command result
+        """
+
         return sender(**{
             'command': command,
             **args
