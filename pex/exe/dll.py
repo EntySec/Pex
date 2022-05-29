@@ -30,8 +30,8 @@ import struct
 class Dll:
     """ Subclass for pex.exe base class.
 
-    Subclass of pex.exe module which is intended in providing
-    implementations of some sparc architecture features.
+    This subclass of pex.exe module is intended in providing
+    implementation of Windows dynamic library generator.
     """
 
     magic = [
