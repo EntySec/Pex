@@ -28,6 +28,12 @@ import struct
 
 
 class Dll:
+    """ Subclass for pex.exe base class.
+
+    Subclass of pex.exe module which is intended in providing
+    implementations of some sparc architecture features.
+    """
+
     magic = [
         b"\x4d\x5a"
     ]
@@ -57,7 +63,16 @@ class Dll:
         )
     }
 
-    def pack_dll(self, arch, data, dll_inj_funcs=[], filename='kernel32'):
+    def pack_dll(self, arch: str, data: bytes, dll_inj_funcs: list = [], filename: str = 'kernel32'):
+        """ Pack data to a Windows dynamic library.
+
+        :param str arch: target architecture to pack for
+        :param bytes data: data to pack
+        :param list dll_inj_funcs: list of functions to inject
+        :param str filename: filename specified in dynamic library
+        :return bytes: packed Windows dynamic library
+        """
+
         if arch in self.headers.keys():
             pe = self.headers[arch] + b'\x00' * 546 + data
 
