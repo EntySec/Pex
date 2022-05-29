@@ -66,7 +66,7 @@ class Dll:
     def pack_dll(self, arch: str, data: bytes, dll_inj_funcs: list = [], filename: str = 'kernel32') -> bytes:
         """ Pack data to a Windows dynamic library.
 
-        :param str arch: target architecture to pack for
+        :param str arch: architecture to pack for
         :param bytes data: data to pack
         :param list dll_inj_funcs: list of functions to inject
         :param str filename: filename specified in dynamic library
