@@ -28,7 +28,7 @@ import struct
 
 
 class X86:
-    """ Subclass for pex.arch base class.
+    """ Subclass of pex.arch module.
 
     This subclass of pex.arch module is intended in providing
     implementations of some x86 architecture features.
