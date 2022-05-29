@@ -29,8 +29,21 @@ import socket
 
 
 class Socket:
+    """ Subclass of pex.socket module.
+
+    This subclass of pex.socket module is intended in providing
+    implementations of socket features.
+    """
+
     @staticmethod
-    def pack_host(host, endian='little'):
+    def pack_host(host: str, endian: str = 'little') -> bytes:
+        """ Pack host into binary form.
+
+        :param str host: host to pack
+        :param str endian: byte order (little or big)
+        :return bytes: packed host
+        """
+
         inet_aton = socket.inet_aton(host)
         inet_aton = struct.unpack('>L', inet_aton)[0]
 
@@ -41,7 +54,14 @@ class Socket:
         raise RuntimeError(f"Invalid endian {endian}!")
 
     @staticmethod
-    def pack_port(port, endian='little'):
+    def pack_port(port: int, endian: str = 'little') -> bytes:
+        """ Pack port into binary form.
+
+        :param int port: port to pack
+        :param str endian: byte order (little or big)
+        :return bytes: packed port
+        """
+
         htons = socket.htons(int(port))
 
         if endian == 'little':
