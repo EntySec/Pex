@@ -125,8 +125,8 @@ class X86:
     def push_byte(byte: int) -> bytes:
         """ Pack push byte x86 assembler instruction.
 
-        :param int byte: byte to push
-        :return bytes: packed push byte x86 assembler instruction.
+        :param int byte: integer to pack as byte and push
+        :return bytes: packed push byte x86 assembler instruction
         """
 
         if byte < 128 and byte >= -128:
@@ -136,46 +136,116 @@ class X86:
     def mov_byte(self, byte: int, dest: str) -> bytes:
         """ Pack mov byte x86 assembler instruction.
 
-        :param int byte: byte to mov
+        :param int byte: int to pack as byte and mov
         :param str dest: destination register name
         :return bytes: packed mov byte x86 assembler instruction
         """
 
         return bytes([0xb0 | self.get_reg_num(dest)]) + bytes([byte])
 
-    def mov_word(self, num, dest):
+    def mov_word(self, num: int, dest: str) -> bytes:
+        """ Pack mov word x86 assembler instruction.
+
+        :param int num: integer to pack as word and mov
+        :param str dest: destination register name
+        :return bytes: packed mov word x86 assembler instruction
+        """
+
         if num < 0 or num > 0xffff:
             raise RuntimeError("Only unsigned word values allowed!")
         return b"\x66" + bytes([0xb8 | self.get_reg_num(dest)]) + self.pack_word(num)
 
-    def mov_dword(self, num, dest):
+    def mov_dword(self, num: int, dest: str) -> bytes:
+        """ Pack mov dword x86 assembler instruction.
+
+        :param int num: integer to pack as dword and mov
+        :param str dest: destination register name
+        :return bytes: packed mov dword x86 assembler instruction
+        """
+
         return bytes([0xb8 | self.get_reg_num(dest)]) + self.pack_dword(num)
 
-    def push_dword(self, num):
+    def push_dword(self, num: int) -> bytes:
+        """ Pack push dword x86 assembler instruction.
+
+        :param int byte: integer to pack as dword and push
+        :return bytes: packed push dword x86 assembler instruction
+        """
+
         return b"\x68" + self.pack_dword(num)
 
-    def push_word(self, num):
+    def push_word(self, num: int) -> bytes:
+        """ Pack push word x86 assembler instruction.
+
+        :param int byte: integer to pack as word and push
+        :return bytes: packed push word x86 assembler instruction
+        """
+
         return b"\x66\x68" + self.pack_word(num)
 
-    def pop_dword(self, dest):
+    def pop_dword(self, dest: str) -> bytes:
+        """ Pack pop dword x86 assembler instruction.
+
+        :param str dest: destination register name
+        :return bytes: packed pop dword x86 assembler instruction
+        """
+
         return bytes([0x58 | self.get_reg_num(dest)])
 
-    def dword_adjust(self, dword, num=0):
+    def dword_adjust(self, dword: bytes, num: int = 0) -> bytes:
+        """ Adjust an integer to a double word.
+
+        :param bytes dword: double word to adjust to
+        :param int num: integer to adjust
+        :return bytes: dword with adjusted integer
+        """
+
         return self.pack_dword(self.unpack_dword(dword) + num)
 
-    def word_adjust(self, word, num=0):
+    def word_adjust(self, word: bytes, num: int = 0) -> bytes:
+        """ Adjust an integer to a word.
+
+        :param bytes dword: word to adjust to
+        :param int num: integer to adjust
+        :return bytes: word with adjusted integer
+        """
+
         return self.pack_word(self.unpack_word(word) + num)
 
-    def loop(self, offset):
+    def loop(self, offset: int) -> bytes:
+        """ Pack loop x86 assembler instruction.
+
+        :param int offset: loop x86 assembler instruction offset
+        :return bytes: packed loop x86 assembly instruction
+        """
+
         return b"\xe2" + self.pack_lsb(self.rel_number(offset, -2))
 
-    def jmp(self, addr):
+    def jmp(self, addr: int) -> bytes:
+        """ Pack jmp x86 assembler instruction.
+
+        :param int addr: address to jump to
+        :return bytes: packed jmp x86 assembler instruction
+        """
+
         return b"\xe9" + self.pack_dword(self.rel_number(addr))
 
-    def jmp_short(self, addr):
+    def jmp_short(self, addr: int) -> bytes:
+        """ Pack jmp short x86 assembler instruction.
+
+        :param int addr: address to jump to
+        :return bytes: packed jmp short x86 assembler instruction
+        """
+
         return b"\xeb" + self.pack_lsb(self.rel_number(addr, -2))
 
-    def call(self, addr):
+    def call(self, addr: int) -> bytes:
+        """ Pack call x86 assembler instruction.
+
+        :param int addr: address to call
+        :return bytes: packed call x86 assembler instruction
+        """
+
         return b"\xe8" + self.pack_dword(self.rel_number(addr, -5))
 
     @staticmethod
