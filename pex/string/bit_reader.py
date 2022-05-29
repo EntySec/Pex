@@ -28,24 +28,59 @@ import collections
 
 
 class BitReader:
-    def __init__(self, data_bytes):
+    """ Subclass of pex.string module.
+
+    This subclass of pex.string module is intended in providing
+    BitReader Python implementation.
+    """
+
+    def __init__(self, data_bytes: bytes) -> None:
+        """ BitReader gets a string or an iterable of chars (also mmap)
+        representing bytes (ord) and permits to extract bits one by one
+        like a stream.
+
+        :param bytes data_bytes: bytes to represent
+        :return None: None
+        """
+
         self._bits = collections.deque()
 
         for byte in data_bytes:
             for n in range(8):
                 self._bits.append(bool((byte >> (7 - n)) & 1))
 
-    def getBit(self):
+    def getBit(self) -> int:
+        """ Get represented bit.
+
+        :return int: represented bit
+        """
+
         return self._bits.popleft()
 
-    def getBits(self, num):
+    def getBits(self, num: int) -> int:
+        """ Get represented bits depending on given number.
+
+        :param int num: number
+        :return int: represented bit
+        """
+
         res = 0
         for i in range(num):
             res += self.getBit() << num - 1 - i
         return res
 
-    def getByte(self):
+    def getByte(self) -> int:
+        """ Get represented byte.
+
+        :return int: represented byte
+        """
+
         return self.getBits(8)
 
-    def __len__(self):
+    def __len__(self) -> int:
+        """ Get lenght of represented bits.
+
+        :return int: length of represented bits
+        """
+
         return len(self._bits)
