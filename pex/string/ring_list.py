@@ -26,30 +26,73 @@
 
 import collections
 
+from typing import Any
+
 
 class RingList:
-    def __init__(self, length):
+    """ Subclass of pex.string module.
+
+    This subclass of pex.string module is intended in providing
+    RingList Python implementation.
+    """
+
+    def __init__(self, length: int) -> None:
+        """ RingList makes sure that when the list is full,
+        for every item appended the older is removed.
+
+        :param int length: length of a list
+        :return None: None
+        """
+
         self.__data__ = collections.deque()
         self.__full__ = False
         self.__max__ = length
 
-    def append(self, x):
+    def append(self, x: Any) -> None:
+        """ Append an item to the list.
+
+        :param Any x: item to append
+        :return None: None
+        """
+
         if self.__full__:
             self.__data__.popleft()
         self.__data__.append(x)
+
         if self.size() == self.__max__:
             self.__full__ = True
 
-    def get(self):
+    def get(self) -> collections.deque:
+        """ Get the list.
+
+        :return collections.deque: list
+        """
+
         return self.__data__
 
-    def size(self):
+    def size(self) -> int:
+        """ Get the size of the list.
+
+        :return int: size of the list
+        """
+
         return len(self.__data__)
 
-    def maxsize(self):
+    def maxsize(self) -> int:
+        """ Get the max size of the list.
+
+        :return int: max size of the list
+        """
+
         return self.__max__
 
-    def __getitem__(self, n):
+    def __getitem__(self, n: int) -> Any:
+        """ Get an item from list by its index.
+
+        :param int n: item index
+        :return Any: an item
+        """
+
         if n >= self.size():
             return None
         return self.__data__[n]
