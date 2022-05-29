@@ -28,8 +28,20 @@ import sqlite3
 
 
 class DB:
+    """ Subclass of pex.db module.
+
+    This subclass of pex.db module is intended in providing
+    implementations of some database parsing methods.
+    """
+
     @staticmethod
-    def parse_addressbook(database):
+    def parse_addressbook(database: str) -> list:
+        """ Parse Apple iOS addressbook database.
+
+        :param str database: path to the database to parse
+        :return list: list of entries from addressbook database
+        """
+
         db = sqlite3.connect(database)
         db.row_factory = sqlite3.Row
         
@@ -42,7 +54,13 @@ class DB:
         return list(map(dict,cursor.fetchall()))
 
     @staticmethod
-    def parse_safari_history(database):
+    def parse_safari_history(database: str) -> list:
+        """ Parse Apple iOS Safari history database.
+
+        :param str database: path to the database to parse
+        :return list: list of entries from Safari history database
+        """
+
         db = sqlite3.connect(database)
         db.row_factory = sqlite3.Row
 
@@ -70,7 +88,13 @@ class DB:
         return result_temp_dict
 
     @staticmethod
-    def parse_safari_bookmarks(database):
+    def parse_safari_bookmarks(database: str) -> list:
+        """ Parse Apple iOS Safari bookmarks database.
+
+        :param str database: path to the database to parse
+        :return list: list of entries from Safari bookmarks database
+        """
+
         db = sqlite3.connect(database)
         db.row_factory = sqlite3.Row
 
@@ -85,7 +109,15 @@ class DB:
         return list(map(dict,cursor.fetchall()))
 
     @staticmethod
-    def parse_whatsapp_chat(database, partner):
+    def parse_whatsapp_chat(database: str, partner: str) -> list:
+        """ Parse WhatsApp chat database for specified partner.
+
+        :param str database: path to the database to parse
+        :param str partner: partner to parse chat for
+        :return list: list of entries from WhatsApp chat database
+        for specified partner
+        """
+
         partner = partner.replace(" ", "").replace("+", "")
         result_arr = {
             "partner": "",
@@ -137,7 +169,16 @@ class DB:
         return result_arr
 
     @staticmethod
-    def parse_sms_chat(database, partner, imessage=True):
+    def parse_sms_chat(database: str, partner: str, imessage: bool = True) -> list:
+        """ Parse Apple SMS or iMessage chat database for specified partner.
+
+        :param str database: path to the database to parse
+        :param str partner: partner to parse chat for
+        :param bool imessage: is chat from iMessage or not
+        :return list: list of entries from Apple SMS or iMessage chat database
+        for specified partner
+        """
+
         partner = partner.replace(" ", "")
         db = sqlite3.connect(sms_db)
         result_arr = {
@@ -185,7 +226,13 @@ class DB:
         return result_arr
 
     @staticmethod
-    def parse_voicemail_chat(database):
+    def parse_voicemail_chat(database: str) -> list:
+        """ Parse Apple iOS voicemail chat database.
+
+        :param str database: path to the database to parse
+        :return list: list of entries from Apple iOS voicemail database
+        """
+
         result_arr = {
             "total": 0,
             "data": []
