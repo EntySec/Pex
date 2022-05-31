@@ -21,3 +21,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
+
+class Macho:
+    """ Subclass of pex.exe.syringe module.
+
+    This subclass of pex.exe.syringe is intended in providing
+    a macho executable injector.
+    """
+
+    pass

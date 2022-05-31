@@ -1,28 +1,26 @@
-#!/usr/bin/env python3
+"""
+MIT License
 
-#
-# MIT License
-#
-# Copyright (c) 2020-2022 EntySec
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-#
+Copyright (c) 2020-2022 EntySec
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
 
 import struct
 
@@ -129,7 +127,7 @@ class X86:
         :return bytes: packed push byte x86 assembler instruction
         """
 
-        if byte < 128 and byte >= -128:
+        if 128 > byte >= -128:
             return b"\x6a" + bytes([byte & 0xff])
         raise RuntimeError("Only signed byte values allowed!")
 
@@ -168,7 +166,7 @@ class X86:
     def push_dword(self, num: int) -> bytes:
         """ Pack push dword x86 assembler instruction.
 
-        :param int byte: integer to pack as dword and push
+        :param int num: integer to pack as dword and push
         :return bytes: packed push dword x86 assembler instruction
         """
 
@@ -177,7 +175,7 @@ class X86:
     def push_word(self, num: int) -> bytes:
         """ Pack push word x86 assembler instruction.
 
-        :param int byte: integer to pack as word and push
+        :param int num: integer to pack as word and push
         :return bytes: packed push word x86 assembler instruction
         """
 
@@ -205,7 +203,7 @@ class X86:
     def word_adjust(self, word: bytes, num: int = 0) -> bytes:
         """ Adjust an integer to a word.
 
-        :param bytes dword: word to adjust to
+        :param bytes word: word to adjust to
         :param int num: integer to adjust
         :return bytes: word with adjusted integer
         """
@@ -270,7 +268,7 @@ class X86:
 
         return num + delta
 
-    def copy_to_stack(length: int) -> bytes:
+    def copy_to_stack(self, length: int) -> bytes:
         """ Generate a buffer that will copy memory immediately following
         the stub that is generated to be copied to the stack.
 
@@ -282,15 +280,15 @@ class X86:
         length = (length + 3) & ~0x3
 
         return (
-            b"\xeb\x0f" +
-            self.push_dword(length) +
-            b"\x59"
-            b"\x5e"
-            b"\x29\xcc"
-            b"\x89\xe7"
-            b"\xf3\xa4"
-            b"\xff\xe4"
-            b"\xe8\xec\xff\xff\xff"
+                b"\xeb\x0f" +
+                self.push_dword(length) +
+                b"\x59"
+                b"\x5e"
+                b"\x29\xcc"
+                b"\x89\xe7"
+                b"\xf3\xa4"
+                b"\xff\xe4"
+                b"\xe8\xec\xff\xff\xff"
         )
 
     def searcher(self, tag: bytes) -> bytes:
@@ -300,16 +298,16 @@ class X86:
         :return bytes: tag-based search routine
         """
         return (
-            b"\xbe" + self.dword_adjust(tag, -1) +
-            b"\x46"
-            b"\x47"
-            b"\x39\x37"
-            b"\x75\xfb"
-            b"\x46"
-            b"\x4f"
-            b"\x39\x77\xfc"
-            b"\x75\xfa" +
-            self.jmp_reg('edi')
+                b"\xbe" + self.dword_adjust(tag, -1) +
+                b"\x46"
+                b"\x47"
+                b"\x39\x37"
+                b"\x75\xfb"
+                b"\x46"
+                b"\x4f"
+                b"\x39\x77\xfc"
+                b"\x75\xfa" +
+                self.jmp_reg('edi')
         )
 
     def encode_effective(self, shift: int, reg: str) -> bytes:

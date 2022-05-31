@@ -1,36 +1,34 @@
-#!/usr/bin/env python3
+"""
+MIT License
 
-#
-# MIT License
-#
-# Copyright (c) 2020-2022 EntySec
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-#
+Copyright (c) 2020-2022 EntySec
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
 
 import sqlite3
 
 
 class DB:
-    """ Subclass of pex.db module.
+    """ Main class of pex.db module.
 
-    This subclass of pex.db module is intended for providing
+    This main class of pex.db module is intended for providing
     implementations of some database parsing methods.
     """
 
@@ -44,14 +42,14 @@ class DB:
 
         db = sqlite3.connect(database)
         db.row_factory = sqlite3.Row
-        
+
         cursor = db.cursor()
         cursor.execute('''SELECT
                 c0First,
                 c16Phone
             FROM ABPersonFullTextSearch_content''')
 
-        return list(map(dict,cursor.fetchall()))
+        return list(map(dict, cursor.fetchall()))
 
     @staticmethod
     def parse_safari_history(database: str) -> list:
@@ -72,16 +70,16 @@ class DB:
                 datetime(visit_time + 978307200, 'unixepoch', 'localtime') as 'date'
             FROM history_visits''')
 
-        result_temp_dict = list(map(dict,cursor.fetchall()))
+        result_temp_dict = list(map(dict, cursor.fetchall()))
         for item in result_temp_dict:
-            cursor.execute( '''SELECT 
+            cursor.execute('''SELECT 
                     url,
                     domain_expansion,
                     visit_count
                 FROM history_items
                 WHERE id = {item_id}'''.format(item_id=item["lookup_id"]))
 
-            current_row_dict = list(map(dict,cursor.fetchall()))
+            current_row_dict = list(map(dict, cursor.fetchall()))
             item["details"] = current_row_dict[0]
 
             del item["lookup_id"]
@@ -106,7 +104,7 @@ class DB:
             WHERE num_children = 0
             AND url <> "" ''')
 
-        return list(map(dict,cursor.fetchall()))
+        return list(map(dict, cursor.fetchall()))
 
     @staticmethod
     def parse_whatsapp_chat(database: str, partner: str) -> list:
@@ -180,9 +178,9 @@ class DB:
         """
 
         partner = partner.replace(" ", "")
-        db = sqlite3.connect(sms_db)
+        db = sqlite3.connect(database)
         result_arr = {
-            "protocol": "{}".format('iMessage' if imessage == True else 'SMS'),
+            "protocol": "{}".format('iMessage' if imessage else 'SMS'),
             "partner": partner,
             "success": True,
             "data": []
@@ -194,10 +192,10 @@ class DB:
                 ROWID
             FROM chat
             WHERE guid LIKE '{protocol};%;{partner}' 
-            '''.format(partner=partner, protocol=('iMessage' if imessage == True else 'SMS')))
+            '''.format(partner=partner, protocol=('iMessage' if imessage else 'SMS')))
 
         try:
-            rowid_chat = list(map(dict,cursor.fetchall()))[0]["ROWID"]
+            rowid_chat = list(map(dict, cursor.fetchall()))[0]["ROWID"]
         except IndexError:
             result_arr["success"] = False
             return result_arr
@@ -208,7 +206,7 @@ class DB:
             WHERE chat_id = {row_id}
             '''.format(row_id=rowid_chat))
 
-        message_id_arr = [int(item[0]) for item  in list(map(list, cursor.fetchall()))]
+        message_id_arr = [int(item[0]) for item in list(map(list, cursor.fetchall()))]
         for message_id in message_id_arr:
             cursor.execute('''SELECT
                     ROWID as 'message_id',
