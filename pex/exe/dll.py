@@ -32,11 +32,11 @@ class DLL:
     an implementation of Windows dynamic library generator.
     """
 
-    magic = [
+    dll_magic = [
         b"\x4d\x5a"
     ]
 
-    headers = {
+    dll_headers = {
         'x86': (
             b'\x4d\x5a\x90\x00\x03\x00\x00\x00\x04\x00\x00\x00\xff\xff\x00\x00\xb8\x00\x00\x00\x00\x00\x00\x00'
             b'\x40\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
@@ -72,39 +72,41 @@ class DLL:
         :raises RuntimeError: with trailing error message
         """
 
-        if arch in self.headers.keys():
-            pe = self.headers[arch] + b'\x00' * 546 + data
+        if data[:2] not in self.dll_magic:
+            if arch in self.dll_headers:
+                pe = self.dll_headers[arch] + b'\x00' * 546 + data
 
-            if arch == 'x86':
-                pe += b'\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff\xff'
-                content = pe.ljust(1536, b'\x00')
+                if arch == 'x86':
+                    pe += b'\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff\xff'
+                    content = pe.ljust(1536, b'\x00')
 
-                content += b'\x00' * 16
-                content += b'\x01\x00\x00\x00'
-                content += struct.pack('<I', len(dll_inj_funcs)) * 2
+                    content += b'\x00' * 16
+                    content += b'\x01\x00\x00\x00'
+                    content += struct.pack('<I', len(dll_inj_funcs)) * 2
 
-                content += b'\x28\x20\x00\x00'
-                content += struct.pack('B', 0x28 + len(dll_inj_funcs) * 4) + b'\x20\x00\x00'
-                content += struct.pack('B', 0x28 + len(dll_inj_funcs) * 8) + b'\x20\x00\x00'
+                    content += b'\x28\x20\x00\x00'
+                    content += struct.pack('B', 0x28 + len(dll_inj_funcs) * 4) + b'\x20\x00\x00'
+                    content += struct.pack('B', 0x28 + len(dll_inj_funcs) * 8) + b'\x20\x00\x00'
 
-                content += b'\x00\x10\x00\x00' * len(dll_inj_funcs)
-                base = 0x2100 + len(filename) - 1
-                content += struct.pack('<H', base) + b'\x00\x00'
-
-                for func_name in dll_inj_funcs[:-1]:
-                    base += len(func_name) + 1
+                    content += b'\x00\x10\x00\x00' * len(dll_inj_funcs)
+                    base = 0x2100 + len(filename) - 1
                     content += struct.pack('<H', base) + b'\x00\x00'
 
-                for i in range(len(dll_inj_funcs)):
-                    content += struct.pack('<H', i)
+                    for func_name in dll_inj_funcs[:-1]:
+                        base += len(func_name) + 1
+                        content += struct.pack('<H', base) + b'\x00\x00'
 
-                content += filename.encode() + b'.dll\x00'
-                for func_name in dll_inj_funcs:
-                    content += func_name + b'\x00'
+                    for i in range(len(dll_inj_funcs)):
+                        content += struct.pack('<H', i)
 
-                content = content.ljust(3072, b'\x00')
-            else:
-                raise RuntimeError("DLL header corrupted!")
-            return content
+                    content += filename.encode() + b'.dll\x00'
+                    for func_name in dll_inj_funcs:
+                        content += func_name + b'\x00'
 
-        raise RuntimeError("Failed to find compatible DLL header!")
+                    content = content.ljust(3072, b'\x00')
+                else:
+                    raise RuntimeError("DLL header corrupted!")
+                return content
+
+            raise RuntimeError("Failed to find compatible DLL header!")
+        return data
