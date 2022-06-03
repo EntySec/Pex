@@ -32,11 +32,11 @@ class ELF:
     an implementation of Linux executable and linkable format generator.
     """
 
-    magic = [
+    elf_magic = [
         b"\x7f\x45\x4c\x46"
     ]
 
-    headers = {
+    elf_headers = {
         'armle': (
             b"\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
             b"\x02\x00\x28\x00\x01\x00\x00\x00\x54\x80\x00\x00\x34\x00\x00\x00"
@@ -100,28 +100,30 @@ class ELF:
         :raises RuntimeError: with trailing error message
         """
 
-        if arch in self.headers.keys():
-            elf = self.headers[arch] + data
+        if data[:4] not in self.elf_magic:
+            if arch in self.elf_headers:
+                elf = self.elf_headers[arch] + data
 
-            if elf[4] == 1:
-                if arch.endswith('be'):
-                    p_filesz = struct.pack(">L", len(elf))
-                    p_memsz = struct.pack(">L", len(elf) + len(data))
+                if elf[4] == 1:
+                    if arch.endswith('be'):
+                        p_filesz = struct.pack(">L", len(elf))
+                        p_memsz = struct.pack(">L", len(elf) + len(data))
+                    else:
+                        p_filesz = struct.pack("<L", len(elf))
+                        p_memsz = struct.pack("<L", len(elf) + len(data))
+                    content = elf[:0x44] + p_filesz + p_memsz + elf[0x4c:]
+
+                elif elf[4] == 2:
+                    if arch.endswith('be'):
+                        p_filesz = struct.pack(">Q", len(elf))
+                        p_memsz = struct.pack(">Q", len(elf) + len(data))
+                    else:
+                        p_filesz = struct.pack("<Q", len(elf))
+                        p_memsz = struct.pack("<Q", len(elf) + len(data))
+                    content = elf[:0x60] + p_filesz + p_memsz + elf[0x70:]
                 else:
-                    p_filesz = struct.pack("<L", len(elf))
-                    p_memsz = struct.pack("<L", len(elf) + len(data))
-                content = elf[:0x44] + p_filesz + p_memsz + elf[0x4c:]
+                    raise RuntimeError("ELF header corrupted!")
+                return content
 
-            elif elf[4] == 2:
-                if arch.endswith('be'):
-                    p_filesz = struct.pack(">Q", len(elf))
-                    p_memsz = struct.pack(">Q", len(elf) + len(data))
-                else:
-                    p_filesz = struct.pack("<Q", len(elf))
-                    p_memsz = struct.pack("<Q", len(elf) + len(data))
-                content = elf[:0x60] + p_filesz + p_memsz + elf[0x70:]
-            else:
-                raise RuntimeError("ELF header corrupted!")
-            return content
-
-        raise RuntimeError("Failed to find compatible ELF header!")
+            raise RuntimeError("Failed to find compatible ELF header!")
+        return data
