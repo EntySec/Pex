@@ -30,11 +30,11 @@ class PE:
     an implementation of Windows portable executable generator.
     """
 
-    magic = [
+    pe_magic = [
         b"\x4d\x5a"
     ]
 
-    headers = {
+    pe_headers = {
         'x86': (
             b'\x4d\x5a\x90\x00\x03\x00\x00\x00\x04\x00\x00\x00\xff\xff\x00\x00\xb8\x00\x00\x00\x00\x00\x00\x00'
             b'\x40\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
@@ -94,17 +94,19 @@ class PE:
         :raises RuntimeError: with trailing error message
         """
 
-        if arch in self.headers.keys():
-            pe = self.headers[arch] + data
+        if data[:2] not in self.pe_magic:
+            if arch in self.pe_headers:
+                pe = self.pe_headers[arch] + data
 
-            if arch == 'x86':
-                pe += b'\xff' * 4 + b'\x00' * 4 + b'\xff' * 4
-                content = pe.ljust(1536, b'\x00')
-            elif arch == 'x64':
-                pe += b'\x00' * 7 + b'\xff' * 8 + b'\x00' * 8 + b'\xff' * 8
-                content = pe.ljust(2048, b'\x00')
-            else:
-                raise RuntimeError("PE header corrupted!")
-            return content
+                if arch == 'x86':
+                    pe += b'\xff' * 4 + b'\x00' * 4 + b'\xff' * 4
+                    content = pe.ljust(1536, b'\x00')
+                elif arch == 'x64':
+                    pe += b'\x00' * 7 + b'\xff' * 8 + b'\x00' * 8 + b'\xff' * 8
+                    content = pe.ljust(2048, b'\x00')
+                else:
+                    raise RuntimeError("PE header corrupted!")
+                return content
 
-        raise RuntimeError("Failed to find compatible PE header!")
+            raise RuntimeError("Failed to find compatible PE header!")
+        return data
