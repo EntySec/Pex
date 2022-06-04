@@ -24,4 +24,6 @@ SOFTWARE.
 
 from .dll import DLL
 from .elf import ELF
+from .macho import Macho
+from .dylib import Dylib
 from .pe import PE
