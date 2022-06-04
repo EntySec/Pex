@@ -45,7 +45,7 @@ class Macho:
         'aarch64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/macho/macho/macho_aarch64.macho',
     }
 
-    def pack_elf(self, arch: str, data: bytes) -> bytes:
+    def pack_macho(self, arch: str, data: bytes) -> bytes:
         """ Pack data to a MacOS macho.
 
         :param str arch: architecture to pack for
