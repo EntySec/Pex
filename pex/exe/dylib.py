@@ -33,9 +33,15 @@ class Macho:
     """
 
     dylib_magic = [
+        b"\xca\xfe\xba\xbe",
+        b"\xfe\xed\xfa\xce",
+        b"\xfe\xed\xfa\xcf",
+        b"\xce\xfa\xed\xfe",
+        b"\xcf\xfa\xed\xfe"
     ]
 
     dylib_headers = {
+        'x64': ''
     }
 
     def pack_dylib(self, arch: str, data: bytes) -> bytes:
