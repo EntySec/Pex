@@ -32,10 +32,10 @@ class Macho:
     an implementation of MacOS dynamic library generator.
     """
 
-    macho_magic = [
+    dylib_magic = [
     ]
 
-    macho_headers = {
+    dylib_headers = {
     }
 
     def pack_dylib(self, arch: str, data: bytes) -> bytes:
@@ -47,9 +47,9 @@ class Macho:
         :raises RuntimeError: with trailing error message
         """
 
-        if data[:4] not in self.macho_magic:
-            if arch in self.macho_headers:
-                if os.path.exists(self.macho_headers[arch]):
+        if data[:4] not in self.dylib_magic:
+            if arch in self.dylib_headers:
+                if os.path.exists(self.dylib_headers[arch]):
                     pass
                 else:
                     raise RuntimeError("Dylib header corrupted!")
