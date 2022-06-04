@@ -25,7 +25,7 @@ SOFTWARE.
 import os
 
 
-class Macho:
+class Dylib:
     """ Subclass of pex.exe module.
 
     This subclass of pex.exe module is intended for providing
@@ -41,7 +41,8 @@ class Macho:
     ]
 
     dylib_headers = {
-        'x64': ''
+        'x64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/dylib/dylib_x64.dylib',
+        'aarch64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/dylib/dylib_aarch64.dylib',
     }
 
     def pack_dylib(self, arch: str, data: bytes) -> bytes:
@@ -56,7 +57,18 @@ class Macho:
         if data[:4] not in self.dylib_magic:
             if arch in self.dylib_headers:
                 if os.path.exists(self.dylib_headers[arch]):
-                    pass
+                    data_size = len(data)
+
+                    pointer = b'payload:'.upper()
+                    pointer_size = len(pointer)
+
+                    with open(self.dylib_headers[arch], 'rb') as f:
+                        dylib = f.read()
+                        pointer_index = dylib.index(pointer)
+
+                        if data_size >= pointer_size:
+                            return dylib[:pointer_index] + data + dylib[pointer_index + data_size:]
+                        return dylib[:pointer_index] + data + dylib[pointer_index + pointer_size:]
                 else:
                     raise RuntimeError("Dylib header corrupted!")
 
