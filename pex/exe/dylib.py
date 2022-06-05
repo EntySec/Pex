@@ -41,8 +41,7 @@ class Dylib:
     ]
 
     dylib_headers = {
-        'x64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/dylib/dylib_x64.dylib',
-        'aarch64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/dylib/dylib_aarch64.dylib',
+        'x64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/dylib/dylib_x64.dylib'
     }
 
     def pack_dylib(self, arch: str, data: bytes) -> bytes:
