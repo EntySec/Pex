@@ -91,6 +91,15 @@ class ELF:
         )
     }
 
+    def check_elf(self, data: bytes) -> bool:
+        """ Check if data is a Linux executable and linkable format.
+
+        :param bytes data: data to check
+        :return bool: True if data is a Linux executable and linkable format
+        """
+
+        return data[:4] in self.elf_magic
+
     def pack_elf(self, arch: str, data: bytes) -> bytes:
         """ Pack data to a Linux executable and linkable format.
 
@@ -100,7 +109,7 @@ class ELF:
         :raises RuntimeError: with trailing error message
         """
 
-        if data[:4] not in self.elf_magic:
+        if self.check_elf(data):
             if arch in self.elf_headers:
                 elf = self.elf_headers[arch] + data
 
