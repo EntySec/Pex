@@ -29,7 +29,7 @@ class Dylib:
     """ Subclass of pex.exe module.
 
     This subclass of pex.exe module is intended for providing
-    an implementation of MacOS dynamic library generator.
+    an implementation of macOS dynamic library generator.
     """
 
     dylib_magic = [
@@ -44,16 +44,25 @@ class Dylib:
         'x64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/dylib/dylib_x64.dylib'
     }
 
+    def check_dylib(self, data: bytes) -> bool:
+        """ Check if data is a macOS dynamic library.
+
+        :param bytes data: data to check
+        :return bool: True if data is a macOS dynamic library
+        """
+
+        return data[:4] in self.dylib_magic
+
     def pack_dylib(self, arch: str, data: bytes) -> bytes:
-        """ Pack data to a MacOS dynamic library.
+        """ Pack data to a macOS dynamic library.
 
         :param str arch: architecture to pack for
         :param bytes data: data to pack
-        :return bytes: packed MacOS dynamic library
+        :return bytes: packed macOS dynamic library
         :raises RuntimeError: with trailing error message
         """
 
-        if data[:4] not in self.dylib_magic:
+        if not self.check_dylib(data):
             if arch in self.dylib_headers:
                 if os.path.exists(self.dylib_headers[arch]):
                     data_size = len(data)
