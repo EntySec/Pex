@@ -61,6 +61,15 @@ class DLL:
         )
     }
 
+    def check_dll(self, data: bytes) -> bool:
+        """ Check if data is a Windows dynamic library.
+
+        :param bytes data: data to check
+        :return bool: True if data is a Windows dynamic library
+        """
+
+        return data[:2] in self.dll_magic
+
     def pack_dll(self, arch: str, data: bytes, dll_inj_funcs: list = [], filename: str = 'kernel32') -> bytes:
         """ Pack data to a Windows dynamic library.
 
@@ -72,7 +81,7 @@ class DLL:
         :raises RuntimeError: with trailing error message
         """
 
-        if data[:2] not in self.dll_magic:
+        if self.check_dll(data):
             if arch in self.dll_headers:
                 pe = self.dll_headers[arch] + b'\x00' * 546 + data
 
