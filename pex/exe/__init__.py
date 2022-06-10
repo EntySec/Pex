@@ -23,10 +23,11 @@ SOFTWARE.
 """
 
 from .dll import DLL
-from .elf import ELF
-from .macho import Macho
 from .dylib import Dylib
+
 from .pe import PE
+from .macho import Macho
+from .elf import ELF
 
 
 class EXE:
@@ -36,8 +37,39 @@ class EXE:
     some implementations of executable file manipulation methods.
     """
 
-    @staticmethod
-    def executable_replace(data: bytes, string: str, content: bytes) -> bytes:
+    dll = DLL()
+    dylib = Dylib()
+
+    pe = PE()
+    macho = Macho()
+    elf = ELF()
+
+    def check_executable(self, data: bytes, executable: str = '') -> bool:
+        """ Check if data is an executable.
+
+        :param bytes data: data to check
+        :param str executable: executable format
+        :return bool: True if data is an executable
+        """
+
+        exe_map = {
+            'dll': self.dll.check_dll,
+            'dylib': self.dylib.check_dylib,
+            'pe': self.pe.check_pe,
+            'macho': self.macho.check_macho,
+            'elf': self.elf.check_elf
+        }
+
+        if executable in exe_map:
+            return exe_map[executable](data)
+
+        for executable in exe_map:
+            if exe_map[executable](data):
+                return True
+
+        return False
+
+    def executable_replace(self, data: bytes, string: str, content: bytes) -> bytes:
         """ Replace string in executable with content.
 
         :param bytes data: executable to replace string in
@@ -46,11 +78,14 @@ class EXE:
         :return bytes: processed executable
         """
 
-        content_size = len(content)
-        string_size = len(string)
+        if self.check_executable(data):
+            content_size = len(content)
+            string_size = len(string)
 
-        string_index = data.index(string)
+            string_index = data.index(string.encode())
 
-        if content_size >= string_size:
-            return data[:string_index] + content + data[string_index + content_size:]
-        return data[:string_index] + content + data[string_index + string_size:]
+            if content_size >= string_size:
+                return data[:string_index] + content + data[string_index + content_size:]
+            return data[:string_index] + content + data[string_index + string_size:]
+
+        return data.replace(string.encode(), data)
