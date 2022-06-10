@@ -29,7 +29,7 @@ class Macho:
     """ Subclass of pex.exe module.
 
     This subclass of pex.exe module is intended for providing
-    an implementation of MacOS macho generator.
+    an implementation of macOS macho generator.
     """
 
     macho_magic = [
@@ -44,16 +44,25 @@ class Macho:
         'x64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/macho/macho_x64.macho'
     }
 
+    def check_macho(self, data: bytes) -> bool:
+        """ Check if data is a macOS macho.
+
+        :param bytes data: data to check
+        :return bool: True if data is a macOS macho
+        """
+
+        return data[:4] in self.macho_magic
+
     def pack_macho(self, arch: str, data: bytes) -> bytes:
-        """ Pack data to a MacOS macho.
+        """ Pack data to a macOS macho.
 
         :param str arch: architecture to pack for
         :param bytes data: data to pack
-        :return bytes: packed MacOS macho
+        :return bytes: packed macOS macho
         :raises RuntimeError: with trailing error message
         """
 
-        if data[:4] not in self.macho_magic:
+        if not self.check_macho(data):
             if arch in self.macho_headers:
                 if os.path.exists(self.macho_headers[arch]):
                     data_size = len(data)
