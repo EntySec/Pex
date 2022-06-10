@@ -81,7 +81,7 @@ class DLL:
         :raises RuntimeError: with trailing error message
         """
 
-        if self.check_dll(data):
+        if not self.check_dll(data):
             if arch in self.dll_headers:
                 pe = self.dll_headers[arch] + b'\x00' * 546 + data
 
