@@ -109,7 +109,7 @@ class ELF:
         :raises RuntimeError: with trailing error message
         """
 
-        if self.check_elf(data):
+        if not self.check_elf(data):
             if arch in self.elf_headers:
                 elf = self.elf_headers[arch] + data
 
