@@ -85,6 +85,15 @@ class PE:
         )
     }
 
+    def check_pe(self, data: bytes) -> bool:
+        """ Check if data is a Windows portable executable.
+
+        :param bytes data: data to check
+        :return bool: True if data is a Windows portable executable
+        """
+
+        return data[:2] in self.pe_magic
+
     def pack_pe(self, arch: str, data: bytes) -> bytes:
         """ Pack data to a Windows portable executable.
 
@@ -94,7 +103,7 @@ class PE:
         :raises RuntimeError: with trailing error message
         """
 
-        if data[:2] not in self.pe_magic:
+        if not self.check_pe(data):
             if arch in self.pe_headers:
                 pe = self.pe_headers[arch] + data
 
