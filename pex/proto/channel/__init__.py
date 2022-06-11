@@ -22,5 +22,5 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from .client import ChannelClient
-from .tools import ChannelTools
+from .client import *
+from .tools import *
