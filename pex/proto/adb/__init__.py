@@ -23,3 +23,4 @@ SOFTWARE.
 """
 
 from .client import ADBClient
+from .client import ADBSocket
