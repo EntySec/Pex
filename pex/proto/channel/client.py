@@ -147,7 +147,7 @@ class ChannelSocket:
             return None
         raise RuntimeError("Socket is not connected!")
 
-    def send_token_command(self, command, token, output=True, decode=True, printer=None):
+    def send_token_command(self, command, token, output=True, printer=None):
         if self.sock.sock:
             try:
                 buffer = command.encode()
@@ -159,10 +159,9 @@ class ChannelSocket:
                     data = self.read_until(token)
 
                     if output:
-                        if decode:
-                            data = data.decode(errors='ignore')
-
+                        data = data.decode(errors='ignore')
                         return data
+
             except Exception:
                 self.terminated = True
                 raise RuntimeError("Channel closed connection unexpectedly!")
