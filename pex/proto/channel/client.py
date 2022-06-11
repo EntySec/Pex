@@ -128,7 +128,7 @@ class ChannelSocket:
             return result
         raise RuntimeError("Socket is not connected!")
 
-    def send_command(self, command, output=True, decode=True):
+    def send_command(self, command, output=True):
         if self.sock.sock:
             try:
                 buffer = command.encode()
@@ -136,9 +136,7 @@ class ChannelSocket:
 
                 if output:
                     data = self.readall()
-
-                    if decode:
-                        data = data.decode(errors='ignore')
+                    data = data.decode(errors='ignore')
 
                     return data
             except Exception:
