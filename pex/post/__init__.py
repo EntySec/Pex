@@ -79,6 +79,7 @@ class Post:
                     raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
 
             filename = self.string_tools.random_string(8)
+            arguments = '' if not arguments else arguments
 
             if platform in platforms['unix']:
                 if not location:
