@@ -33,10 +33,10 @@ from pydantic.utils import deep_update
 
 
 class Net:
-    """ Subclass of pirat.audit module.
+    """ Subclass of pex.net module.
 
-    This subclass of pirat.audit module is intended for providing an
-    implementation of network auditor.
+    This subclass of pex.net module is intended for providing some
+    implementations of various network tools.
     """
 
     srp_timeout = 5
@@ -174,11 +174,11 @@ class Net:
 
         return 'unix'
 
-    def start_audit(self, gateway: str, iface: str) -> None:
-        """ Start network audit.
+    def start_full_scan(self, gateway: str, iface: str) -> None:
+        """ Start network full scan.
 
-        :param str gateway: gateway to start audit for
-        :param str iface: interface to start audit on
+        :param str gateway: gateway to start full scan for
+        :param str iface: interface to start full scan on
         :return None: None
         """
 
@@ -211,10 +211,10 @@ class Net:
                 }
             })
 
-    def audit_result(self) -> dict:
-        """ Get network audit result.
+    def full_scan_result(self) -> dict:
+        """ Get network full scan result.
 
-        :return dict: network audit result
+        :return dict: network full scan result
         """
 
         return self.result
