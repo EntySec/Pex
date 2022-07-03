@@ -33,9 +33,9 @@ from pydantic.utils import deep_update
 
 
 class Net:
-    """ Subclass of pex.net module.
+    """ Main of pex.net module.
 
-    This subclass of pex.net module is intended for providing some
+    This main of pex.net module is intended for providing some
     implementations of various network tools.
     """
 
