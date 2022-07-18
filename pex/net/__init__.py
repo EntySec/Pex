@@ -153,7 +153,10 @@ class Net:
         :return str: local DNS name
         """
 
-        return socket.gethostbyaddr(host)[0]
+        try:
+            return socket.gethostbyaddr(host)[0]
+        except Exception:
+            return 'unidentified'
 
     def get_platform(self, host: str) -> str:
         """ Detect platform by host.
