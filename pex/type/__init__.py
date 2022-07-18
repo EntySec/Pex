@@ -115,7 +115,7 @@ class Type:
             'armle',
             'armbe',
 
-            'mips64'
+            'mips64',
             'mipsle',
             'mipsbe',
 
