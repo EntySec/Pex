@@ -41,6 +41,7 @@ class Net:
 
     srp_timeout = 5
     sr1_timeout = 5
+    sr_timeout = 3
 
     os_ttl = {
         0x3c: 'macos',
@@ -78,8 +79,25 @@ class Net:
 
         return gateways
 
-    def get_hosts(self, gateway: str) -> list:
-        """ Get hosts and MACs from gateway.
+    def get_icmp_hosts(self, gateway: str) -> list:
+        """ Get hosts from gateway using ICMP scanning.
+
+        :param str gateway: gateway to get hosts from
+        :return list: hosts
+        """
+
+        hosts = []
+
+        packet = IP(dst=gateway) / ICMP()
+        response, _ = sr(gateway, timeout=self.sr_timeout)
+
+        for _, recv in response:
+            hosts.append(recv.src)
+
+        return hosts
+
+    def get_arp_hosts(self, gateway: str) -> list:
+        """ Get hosts and MACs from gateway using ARP scanning.
 
         :param str gateway: gateway to get hosts and MACs from
         :return list: hosts and MACs
@@ -177,25 +195,31 @@ class Net:
 
         return 'unix'
 
-    def start_full_scan(self, gateway: str, iface: str) -> None:
+    def start_full_scan(self, gateway: str, iface: str, scan: str = 'arp') -> None:
         """ Start network full scan.
 
         :param str gateway: gateway to start full scan for
         :param str iface: interface to start full scan on
+        :param str scan: scan type (arp/icmp)
         :return None: None
         """
 
-        pairs = self.get_hosts(gateway)
+        if scan.lower() == 'arp':
+            pairs = self.get_arp_hosts(gateway)
+        elif scan.lower() == 'icmp':
+            pairs = self.get_icmp_hosts(gateway)
+        else:
+            raise RuntimeError(f"Invalid scan type: {scan}!")
 
-        for host, mac in pairs:
+        for data in pairs:
             self.result = deep_update(self.result, {
                 gateway: {
                     iface: {
                         host: {
-                            'mac': mac,
-                            'vendor': self.get_vendor(mac),
-                            'dns': self.get_dns(host),
-                            'platform': self.get_platform(host),
+                            'mac': data[1] if isinstance(data, tuple) else '',
+                            'vendor': self.get_vendor(data[1]) if isinstance(data, tuple) else '',
+                            'dns': self.get_dns(data[0]) if isinstance(data, tuple) else data,
+                            'platform': self.get_platform(data[0] if isinstance(data, tuple) else data),
                             'ports': {},
                             'flaws': {}
                         }
@@ -203,12 +227,14 @@ class Net:
                 }
             })
 
-        for host, _ in pairs:
+        for data in pairs:
             self.result = deep_update(self.result, {
                 gateway: {
                     iface: {
                         host: {
-                            'ports': self.get_ports(host, end=1000)
+                            'ports': self.get_ports(
+                                data[0] if isinstance(data, tuple) else data, end=1000
+                            )
                         }
                     }
                 }
