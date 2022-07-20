@@ -215,7 +215,7 @@ class Net:
             self.result = deep_update(self.result, {
                 gateway: {
                     iface: {
-                        host: {
+                        data[0] if isinstance(data, tuple) else data: {
                             'mac': data[1] if isinstance(data, tuple) else '',
                             'vendor': self.get_vendor(data[1]) if isinstance(data, tuple) else '',
                             'dns': self.get_dns(data[0]) if isinstance(data, tuple) else data,
@@ -231,7 +231,7 @@ class Net:
             self.result = deep_update(self.result, {
                 gateway: {
                     iface: {
-                        host: {
+                        data[0] if isinstance(data, tuple) else data: {
                             'ports': self.get_ports(
                                 data[0] if isinstance(data, tuple) else data, end=1000
                             )
