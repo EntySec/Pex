@@ -89,7 +89,7 @@ class Net:
         hosts = []
 
         packet = IP(dst=gateway) / ICMP()
-        response, _ = sr(gateway, timeout=self.sr_timeout)
+        response = sr(packet, timeout=self.sr_timeout, verbose=False)[0]
 
         for _, recv in response:
             hosts.append(recv.src)
