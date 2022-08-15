@@ -71,11 +71,12 @@ class Net:
             if socket.AF_INET in addrs:
                 addrs = addrs[socket.AF_INET][0]
 
-                gateways.update({
-                    iface: str(netaddr.IPNetwork(
-                        '%s/%s' % (addrs['addr'], addrs['netmask'])
-                    ))
-                })
+                if 'addr' in addrs and 'netmask' in addrs:
+                    gateways.update({
+                        iface: str(netaddr.IPNetwork(
+                            '%s/%s' % (addrs['addr'], addrs['netmask'])
+                        ))
+                    })
 
         return gateways
 
