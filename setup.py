@@ -36,8 +36,7 @@ setup(name='pex',
       include_package_data=True,
       install_requires=[
           'adb-shell', 'requests', 'paramiko',
-          'alive_progress', 'scapy',
-          'mac_vendor_lookup', 'pydantic',
+          'alive_progress', 'scapy', 'pydantic',
           'netifaces', 'netaddr',
 
           'hatasm @ git+https://github.com/EntySec/HatAsm'
