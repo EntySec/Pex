@@ -25,10 +25,10 @@ SOFTWARE.
 import struct
 import socket
 import netaddr
+import requests
 import netifaces
 
 from scapy.all import *
-from mac_vendor_lookup import MacLookup
 from pydantic.utils import deep_update
 
 
@@ -50,8 +50,7 @@ class Net:
         0x80: 'windows'
     }
 
-    macdb = MacLookup()
-    macdb_updated = False
+    macdb = 'https://macvendors.co/api/'
 
     result = {}
 
@@ -156,12 +155,8 @@ class Net:
         :return str: vendor name
         """
 
-        if not self.macdb_updated:
-            self.macdb.update_vendors()
-            self.macdb_updated = True
-
         try:
-            return self.macdb.lookup(mac)
+            return requests.get(self.macdb + mac).json()['result']['company']
         except Exception:
             return 'unidentified'
 
