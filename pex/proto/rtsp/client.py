@@ -27,8 +27,10 @@ import socket
 from pex.string import String
 
 
-class RTSPSocket:
+class RTSPSocket(object):
     def __init__(self, host, port, timeout=10):
+        super().__init__()
+
         self.host = host
         self.port = int(port)
 
@@ -76,7 +78,10 @@ class RTSPSocket:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
 
 
-class RTSPClient:
+class RTSPClient(object):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def open_rtsp(host, port, timeout=10):
         return RTSPSocket(host, port, timeout)

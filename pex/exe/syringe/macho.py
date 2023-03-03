@@ -23,11 +23,12 @@ SOFTWARE.
 """
 
 
-class Macho:
+class Macho(object):
     """ Subclass of pex.exe.syringe module.
 
     This subclass of pex.exe.syringe is intended in providing
     a macho executable injector.
     """
 
-    pass
+    def __init__(self):
+        super().__init__()

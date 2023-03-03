@@ -27,10 +27,13 @@ from pex.proto.channel import ChannelTools
 from pex.string import String
 
 
-class Cat:
-    post_tools = PostTools()
-    string_tools = String()
-    channel_tools = ChannelTools()
+class Cat(object):
+    def __init__(self):
+        super().__init__()
+
+        self.post_tools = PostTools()
+        self.string_tools = String()
+        self.channel_tools = ChannelTools()
 
     def pull(self, sender, location, args=[]):
         token = self.string_tools.random_string(8)

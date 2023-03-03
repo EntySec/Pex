@@ -25,12 +25,15 @@ SOFTWARE.
 import os
 
 
-class FS:
+class FS(object):
     """ Main class of pex.fs module.
 
     This main class of pex.fs module is intended for providing
     implementations of filesystem features.
     """
+
+    def __init__(self):
+        super().__init__()
 
     @staticmethod
     def exists(path: str) -> tuple:

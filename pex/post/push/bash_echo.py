@@ -27,8 +27,11 @@ from alive_progress import alive_bar
 from pex.post.tools import PostTools
 
 
-class BashEcho:
-    post_tools = PostTools()
+class BashEcho(object):
+    def __init__(self):
+        super().__init__()
+
+        self.post_tools = PostTools()
 
     def push(self, sender, data, location, args=[], linemax=100):
         echo_stream = "echo -en '{}' >> {}"

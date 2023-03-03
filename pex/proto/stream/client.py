@@ -26,8 +26,10 @@ import os
 import webbrowser
 
 
-class Streamer:
+class Streamer(object):
     def __init__(self, path, image):
+        super().__init__()
+
         self.path = path
         self.image = image
 
@@ -100,7 +102,10 @@ Status : <span id="status"></span>
         webbrowser.open(url, new=0, autoraise=True)
 
 
-class StreamClient:
+class StreamClient(object):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def open_stream(path, image):
         return Streamer(path, image)

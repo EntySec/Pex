@@ -23,7 +23,10 @@ SOFTWARE.
 """
 
 
-class ChannelTools:
+class ChannelTools(object):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def token_extract(data, token):
         result, stashed = b"", b""

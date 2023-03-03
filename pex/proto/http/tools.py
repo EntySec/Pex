@@ -23,7 +23,10 @@ SOFTWARE.
 """
 
 
-class HTTPTools:
+class HTTPTools(object):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def normalize_url(host, port, path, ssl=False):
         if ssl:

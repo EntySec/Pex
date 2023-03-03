@@ -31,8 +31,10 @@ import time
 from .tools import ChannelTools
 
 
-class ChannelSocket:
+class ChannelSocket(object):
     def __init__(self, client):
+        super().__init__()
+
         self.channel_tools = ChannelTools()
 
         self.sock = telnetlib.Telnet()
@@ -194,7 +196,10 @@ class ChannelSocket:
             raise RuntimeError("Socket is not connected!")
 
 
-class ChannelClient:
+class ChannelClient(object):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def open_channel(client):
         return ChannelSocket(client)

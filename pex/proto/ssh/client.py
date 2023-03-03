@@ -25,8 +25,10 @@ SOFTWARE.
 import paramiko
 
 
-class SSHSocket:
+class SSHSocket(object):
     def __init__(self, host, port, username=None, password=None, timeout=10):
+        super().__init__()
+
         self.host = host
         self.port = int(port)
 
@@ -66,7 +68,10 @@ class SSHSocket:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
 
 
-class SSHClient:
+class SSHClient(object):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def open_ssh(host, port, username=None, password=None, timeout=10):
         return SSHSocket(host, port, username, password, timeout)

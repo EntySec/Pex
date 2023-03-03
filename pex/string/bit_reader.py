@@ -25,7 +25,7 @@ SOFTWARE.
 import collections
 
 
-class BitReader:
+class BitReader(object):
     """ Subclass of pex.string module.
 
     This subclass of pex.string module is intended for providing
@@ -41,6 +41,7 @@ class BitReader:
         :return None: None
         """
 
+        super().__init()
         self._bits = collections.deque()
 
         for byte in data_bytes:

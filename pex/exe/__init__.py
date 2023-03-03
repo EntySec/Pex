@@ -30,19 +30,22 @@ from .macho import Macho
 from .elf import ELF
 
 
-class EXE:
+class EXE(object):
     """ Main class of pex.exe module.
 
     This main class of pex.exe module is intended for providing
     some implementations of executable file manipulation methods.
     """
 
-    dll = DLL()
-    dylib = Dylib()
+    def __init__(self):
+        super().__init__()
 
-    pe = PE()
-    macho = Macho()
-    elf = ELF()
+        self.dll = DLL()
+        self.dylib = Dylib()
+
+        self.pe = PE()
+        self.macho = Macho()
+        self.elf = ELF()
 
     def check_executable(self, data: bytes, executable: str = '') -> bool:
         """ Check if data is an executable.

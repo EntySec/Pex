@@ -23,12 +23,15 @@ SOFTWARE.
 """
 
 
-class PostTools:
+class PostTools(object):
     """ Subclass of pex.post module.
 
     This subclass of pex.post module is intended for providing
     implementations of some helpful tools for pex.post.
     """
+
+    def __init__(self):
+        super().__init__()
 
     @staticmethod
     def bytes_to_octal(bytes_obj: bytes, extra_zero: bool = False) -> str:

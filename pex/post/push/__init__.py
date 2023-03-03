@@ -31,27 +31,30 @@ from .echo import Echo
 from .printf import Printf
 
 
-class Push:
-    type_tools = Type()
+class Push(object):
+    def __init__(self):
+        super().__init__()
 
-    push_methods = OrderedDict({
-        'printf': [
-            type_tools.platforms['unix'],
-            Printf()
-        ],
-        'echo': [
-            type_tools.platforms['unix'],
-            Echo()
-        ],
-        'bash_echo': [
-            type_tools.platforms['unix'],
-            BashEcho()
-        ],
-        'certutil': [
-            type_tools.platforms['windows'],
-            Certutil()
-        ]
-    })
+        self.type_tools = Type()
+
+        self.push_methods = OrderedDict({
+            'printf': [
+                self.type_tools.platforms['unix'],
+                Printf()
+            ],
+            'echo': [
+                self.type_tools.platforms['unix'],
+                Echo()
+            ],
+            'bash_echo': [
+                self.type_tools.platforms['unix'],
+                BashEcho()
+            ],
+            'certutil': [
+                self.type_tools.platforms['windows'],
+                Certutil()
+            ]
+        })
 
     def push(self, platform, sender, data, location, args=[], method=None, linemax=100):
         if method in self.push_methods or not method:

@@ -25,14 +25,17 @@ SOFTWARE.
 from pex.assembler import Assembler
 
 
-class X64:
+class X64(object):
     """ Subclass of pex.craft module.
 
     This subclass of pex.craft module is intended for providing
     implementations of some x64 CPU features and models.
     """
 
-    assembler = Assembler()
+    def __init__(self):
+        super().__init__()
+
+        self.assembler = Assembler()
 
     def assemble(self, code: str) -> bytes:
         """ Assemble code for x64 architecture.

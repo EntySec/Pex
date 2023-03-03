@@ -25,8 +25,10 @@ SOFTWARE.
 import socket
 
 
-class TCPSocket:
+class TCPSocket(object):
     def __init__(self, host, port, timeout=10):
+        super().__init__()
+
         self.host = host
         self.port = int(port)
 
@@ -60,7 +62,10 @@ class TCPSocket:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
 
 
-class TCPClient:
+class TCPClient(object):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def open_tcp(host, port, timeout=10):
         return TCPSocket(host, port, timeout)

@@ -38,8 +38,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
 
 
-class HTTPListen:
+class HTTPListen(object):
     def __init__(self, host, port, methods={}):
+        super().__init__()
+
         self.http_tools = HTTPTools()
         self.handler = Handler
 
@@ -71,7 +73,10 @@ class HTTPListen:
             raise RuntimeError(f"HTTP listener is not started!")
 
 
-class HTTPListener:
+class HTTPListener(object):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def listen_http(host, port, methods={}):
         return HTTPListen(host, port, methods)

@@ -25,8 +25,10 @@ SOFTWARE.
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 
 
-class FTPSocket:
+class SNMPSocket(object):
     def __init__(self, host, port, timeout=10):
+        super().__init__()
+
         self.host = host
         self.port = int(port)
 
@@ -50,7 +52,10 @@ class FTPSocket:
         raise RuntimeError(f"Invalid community string in {community}!")
 
 
-class SNMPClient:
+class SNMPClient(object):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def open_snmp(host, port, timeout=10):
         return SNMPSocket(host, port, timeout)

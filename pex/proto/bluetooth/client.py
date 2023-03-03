@@ -27,8 +27,10 @@ import time
 from bluepy.btle import Scanner, DefaultDelegate
 
 
-def BTLEOptions:
+class BTLEOptions(object):
     def __init__(self, buffering, mac, enum_services):
+        super().__init__()
+
         self.buffering = buffering
         self.mac = mac
         self.enum_services = enum_services
