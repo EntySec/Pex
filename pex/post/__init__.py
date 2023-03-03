@@ -28,20 +28,23 @@ from .push import Push
 from .tools import PostTools
 
 
-class Post:
+class Post(object):
     """ Main class of pex.post module.
 
     This main class of pex.post module is intended for providing
     an implementation of post function that sends a data to the target.
     """
 
-    push = Push()
+    def __init__(self):
+        super().__init__()
 
-    post_tools = PostTools()
-    type_tools = Type()
-    string_tools = String()
+        self.push = Push()
 
-    post_methods = push.push_methods
+        self.post_tools = PostTools()
+        self.type_tools = Type()
+        self.string_tools = String()
+
+        self.post_methods = push.push_methods
 
     def post(self, stage: bytes, sender, platform: str, architecture: str, args: dict = {}, arguments: str = '',
              method: str = '', location: str = '', concat: str = '', background: str = '', linemax: int = 100):

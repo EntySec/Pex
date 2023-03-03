@@ -32,27 +32,30 @@ from scapy.all import *
 from pydantic.utils import deep_update
 
 
-class Net:
+class Net(object):
     """ Main of pex.net module.
 
     This main of pex.net module is intended for providing some
     implementations of various network tools.
     """
 
-    srp_timeout = 5
-    sr1_timeout = 5
-    sr_timeout = 3
+    def __init__(self):
+        super().__init__()
 
-    os_ttl = {
-        0x3c: 'macos',
-        0x40: 'linux',
-        0xff: 'solaris',
-        0x80: 'windows'
-    }
+        self.srp_timeout = 5
+        self.sr1_timeout = 5
+        self.sr_timeout = 3
 
-    macdb = 'https://macvendors.co/api/'
+        self.os_ttl = {
+            0x3c: 'macos',
+            0x40: 'linux',
+            0xff: 'solaris',
+            0x80: 'windows'
+        }
 
-    result = {}
+        self.macdb = 'https://macvendors.co/api/'
+
+        self.result = {}
 
     @staticmethod
     def get_gateways() -> dict:
@@ -117,13 +120,12 @@ class Net:
         return hosts
 
     @staticmethod
-    def get_ports(host: str, start: int = 0, end: int = 65535, tech: str = 'f') -> dict:
+    def get_ports(host: str, start: int = 0, end: int = 65535) -> dict:
         """ Scan host for opened ports.
 
         :param str host: host to scan for opened ports
         :param int start: first port
         :param int end: final port
-        :param int tech: technique to use
         :return dict: dictionary of port and service name
         """
 
@@ -160,7 +162,8 @@ class Net:
         except Exception:
             return 'unidentified'
 
-    def get_dns(self, host: str) -> str:
+    @staticmethod
+    def get_dns(host: str) -> str:
         """ Get local DNS name by host.
 
         :param str host: host to get local DNS name by

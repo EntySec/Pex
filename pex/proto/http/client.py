@@ -31,8 +31,11 @@ from .tools import HTTPTools
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-class HTTPClient:
-    http_tools = HTTPTools()
+class HTTPClient(object):
+    def __init__(self):
+        super().__init__()
+
+        self.http_tools = HTTPTools()
 
     def http_request(self, method, host, port, path='/', ssl=False, timeout=10, output=True, session=requests,
                      **kwargs):

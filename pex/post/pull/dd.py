@@ -29,10 +29,13 @@ from pex.proto.channel import ChannelTools
 from pex.string import String
 
 
-class DD:
-    post_tools = PostTools()
-    string_tools = String()
-    channel_tools = ChannelTools()
+class DD(object):
+    def __init__(self):
+        super().__init__()
+
+        self.post_tools = PostTools()
+        self.string_tools = String()
+        self.channel_tools = ChannelTools()
 
     def pull(self, sender, location, args=[]):
         result = b""

@@ -25,8 +25,10 @@ SOFTWARE.
 import socket
 
 
-class TCPListen:
+class TCPListen(object):
     def __init__(self, host, port, timeout=10):
+        super().__init__()
+
         self.host = host
         self.port = int(port)
 
@@ -76,7 +78,10 @@ class TCPListen:
             raise RuntimeError(f"Socket {self.address[0]}:{self.address[1]} is not connected!")
 
 
-class TCPListener:
+class TCPListener(object):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def listen_tcp(host, port, timeout=10):
         return TCPListen(host, port, timeout)

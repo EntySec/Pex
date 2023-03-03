@@ -25,7 +25,10 @@ SOFTWARE.
 import socket
 
 
-class TCPTools:
+class TCPTools(object):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def get_local_host():
         try:

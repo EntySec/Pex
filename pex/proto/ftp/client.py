@@ -26,8 +26,10 @@ import ftplib
 import io
 
 
-class FTPSocket:
+class FTPSocket(object):
     def __init__(self, host, port, timeout=10, ssl=False):
+        super().__init__()
+
         self.host = host
         self.port = int(port)
 
@@ -66,7 +68,10 @@ class FTPSocket:
             return b""
 
 
-class FTPClient:
+class FTPClient(object):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def open_ftp(host, port, timeout=10, ssl=False):
         return FTPSocket(host, port, timeout, ssl)

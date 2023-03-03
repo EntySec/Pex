@@ -29,19 +29,22 @@ from .cat import Cat
 from .dd import DD
 
 
-class Pull:
-    type_tools = Type()
+class Pull(object):
+    def __init__(self):
+        super().__init__()
 
-    pull_methods = OrderedDict({
-        'cat': [
-            type_tools.platforms['unix'],
-            Cat()
-        ],
-        'dd': [
-            type_tools.platforms['unix'],
-            DD()
-        ]
-    })
+        self.type_tools = Type()
+
+        self.pull_methods = OrderedDict({
+            'cat': [
+                self.type_tools.platforms['unix'],
+                Cat()
+            ],
+            'dd': [
+                self.type_tools.platforms['unix'],
+                DD()
+            ]
+        })
 
     def pull(self, platform, sender, location, args=[], method=None):
         if method in self.pull_methods or not method:

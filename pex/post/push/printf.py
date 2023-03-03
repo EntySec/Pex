@@ -27,8 +27,11 @@ from alive_progress import alive_bar
 from pex.post.tools import PostTools
 
 
-class Printf:
-    post_tools = PostTools()
+class Printf(object):
+    def __init__(self):
+        super().__init__()
+
+        self.post_tools = PostTools()
 
     def push(self, sender, data, location, args=[], linemax=100):
         printf_stream = "printf '{}' >> {}"

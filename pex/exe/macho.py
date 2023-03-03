@@ -25,24 +25,27 @@ SOFTWARE.
 import os
 
 
-class Macho:
+class Macho(object):
     """ Subclass of pex.exe module.
 
     This subclass of pex.exe module is intended for providing
     an implementation of macOS macho generator.
     """
 
-    macho_magic = [
-        b"\xca\xfe\xba\xbe",
-        b"\xfe\xed\xfa\xce",
-        b"\xfe\xed\xfa\xcf",
-        b"\xce\xfa\xed\xfe",
-        b"\xcf\xfa\xed\xfe"
-    ]
+    def __init__(self):
+        super().__init__()
 
-    macho_headers = {
-        'x64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/macho/macho_x64.macho'
-    }
+        self.macho_magic = [
+            b"\xca\xfe\xba\xbe",
+            b"\xfe\xed\xfa\xce",
+            b"\xfe\xed\xfa\xcf",
+            b"\xce\xfa\xed\xfe",
+            b"\xcf\xfa\xed\xfe"
+        ]
+
+        self.macho_headers = {
+            'x64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/macho/macho_x64.macho'
+        }
 
     def check_macho(self, data: bytes) -> bool:
         """ Check if data is a macOS macho.

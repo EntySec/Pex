@@ -28,9 +28,12 @@ from pex.post.tools import PostTools
 from pex.string import String
 
 
-class Certutil:
-    post_tools = PostTools()
-    string_tools = String()
+class Certutil(object):
+    def __init__(self):
+        super().__init__()
+
+        self.post_tools = PostTools()
+        self.string_tools = String()
 
     def push(self, sender, data, location, args=[], linemax=100):
         decode_stream = "certutil -decode {}.b64 {}.exe & del {}.b64"

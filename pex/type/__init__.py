@@ -25,140 +25,143 @@ SOFTWARE.
 from .casting import Casting
 
 
-class Type:
+class Type(object):
     """ Main class of pex.type module.
 
     This main class of pex.type module is intended for providing
     some important constants and type casting methods.
     """
 
-    casting = Casting()
+    def __init__(self):
+        super().__init__()
 
-    platforms = {
-        'generic': [
-            'unix',
-            'linux',
-            'aix',
-            'bsd',
-            'macos',
-            'solaris',
-            'apple_ios',
-            'android',
-            'windows'
-        ],
-        'xnu': [
-            'macos',
-            'apple_ios'
-        ],
-        'unix': [
-            'unix',
-            'linux',
-            'aix',
-            'bsd',
-            'macos',
-            'solaris',
-            'apple_ios',
-            'android'
-        ],
-        'windows': [
-            'windows'
-        ]
-    }
+        self.casting = Casting()
 
-    shells = {
-        'sh': '/bin/sh',
-        'bash': '/bin/bash',
-        'ash': '/bin/ash',
-        'ksh': '/bin/ksh'
-    }
+        self.platforms = {
+            'generic': [
+                'unix',
+                'linux',
+                'aix',
+                'bsd',
+                'macos',
+                'solaris',
+                'apple_ios',
+                'android',
+                'windows'
+            ],
+            'xnu': [
+                'macos',
+                'apple_ios'
+            ],
+            'unix': [
+                'unix',
+                'linux',
+                'aix',
+                'bsd',
+                'macos',
+                'solaris',
+                'apple_ios',
+                'android'
+            ],
+            'windows': [
+                'windows'
+            ]
+        }
 
-    architectures = {
-        'generic': {
-            'python': {
-                'command': 'python3',
-                'platforms': platforms['generic']
+        self.shells = {
+            'sh': '/bin/sh',
+            'bash': '/bin/bash',
+            'ash': '/bin/ash',
+            'ksh': '/bin/ksh'
+        }
+
+        self.architectures = {
+            'generic': {
+                'python': {
+                    'command': 'python3',
+                    'platforms': platforms['generic']
+                },
+                'php': {
+                    'command': 'php',
+                    'platforms': platforms['generic']
+                },
+                'perl': {
+                    'command': 'perl',
+                    'platforms': platforms['generic']
+                },
+                'ruby': {
+                    'command': 'ruby',
+                    'platforms': platforms['generic']
+                },
+                'bash': {
+                    'command': 'bash',
+                    'platforms': platforms['unix']
+                },
+                'sh': {
+                    'command': 'sh',
+                    'platforms': platforms['unix']
+                },
+                'ksh': {
+                    'command': 'ksh',
+                    'platforms': platforms['unix']
+                },
+                'applescript': {
+                    'command': 'osascript',
+                    'platforms': platforms['xnu']
+                }
             },
-            'php': {
-                'command': 'php',
-                'platforms': platforms['generic']
-            },
-            'perl': {
-                'command': 'perl',
-                'platforms': platforms['generic']
-            },
-            'ruby': {
-                'command': 'ruby',
-                'platforms': platforms['generic']
-            },
-            'bash': {
-                'command': 'bash',
-                'platforms': platforms['unix']
-            },
-            'sh': {
-                'command': 'sh',
-                'platforms': platforms['unix']
-            },
-            'ksh': {
-                'command': 'ksh',
-                'platforms': platforms['unix']
-            },
-            'applescript': {
-                'command': 'osascript',
-                'platforms': platforms['xnu']
-            }
-        },
-        'cpu': [
-            'x86',
-            'x64',
+            'cpu': [
+                'x86',
+                'x64',
 
-            'aarch64',
-            'armle',
-            'armbe',
+                'aarch64',
+                'armle',
+                'armbe',
 
-            'mips64',
-            'mipsle',
-            'mipsbe',
+                'mips64',
+                'mipsle',
+                'mipsbe',
 
-            'ppc',
-            'ppc64',
+                'ppc',
+                'ppc64',
 
-            'sh4',
+                'sh4',
 
-            'zarch',
+                'zarch',
 
-            'sparc'
-        ]
-    }
+                'sparc'
+            ]
+        }
 
-    formats = {
-        'macho': [
-            'macos',
-            'apple_ios'
-        ],
-        'elf': [
-            'unix',
-            'linux',
-            'aix',
-            'bsd',
-            'solaris',
-            'android'
-        ],
-        'pe': [
-            'windows'
-        ]
-    }
+        self.formats = {
+            'macho': [
+                'macos',
+                'apple_ios'
+            ],
+            'elf': [
+                'unix',
+                'linux',
+                'aix',
+                'bsd',
+                'solaris',
+                'android'
+            ],
+            'pe': [
+                'windows'
+            ]
+        }
 
-    types = {
-        'mac': casting.is_mac,
-        'ip': casting.is_ip,
-        'ipv4': casting.is_ipv4,
-        'ipv6': casting.is_ipv6,
-        'ipv4_cidr': casting.is_ipv4_cidr,
-        'ipv6_cidr': casting.is_ipv6_cidr,
-        'port': casting.is_port,
-        'port_range': casting.is_port_range,
-        'number': casting.is_number,
-        'integer': casting.is_integer,
-        'float': casting.is_float,
-        'boolean': casting.is_boolean
-    }
+        self.types = {
+            'mac': casting.is_mac,
+            'ip': casting.is_ip,
+            'ipv4': casting.is_ipv4,
+            'ipv6': casting.is_ipv6,
+            'ipv4_cidr': casting.is_ipv4_cidr,
+            'ipv6_cidr': casting.is_ipv6_cidr,
+            'port': casting.is_port,
+            'port_range': casting.is_port_range,
+            'number': casting.is_number,
+            'integer': casting.is_integer,
+            'float': casting.is_float,
+            'boolean': casting.is_boolean
+        }

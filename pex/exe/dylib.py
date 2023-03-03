@@ -25,24 +25,27 @@ SOFTWARE.
 import os
 
 
-class Dylib:
+class Dylib(object):
     """ Subclass of pex.exe module.
 
     This subclass of pex.exe module is intended for providing
     an implementation of macOS dynamic library generator.
     """
 
-    dylib_magic = [
-        b"\xca\xfe\xba\xbe",
-        b"\xfe\xed\xfa\xce",
-        b"\xfe\xed\xfa\xcf",
-        b"\xce\xfa\xed\xfe",
-        b"\xcf\xfa\xed\xfe"
-    ]
+    def __init__(self):
+        super().__init__()
 
-    dylib_headers = {
-        'x64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/dylib/dylib_x64.dylib'
-    }
+        self.dylib_magic = [
+            b"\xca\xfe\xba\xbe",
+            b"\xfe\xed\xfa\xce",
+            b"\xfe\xed\xfa\xcf",
+            b"\xce\xfa\xed\xfe",
+            b"\xcf\xfa\xed\xfe"
+        ]
+
+        self.dylib_headers = {
+            'x64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/dylib/dylib_x64.dylib'
+        }
 
     def check_dylib(self, data: bytes) -> bool:
         """ Check if data is a macOS dynamic library.

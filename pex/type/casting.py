@@ -25,12 +25,15 @@ SOFTWARE.
 import re
 
 
-class Casting:
+class Casting(object):
     """ Subclass of pex.type module.
 
     This subclass of pex.type module is intended for providing
     implementations of some type casting methods.
     """
+
+    def __init__(self):
+        super().__init__()
 
     @staticmethod
     def is_mac(mac: str) -> bool:

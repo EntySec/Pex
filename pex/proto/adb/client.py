@@ -27,7 +27,7 @@ import socket
 from adb_shell.adb_device import AdbDeviceTcp
 
 
-class ADBSocket:
+class ADBSocket(object):
     """ Subclass of pex.proto.adb module.
 
     This subclass of pex.proto.adb module represents the Python
@@ -43,6 +43,8 @@ class ADBSocket:
         :param int timeout: connection timeout
         :return None: None
         """
+
+        super().__init__()
 
         self.host = host
         self.port = int(port)
@@ -86,7 +88,10 @@ class ADBSocket:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
 
 
-class ADBClient:
+class ADBClient(object):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def open_adb(host: str, port: int, timeout: int = 10) -> ADBSocket:
         """ Create the ADBSocket with specified socket pair.

@@ -27,12 +27,15 @@ import ssl
 from OpenSSL import crypto
 
 
-class OpenSSL:
+class OpenSSL(object):
     """ Subclass of pex.ssl module.
 
     This subclass of pex.ssl module is intended for providing
     Python realization of OpenSSL library.
     """
+
+    def __init__(self):
+        super().__init__()
 
     def wrap_client(self, client: socket.socket, keyfile: str = 'hatsploit.key', certfile: str = 'hatsploit.crt',
                     protocol: ssl._SSLMethod = ssl.PROTOCOL_TLS, expire: int = 365, nodename: str = 'HatSploit',

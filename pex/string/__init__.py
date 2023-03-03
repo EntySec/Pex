@@ -34,12 +34,15 @@ from .lzs_decompress import LZSDecompress
 from .ring_list import RingList
 
 
-class String:
+class String(object):
     """ Main class of pex.string module.
 
     This main class of pex.string module is intended for providing
     implementations of some string features and methods.
     """
+
+    def __init__(self):
+        super().__init__()
 
     @staticmethod
     def extract_strings(binary_data: str) -> list:

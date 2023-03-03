@@ -25,12 +25,15 @@ SOFTWARE.
 import sqlite3
 
 
-class DB:
+class DB(object):
     """ Main class of pex.db module.
 
     This main class of pex.db module is intended for providing
     implementations of some database parsing methods.
     """
+
+    def __init__(self):
+        super().__init__()
 
     @staticmethod
     def parse_addressbook(database: str) -> list:

@@ -27,7 +27,7 @@ import collections
 from typing import Any
 
 
-class RingList:
+class RingList(object):
     """ Subclass of pex.string module.
 
     This subclass of pex.string module is intended for providing
@@ -41,6 +41,8 @@ class RingList:
         :param int length: length of a list
         :return None: None
         """
+
+        super().__init__()
 
         self.__data__ = collections.deque()
         self.__full__ = False

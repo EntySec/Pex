@@ -25,14 +25,17 @@ SOFTWARE.
 from hatasm import HatAsm
 
 
-class Assembler:
+class Assembler(object):
     """ Main class of pex.assembler module.
 
     This main class of pex.assembler module is intended for providing
     an implementation of native assembler.
     """
 
-    hatasm = HatAsm()
+    def __init__(self):
+        super().__init__()
+
+        self.hatasm = HatAsm()
 
     def assemble(self, arch: str, code: str, mode: str = '', syntax: str = 'intel') -> bytes:
         """ Assemble code for the specified architecture.

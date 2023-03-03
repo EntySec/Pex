@@ -26,12 +26,15 @@ import socket
 import struct
 
 
-class Socket:
+class Socket(object):
     """ Main class of pex.socket module.
 
     This main class of pex.socket module is intended for providing
     implementations of socket features.
     """
+
+    def __init__(self):
+        super().__init__()
 
     @staticmethod
     def pack_host(host: str, endian: str = 'little') -> bytes:
