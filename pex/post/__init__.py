@@ -44,7 +44,7 @@ class Post(object):
         self.type_tools = Type()
         self.string_tools = String()
 
-        self.post_methods = push.push_methods
+        self.post_methods = self.push.push_methods
 
     def post(self, stage: bytes, sender, platform: str, architecture: str, args: dict = {}, arguments: str = '',
              method: str = '', location: str = '', concat: str = '', background: str = '', linemax: int = 100):
