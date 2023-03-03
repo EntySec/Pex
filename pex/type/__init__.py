@@ -79,35 +79,35 @@ class Type(object):
             'generic': {
                 'python': {
                     'command': 'python3',
-                    'platforms': platforms['generic']
+                    'platforms': self.platforms['generic']
                 },
                 'php': {
                     'command': 'php',
-                    'platforms': platforms['generic']
+                    'platforms': self.platforms['generic']
                 },
                 'perl': {
                     'command': 'perl',
-                    'platforms': platforms['generic']
+                    'platforms': self.platforms['generic']
                 },
                 'ruby': {
                     'command': 'ruby',
-                    'platforms': platforms['generic']
+                    'platforms': self.platforms['generic']
                 },
                 'bash': {
                     'command': 'bash',
-                    'platforms': platforms['unix']
+                    'platforms': self.platforms['unix']
                 },
                 'sh': {
                     'command': 'sh',
-                    'platforms': platforms['unix']
+                    'platforms': self.platforms['unix']
                 },
                 'ksh': {
                     'command': 'ksh',
-                    'platforms': platforms['unix']
+                    'platforms': self.platforms['unix']
                 },
                 'applescript': {
                     'command': 'osascript',
-                    'platforms': platforms['xnu']
+                    'platforms': self.platforms['xnu']
                 }
             },
             'cpu': [
