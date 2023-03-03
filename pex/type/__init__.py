@@ -152,16 +152,16 @@ class Type(object):
         }
 
         self.types = {
-            'mac': casting.is_mac,
-            'ip': casting.is_ip,
-            'ipv4': casting.is_ipv4,
-            'ipv6': casting.is_ipv6,
-            'ipv4_cidr': casting.is_ipv4_cidr,
-            'ipv6_cidr': casting.is_ipv6_cidr,
-            'port': casting.is_port,
-            'port_range': casting.is_port_range,
-            'number': casting.is_number,
-            'integer': casting.is_integer,
-            'float': casting.is_float,
-            'boolean': casting.is_boolean
+            'mac': self.casting.is_mac,
+            'ip': self.casting.is_ip,
+            'ipv4': self.casting.is_ipv4,
+            'ipv6': self.casting.is_ipv6,
+            'ipv4_cidr': self.casting.is_ipv4_cidr,
+            'ipv6_cidr': self.casting.is_ipv6_cidr,
+            'port': self.casting.is_port,
+            'port_range': self.casting.is_port_range,
+            'number': self.casting.is_number,
+            'integer': self.casting.is_integer,
+            'float': self.casting.is_float,
+            'boolean': self.casting.is_boolean
         }
