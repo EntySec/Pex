@@ -72,23 +72,23 @@ class EXE(object):
 
         return False
 
-    def executable_replace(self, data: bytes, string: str, content: bytes) -> bytes:
+    def executable_replace(self, data: bytes, dst: bytes, src: bytes) -> bytes:
         """ Replace string in executable with content.
 
         :param bytes data: executable to replace string in
-        :param str string: string to replace with content
-        :param bytes content: content to replace string with
+        :param bytes dst: string to replace with content
+        :param bytes src: content to replace string with
         :return bytes: processed executable
         """
 
         if self.check_executable(data):
-            content_size = len(content)
-            string_size = len(string)
+            content_size = len(src)
+            string_size = len(dst)
 
-            string_index = data.index(string.encode())
+            string_index = data.index(dst)
 
             if content_size >= string_size:
-                return data[:string_index] + content + data[string_index + content_size:]
-            return data[:string_index] + content + data[string_index + string_size:]
+                return data[:string_index] + src + data[string_index + content_size:]
+            return data[:string_index] + src + data[string_index + string_size:]
 
-        return data.replace(string.encode(), data)
+        return data.replace(dst, data)
