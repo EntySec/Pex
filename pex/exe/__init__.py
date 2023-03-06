@@ -91,4 +91,4 @@ class EXE(object):
                 return data[:string_index] + src + data[string_index + content_size:]
             return data[:string_index] + src + data[string_index + string_size:]
 
-        return data.replace(dst, data)
+        return data.replace(dst, data, 1)
