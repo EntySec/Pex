@@ -59,7 +59,7 @@ class ChannelSocket(object):
 
     def send(self, data):
         if self.sock.sock:
-            return self.sock.write(data)
+            return self.sock.sock.send(data)
         raise RuntimeError("Socket is not connected!")
 
     def read(self, size):
