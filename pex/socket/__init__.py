@@ -33,7 +33,7 @@ class Socket(object):
     implementations of socket features.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @staticmethod

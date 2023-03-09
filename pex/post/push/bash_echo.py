@@ -22,18 +22,36 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from typing import Callable
 from alive_progress import alive_bar
 
 from pex.post.tools import PostTools
 
 
 class BashEcho(object):
-    def __init__(self):
+    """ Subclass of pex.post.push module.
+
+    This subclass of pex.post.push module is intended for providing
+    implementation of bash echo method of pushing file to sender.
+    """
+
+    def __init__(self) -> None:
         super().__init__()
 
         self.post_tools = PostTools()
 
-    def push(self, sender, data, location, args=[], linemax=100):
+    def push(self, sender: Callable, data: bytes, location: str,
+             args: list = [], linemax: int = 100) -> None:
+        """ Push file to sender using bash echo method.
+
+        :param Callable sender: sender to push file to
+        :param bytes data: data to push to file on sender
+        :param str location: location of file to push data to
+        :param list args: extra sender arguments
+        :param int linemax: max command line size for each chunk
+        :return None: None
+        """
+
         echo_stream = "echo -en '{}' >> {}"
         echo_max_length = linemax
 

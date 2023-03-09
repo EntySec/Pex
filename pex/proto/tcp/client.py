@@ -26,7 +26,21 @@ import socket
 
 
 class TCPSocket(object):
-    def __init__(self, host, port, timeout=10):
+    """ Subclass of pex.proto.tcp module.
+
+    This subclass of pex.proto.tcp module represents Python
+    implementation of the TCP socket.
+    """
+
+    def __init__(self, host: str, port: int, timeout: int = 10) -> None:
+        """ Initialize TCPSocket with socket pair.
+
+        :param str host: TCP host
+        :param int port: TCP port
+        :param int timeout: connection timeout
+        :return None: None
+        """
+
         super().__init__()
 
         self.host = host
@@ -37,25 +51,51 @@ class TCPSocket(object):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(timeout)
 
-    def connect(self):
+    def connect(self) -> None:
+        """ Connect to TCP socket.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.sock.connect((self.host, self.port))
         except Exception:
             raise RuntimeError(f"Connection failed for {self.pair}!")
 
-    def disconnect(self):
+    def disconnect(self) -> None:
+        """ Disconnect from TCP socket.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.sock.close()
         except Exception:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
 
-    def send(self, data):
+    def send(self, data: bytes) -> None:
+        """ Send data to the socket.
+
+        :param bytes data: data to send
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.sock.send(data)
         except Exception:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
 
-    def recv(self, size):
+    def recv(self, size: int) -> bytes:
+        """ Read data from the socket.
+
+        :param int size: size of data
+        :return bytes: read data
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             return self.sock.recv(size)
         except Exception:
@@ -63,9 +103,23 @@ class TCPSocket(object):
 
 
 class TCPClient(object):
-    def __init__(self):
+    """ Subclass of pex.proto.tcp module.
+
+    This subclass of pex.proto.tcp module represents Python
+    implementation of the TCP socket.
+    """
+
+    def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
-    def open_tcp(host, port, timeout=10):
+    def open_tcp(host: str, port: int, timeout: int = 10) -> TCPSocket:
+        """ Open TCP connection with socket pair.
+
+        :param str host: TCP host
+        :param int port: TCP port
+        :param int timeout: connection timeout
+        :return TCPSocket: TCP socket
+        """
+
         return TCPSocket(host, port, timeout)

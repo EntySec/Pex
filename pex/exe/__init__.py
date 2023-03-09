@@ -37,7 +37,7 @@ class EXE(object):
     some implementations of executable file manipulation methods.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.dll = DLL()

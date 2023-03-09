@@ -32,7 +32,7 @@ class X86(object):
     implementations of some x86 architecture features.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.EAX = self.AL = self.AX = self.ES = 0

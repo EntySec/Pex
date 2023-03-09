@@ -32,7 +32,7 @@ class Dylib(object):
     an implementation of macOS dynamic library generator.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.dylib_magic = [

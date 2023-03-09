@@ -32,7 +32,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class HTTPClient(object):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.http_tools = HTTPTools()

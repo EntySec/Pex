@@ -32,7 +32,7 @@ class DLL(object):
     an implementation of Windows dynamic library generator.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.dll_magic = [

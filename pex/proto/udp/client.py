@@ -26,7 +26,21 @@ import socket
 
 
 class UDPSocket(object):
-    def __init__(self, host, port, timeout=10):
+    """ Subclass of pex.proto.udp module.
+
+    This subclass of pex.proto.udp module represents Python
+    implementation of the UDP socket.
+    """
+
+    def __init__(self, host: str, port: int, timeout: int = 10) -> None:
+        """ Initialize UDPSocket with socket pair.
+
+        :param str host: UDP host
+        :param int port: UDP port
+        :param int timeout: connection timeout
+        :return None: None
+        """
+
         super().__init__()
 
         self.host = host
@@ -37,13 +51,27 @@ class UDPSocket(object):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.settimeout(timeout)
 
-    def send(self, data):
+    def send(self, data: bytes) -> None:
+        """ Send data to the socket.
+
+        :param bytes data: data to send
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.sock.sendto(data, (self.host, self.port))
         except Exception:
             raise RuntimeError(f"Connection failed for {self.pair}!")
 
-    def recv(self, size):
+    def recv(self, size: int) -> bytes:
+        """ Read data from the socket.
+
+        :param int size: size of data
+        :return bytes: read data
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             return self.sock.recv(size)
         except Exception:
@@ -51,9 +79,23 @@ class UDPSocket(object):
 
 
 class UDPClient(object):
-    def __init__(self):
+    """ Subclass of pex.proto.udp module.
+
+    This subclass of pex.proto.udp module represents Python
+    implementation of UDP client.
+    """
+
+    def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
-    def open_udp(host, port, timeout=10):
+    def open_udp(host: str, port: int, timeout: int = 10) -> UDPSocket:
+        """ Open UDP connection with socket pair.
+
+        :param str host: UDP host
+        :param int port: UDP port
+        :param int timeout: connection timeout
+        :return UDPSocket: UDP socket
+        """
+
         return UDPSocket(host, port, timeout)

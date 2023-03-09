@@ -39,7 +39,7 @@ class Net(object):
     implementations of various network tools.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.srp_timeout = 5

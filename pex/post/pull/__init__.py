@@ -23,6 +23,7 @@ SOFTWARE.
 """
 
 from collections import OrderedDict
+from typing import Callable
 
 from pex.type import Type
 from .cat import Cat
@@ -30,7 +31,13 @@ from .dd import DD
 
 
 class Pull(object):
-    def __init__(self):
+    """ Main class of pex.post.pull module.
+
+    This main class of pex.post.pull module is intended for providing
+    implementations of some functions for pulling files from sender.
+    """
+
+    def __init__(self) -> None:
         super().__init__()
 
         self.type_tools = Type()
@@ -46,7 +53,19 @@ class Pull(object):
             ]
         })
 
-    def pull(self, platform, sender, location, args=[], method=None):
+    def pull(self, platform: str, sender: Callable, location: str,
+             args: list = [], method: str = '') -> bytes:
+        """ Pull file from sender.
+
+        :param str platform: sender platform
+        :param Callable sender: sender to pull file from
+        :param str location: location of file to pull
+        :param list args: extra sender arguments
+        :param str method: pull method (see self.pull_methods)
+        :return bytes: file data
+        :raises RuntimeError: with trailing error message
+        """
+
         if method in self.pull_methods or not method:
             if not method:
                 for pull_method in self.pull_methods:

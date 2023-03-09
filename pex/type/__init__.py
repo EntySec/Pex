@@ -32,7 +32,7 @@ class Type(object):
     some important constants and type casting methods.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.casting = Casting()

@@ -35,7 +35,7 @@ class Opty2(object):
     an implementation of Opty2 NOP sled generator.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.x86 = X86()

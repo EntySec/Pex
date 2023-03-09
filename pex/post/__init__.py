@@ -35,7 +35,7 @@ class Post(object):
     an implementation of post function that sends a data to the target.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.push = Push()
@@ -46,8 +46,9 @@ class Post(object):
 
         self.post_methods = self.push.push_methods
 
-    def post(self, stage: bytes, sender, platform: str, architecture: str, args: dict = {}, arguments: str = '',
-             method: str = '', location: str = '', concat: str = '', background: str = '', linemax: int = 100):
+    def post(self, stage: bytes, sender, platform: str, architecture: str,
+             args: dict = {}, arguments: str = '', method: str = '', location: str = '',
+             concat: str = '', background: str = '', linemax: int = 100) -> None:
         """ Post a stage through the sender function.
 
         :param bytes stage: stage to post

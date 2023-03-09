@@ -30,7 +30,7 @@ class Opty2Tables(object):
     Opty2 NOP sled tables used to generate Opty2 NOP sled.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.SharedShift0 = [

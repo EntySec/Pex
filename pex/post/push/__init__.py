@@ -23,6 +23,7 @@ SOFTWARE.
 """
 
 from collections import OrderedDict
+from typing import Callable
 
 from pex.type import Type
 from .bash_echo import BashEcho
@@ -32,7 +33,13 @@ from .printf import Printf
 
 
 class Push(object):
-    def __init__(self):
+    """ Main class of pex.post.push module.
+
+    This main class of pex.post.push module is intended for providing
+    implementations of some functions for pushing files to sender.
+    """
+
+    def __init__(self) -> None:
         super().__init__()
 
         self.type_tools = Type()
@@ -56,7 +63,21 @@ class Push(object):
             ]
         })
 
-    def push(self, platform, sender, data, location, args=[], method=None, linemax=100):
+    def push(self, platform: str, sender: Callable, data: bytes, location: str,
+             args: list = [], method: str = '', linemax: int = 100) -> str:
+        """ Push file to sender.
+
+        :param str platform: sender platform
+        :param Callable sender: sender to push file to
+        :param bytes data: data to push to file on sender
+        :param str location: location of file to push data to
+        :param list args: extra sender arguments
+        :param str method: push method (see self.push_methods)
+        :param int linemax: max command line size for each chunk
+        :return str: location of pushed file
+        :raises RuntimeError: with trailing error message
+        """
+
         if method in self.push_methods or not method:
             if not method:
                 for push_method in self.push_methods:

@@ -26,7 +26,21 @@ import socket
 
 
 class TCPListen(object):
-    def __init__(self, host, port, timeout=10):
+    """ Subclass of pex.proto.tcp module.
+
+    This subclass of pex.proto.tcp module represents Python
+    implementation of TCP listener.
+    """
+
+    def __init__(self, host: str, port: int, timeout: int = 10) -> None:
+        """ Start TCP listener on socket pair.
+
+        :param str host: host to listen
+        :param int port: port to listen
+        :param int timeout: listener timeout
+        :return None: None
+        """
+
         super().__init__()
 
         self.host = host
@@ -40,38 +54,76 @@ class TCPListen(object):
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.settimeout(timeout)
 
-    def listen(self):
+    def listen(self) -> None:
+        """ Start TCP listener.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.sock.bind((self.host, self.port))
             self.sock.listen(1)
         except Exception:
             raise RuntimeError(f"Failed to start TCP listener on port {str(self.port)}!")
 
-    def stop(self):
+    def stop(self) -> None:
+        """ Stop TCP listener.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.sock.close()
         except Exception:
             raise RuntimeError("TCP listener is not started!")
 
-    def accept(self):
+    def accept(self) -> None:
+        """ Accept connection.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.client, self.address = self.sock.accept()
         except Exception:
             raise RuntimeError("TCP listener is not started!")
 
-    def disconnect(self):
+    def disconnect(self) -> None:
+        """ Disconnect connected socket.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.client.close()
         except Exception:
             raise RuntimeError(f"Socket {self.address[0]}:{self.address[1]} is not connected!")
 
-    def send(self, data):
+    def send(self, data: bytes) -> None:
+        """ Send data to the connected socket.
+
+        :param bytes data: data to send
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.client.send(data)
         except Exception:
             raise RuntimeError(f"Socket {self.address[0]}:{self.address[1]} is not connected!")
 
-    def recv(self, size):
+    def recv(self, size: int) -> bytes:
+        """ Read data from the connected socket.
+
+        :param int size: size of data
+        :return bytes: read data
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             return self.client.recv(size)
         except Exception:
@@ -79,9 +131,23 @@ class TCPListen(object):
 
 
 class TCPListener(object):
-    def __init__(self):
+    """ Subclass of pex.proto.tcp module.
+
+    This subclass of pex.proto.tcp module represents Python
+    implementation of TCP listener.
+    """
+
+    def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
-    def listen_tcp(host, port, timeout=10):
+    def listen_tcp(host: str, port: int, timeout: int = 10) -> TCPListen:
+        """ Start TCP listener on socket pair.
+
+        :param str host: host to listen
+        :param int port: port to listen
+        :param int timeout: listener timeout
+        :return TCPListen: TCP listener
+        """
+
         return TCPListen(host, port, timeout)

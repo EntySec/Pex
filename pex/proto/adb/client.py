@@ -31,12 +31,12 @@ class ADBSocket(object):
     """ Subclass of pex.proto.adb module.
 
     This subclass of pex.proto.adb module represents the Python
-    an implementation of the Android Debug Bridge socket.
+    implementation of the Android Debug Bridge socket.
     """
 
     def __init__(self, host: str, port: int, timeout: int = 10) -> None:
         """ ADBSocket takes socket pair and then allows you
-        to perform standart protocol operations on it.
+        to perform protocol operations on it.
 
         :param str host: ADB host
         :param int port: ADB port
@@ -78,6 +78,7 @@ class ADBSocket(object):
     def send_command(self, command: str) -> str:
         """ Send command to the socket.
 
+        :param str command: command to send
         :return str: command output
         :raises RuntimeError: with trailing error message
         """
@@ -89,7 +90,13 @@ class ADBSocket(object):
 
 
 class ADBClient(object):
-    def __init__(self):
+    """ Subclass of pex.proto.adb module.
+
+    This subclass of pex.proto.adb module represents Python
+    implementation of the Android Debug Bridge client.
+    """
+
+    def __init__(self) -> None:
         super().__init__()
 
     @staticmethod

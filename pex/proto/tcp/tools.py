@@ -26,11 +26,22 @@ import socket
 
 
 class TCPTools(object):
-    def __init__(self):
+    """ Subclass of pex.proto.tcp module.
+
+    This subclass of pex.proto.tcp module is intended for providing
+    some TCP tools.
+    """
+
+    def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
-    def get_local_host():
+    def get_local_host() -> str:
+        """ Get local host.
+
+        :return str: local host
+        """
+
         try:
             server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             server.connect(("8.8.8.8", 53))
@@ -45,14 +56,28 @@ class TCPTools(object):
 
         return local_host
 
-    def convert_to_local(self, host):
+    def convert_to_local(self, host: str) -> str:
+        """ Convert host to local / Parse local host.
+
+        :param str host: host to convert / parse
+        :return str: local host
+        """
+
         if host in ['0.0.0.0']:
             return self.get_local_host()
 
         return host
 
     @staticmethod
-    def check_tcp_port(host, port, timeout=1):
+    def check_tcp_port(host: str, port: int, timeout: int = 1) -> bool:
+        """ Check if TCP port is opened.
+
+        :param str host: host to check
+        :param int port: port to check
+        :param int timeout: check timeout
+        :return bool: True if opened else False
+        """
+
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(timeout)
 

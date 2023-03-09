@@ -32,7 +32,7 @@ class Casting(object):
     implementations of some type casting methods.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
@@ -156,26 +156,52 @@ class Casting(object):
         return False
 
     @staticmethod
-    def is_integer(value):
+    def is_integer(value: str) -> bool:
+        """ Check if string is an integer.
+
+        :param str value: string to check
+        :return bool: True if string is an integer else False
+        """
+
         value = str(value)
+
         if value.isdigit():
             return True
+
         return False
 
     @staticmethod
-    def is_float(value):
+    def is_float(value: str) -> bool:
+        """ Check if string is a float.
+
+        :param str value: string to check
+        :return bool: True if string is a float else False
+        """
+
         value = str(value)
         if re.match(r'^-?\d+(?:\.\d+)$', value):
             return True
         return False
 
-    def is_number(self, value):
+    def is_number(self, value: str) -> bool:
+        """ Check if string is a number (float/int).
+
+        :param str value: string to check
+        :return bool: True if string is a number else False
+        """
+
         if self.is_integer(value) or self.is_float(value):
             return True
         return False
 
     @staticmethod
-    def is_boolean(value):
+    def is_boolean(value: str) -> bool:
+        """ Check if string is a boolean (yes/no/y/n).
+
+        :param str value: string to check
+        :return bool: True if string is a boolean else False
+        """
+
         value = value.lower()
         if value in ['yes', 'no', 'y', 'n']:
             return True

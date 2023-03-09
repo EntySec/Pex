@@ -34,7 +34,7 @@ class OpenSSL(object):
     Python realization of OpenSSL library.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     def wrap_client(self, client: socket.socket, keyfile: str = 'hatsploit.key', certfile: str = 'hatsploit.crt',

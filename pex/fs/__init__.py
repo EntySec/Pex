@@ -24,6 +24,8 @@ SOFTWARE.
 
 import os
 
+from typing import Tuple
+
 
 class FS(object):
     """ Main class of pex.fs module.
@@ -32,15 +34,15 @@ class FS(object):
     implementations of filesystem features.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
-    def exists(path: str) -> tuple:
+    def exists(path: str) -> Tuple[bool, bool]:
         """ Check if path exist in the filesystem.
 
         :param str path: path to check
-        :return tuple: first entry is True if path exists
+        :return Tuple[bool, bool]: first entry is True if path exists
         second entry is True if path is directory
         """
 

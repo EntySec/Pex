@@ -30,7 +30,7 @@ class PostTools(object):
     implementations of some helpful tools for pex.post.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
@@ -52,7 +52,7 @@ class PostTools(object):
 
     @staticmethod
     def post_command(sender, command: str, args: dict) -> str:
-        """ Post command to sender and recieve the result.
+        """ Post command to sender and receive the result.
 
         :param sender: sender function
         :param str command: command to post

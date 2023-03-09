@@ -32,7 +32,7 @@ class ELF(object):
     an implementation of Linux executable and linkable format generator.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.elf_magic = [

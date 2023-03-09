@@ -32,7 +32,7 @@ class X64(object):
     implementations of some x64 CPU features and models.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.assembler = Assembler()

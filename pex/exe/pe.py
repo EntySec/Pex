@@ -30,7 +30,7 @@ class PE(object):
     an implementation of Windows portable executable generator.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.pe_magic = [

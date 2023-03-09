@@ -32,7 +32,7 @@ class Macho(object):
     an implementation of macOS macho generator.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.macho_magic = [
