@@ -58,13 +58,13 @@ class Net(object):
         self.result = {}
 
     @staticmethod
-    def get_gateways() -> dict:
+    def get_gateways() -> list:
         """ Get all network interfaces available on the system.
 
-        :return dict: network interfaces available on the system
+        :return list: network gateways available on the system
         """
 
-        gateways = {}
+        gateways = []
 
         ifaces = netifaces.interfaces()
         for iface in ifaces:
@@ -74,11 +74,7 @@ class Net(object):
                 addrs = addrs[socket.AF_INET][0]
 
                 if 'addr' in addrs and 'netmask' in addrs:
-                    gateways.update({
-                        iface: str(netaddr.IPNetwork(
-                            '%s/%s' % (addrs['addr'], addrs['netmask'])
-                        ))
-                    })
+                    gateways.append(addrs['addr'] + '/' + addrs['netmask'])
 
         return gateways
 
@@ -194,11 +190,10 @@ class Net(object):
 
         return 'unix'
 
-    def start_full_scan(self, gateway: str, iface: str, scan: str = 'arp') -> None:
+    def start_full_scan(self, gateway: str, scan: str = 'arp') -> None:
         """ Start network full scan.
 
         :param str gateway: gateway to start full scan for
-        :param str iface: interface to start full scan on
         :param str scan: scan type (arp/icmp)
         :return None: None
         """
@@ -211,30 +206,36 @@ class Net(object):
             raise RuntimeError(f"Invalid scan type: {scan}!")
 
         for data in pairs:
+            if isinstance(data, tuple):
+                host = data[0]
+                mac = data[1]
+
+            else:
+                host = ''
+                mac = ''
+
             self.result = deep_update(self.result, {
                 gateway: {
-                    iface: {
-                        data[0] if isinstance(data, tuple) else data: {
-                            'mac': data[1] if isinstance(data, tuple) else '',
-                            'vendor': self.get_vendor(data[1]) if isinstance(data, tuple) else '',
-                            'dns': self.get_dns(data[0]) if isinstance(data, tuple) else data,
-                            'platform': self.get_platform(data[0] if isinstance(data, tuple) else data),
-                            'ports': {},
-                            'flaws': {}
-                        }
+                    host: {
+                        'mac': mac,
+                        'vendor': self.get_vendor(mac),
+                        'dns': self.get_dns(host),
+                        'platform': self.get_platform(host),
+                        'ports': {},
                     }
                 }
             })
 
         for data in pairs:
+            if isinstance(data, tuple):
+                host = data[0]
+            else:
+                host = ''
+
             self.result = deep_update(self.result, {
                 gateway: {
-                    iface: {
-                        data[0] if isinstance(data, tuple) else data: {
-                            'ports': self.get_ports(
-                                data[0] if isinstance(data, tuple) else data, end=1000
-                            )
-                        }
+                    host: {
+                        'ports': self.get_ports(host, end=1000)
                     }
                 }
             })
