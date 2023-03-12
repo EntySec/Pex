@@ -74,7 +74,9 @@ class Net(object):
                 addrs = addrs[socket.AF_INET][0]
 
                 if 'addr' in addrs and 'netmask' in addrs:
-                    gateways.append(addrs['addr'] + '/' + addrs['netmask'])
+                    gateways.append(str(netaddr.IPNetwork(
+                        '%s/%s' % (addrs['addr'], addrs['netmask']))
+                    ))
 
         return gateways
 
