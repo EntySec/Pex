@@ -80,7 +80,7 @@ class Net(object):
         return gateways
 
     @staticmethod
-    def get_gateway_hosts(self, gateway: str) -> list:
+    def get_gateway_hosts(gateway: str) -> list:
         """ Get all hosts from gateway.
 
         :param str gateway: gateway
