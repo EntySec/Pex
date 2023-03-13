@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import manuf
+
 import struct
 import socket
 import netaddr
@@ -47,8 +49,6 @@ class Net(object):
         self.srp_timeout = 5
         self.sr1_timeout = 5
         self.syn_timeout = 1
-
-        self.macdb = 'https://macvendors.co/api/'
 
     @staticmethod
     def get_gateways() -> list:
@@ -185,9 +185,16 @@ class Net(object):
         """
 
         try:
-            return requests.get(self.macdb + mac).json()['result']['company']
+            m = manuf.MacParser()
+            vendor = m.get_manuf_long(mac)
+
+            if vendor:
+                return vendor
+
         except Exception:
-            return 'unknown'
+            pass
+
+        return 'unknown'
 
     @staticmethod
     def get_dns(host: str) -> str:
