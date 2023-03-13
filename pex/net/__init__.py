@@ -269,4 +269,4 @@ class Net(object):
 
             return platform, version
 
-        return 'Unknown', 'Unknown'
+        return 'unknown', 'unknown'
