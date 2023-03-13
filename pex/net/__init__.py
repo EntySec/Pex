@@ -251,7 +251,7 @@ class Net(object):
             return "Cisco IOS", "Unknown"
 
         else:
-            return "Unknown", "Unknown"
+            return "unknown", "unknown"
 
     def get_platform_by_ports(self, host: str, ports: list) -> Tuple[str, str]:
         """ Detect platform by a list of ports.
