@@ -46,13 +46,7 @@ class Net(object):
 
         self.srp_timeout = 5
         self.sr1_timeout = 5
-
-        self.os_ttl = {
-            0x3c: 'macos',
-            0x40: 'linux',
-            0xff: 'solaris',
-            0x80: 'windows'
-        }
+        self.syn_timeout = 1
 
         self.macdb = 'https://macvendors.co/api/'
 
@@ -216,14 +210,35 @@ class Net(object):
         :return str: platform name
         """
 
-        pack = IP(dst=host) / ICMP()
-        response = sr1(pack, timeout=self.sr1_timeout, verbose=False)
+        ans = sr1(IP(dst=ip) / TCP(dport=80, flags="S"), timeout=2, verbose=0)
 
-        if response:
-            if IP in response:
-                ttl = response.getlayer(IP).ttl
+        if ans is None:
+            return "Unknown", "Unknown"
+    
+        if ans[TCP].window == 8192:
+            if ans[TCP].options[3][1] == 1460:
+                return "Windows", "XP/2003"
+            elif ans[TCP].options[3][1] == 64240:
+                return "Windows", "Vista/7/2008"
+            else:
+                return "Windows", "Unknown"
 
-                if ttl in self.os_ttl:
-                    return self.os_ttl[ttl]
+        elif ans[TCP].window == 29200:
+            if ans[TCP].options[4][1] == 10:
+                return "Linux", "2.4 kernel"
+            elif ans[TCP].options[4][1] == 5840:
+                return "Linux", "2.6 kernel"
+            else:
+                return "Linux", "Unknown"
 
-        return 'unix'
+        elif ans[TCP].window == 65535 and ans[TCP].options[3][1] == 16384:
+            return "macOS", "Unknown"
+
+        elif ans[TCP].window == 64240 and ans[TCP].options[3][1] == 1460:
+            return "Android", "Unknown"
+
+        elif ans[TCP].window == 4096 and ans[TCP].options[3][1] == 16384:
+            return "Cisco IOS", "Unknown"
+
+        else:
+            return "Unknown", "Unknown"
