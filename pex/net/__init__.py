@@ -129,8 +129,7 @@ class Net(object):
 
         return ports
 
-    @staticmethod
-    def get_host_port(host: str, port: int) -> bool:
+    def get_host_port(self, host: str, port: int) -> bool:
         """ Check if port is opened on host.
 
         :param str host: host
