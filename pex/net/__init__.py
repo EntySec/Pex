@@ -113,8 +113,58 @@ class Net(object):
             if response:
                 return True
 
+    def get_top_ports(self, host: str) -> dict:
+        """ Scan host for top opened ports.
+        
+        :param str host: host to scan
+        :return dict: port and service
+        """
+
+        top_ports = [80, 443, 67, 68, 20, 21, 23, 22, 53, 8080, 123, 25, 3389,
+                     110, 554, 445, 587, 993, 137, 138, 139, 8008, 500, 143, 161,
+                     162, 389, 1434, 5900, 2222, 81, 8000]
+
+        ports = {}
+
+        for port in top_ports:
+            if self.get_host_port(host, port):
+                try:
+                    ports[port] = socket.getservbyport(port)
+                except Exception:
+                    ports[port] = 'unknown'
+
+        return ports
+
     @staticmethod
-    def get_ports(host: str, start: int = 0, end: int = 65535) -> dict:
+    def get_host_port(self, host: str, port: int) -> bool:
+        """ Check if port is opened on host.
+
+        :param str host: host
+        :param int port: port
+        :return bool: True if opened, False if closed or filtered
+        """
+
+        opened = False
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(self.syn_timeout)
+
+        try:
+            sock.connect((host, port))
+            sock.send(b'\x00')
+            response = sock.recv(1024)
+            if response:
+                opened = True
+
+        except Exception:
+            pass
+
+        finally:
+            sock.close()
+
+        return opened
+
+    def get_ports(self, host: str, start: int = 0, end: int = 65535) -> dict:
         """ Scan host for opened ports.
 
         :param str host: host to scan for opened ports
@@ -126,21 +176,11 @@ class Net(object):
         ports = {}
 
         for port in range(start, end+1):
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-            sock.settimeout(0.5)
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, struct.pack("ii", 1, 0))
-
-            connected = sock.connect_ex((host, port)) == 0
-            sock.close()
-
-            if connected:
+            if self.get_host_port(host, port):
                 try:
-                    name = socket.getservbyport(port)
+                    ports[port] = socket.getservbyport(port)
                 except Exception:
-                    name = 'unidentified'
-
-                ports.update({port: name})
+                    ports[port] = 'unknown'
 
         return ports
 
@@ -154,7 +194,7 @@ class Net(object):
         try:
             return requests.get(self.macdb + mac).json()['result']['company']
         except Exception:
-            return 'unidentified'
+            return 'unknown'
 
     @staticmethod
     def get_dns(host: str) -> str:
@@ -167,7 +207,7 @@ class Net(object):
         try:
             return socket.gethostbyaddr(host)[0]
         except Exception:
-            return 'unidentified'
+            return 'unknown'
 
     def get_platform(self, host: str) -> str:
         """ Detect platform by host.
