@@ -210,7 +210,7 @@ class Net(object):
         :return str: platform name
         """
 
-        ans = sr1(IP(dst=ip) / TCP(dport=80, flags="S"), timeout=2, verbose=0)
+        ans = sr1(IP(dst=host) / TCP(dport=80, flags="S"), timeout=self.sr1_timeout, verbose=0)
 
         if ans is None:
             return "Unknown", "Unknown"
