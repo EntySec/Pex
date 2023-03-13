@@ -29,7 +29,7 @@ import requests
 import ipaddress
 import netifaces
 
-from typing import Union
+from typing import Union, Tuple
 
 from scapy.all import *
 
@@ -202,14 +202,15 @@ class Net(object):
         except Exception:
             return 'unknown'
 
-    def get_platform(self, host: str) -> str:
+    def get_platform(self, host: str, port: int) -> Tuple[str, str]:
         """ Detect platform by host.
 
         :param str host: host to detect platform by
-        :return str: platform name
+        :param int port: port to detect platform by
+        :return Tuple[str, str]: platform name and version
         """
 
-        ans = sr1(IP(dst=host) / TCP(dport=80, flags="S"), timeout=self.sr1_timeout, verbose=0)
+        ans = sr1(IP(dst=host) / TCP(dport=port, flags="S"), timeout=self.sr1_timeout, verbose=0)
 
         if ans is None:
             return "Unknown", "Unknown"
@@ -244,3 +245,21 @@ class Net(object):
 
         else:
             return "Unknown", "Unknown"
+
+    def get_platform_by_ports(self, host: str, ports: list) -> Tuple[str, str]:
+        """ Detect platform by a list of ports.
+
+        :param str host: host
+        :param list ports: list of ports
+        :return Tuple[str, str]: platform name and version
+        """
+
+        for port in ports:
+            platform, version = self.get_platform(host, port)
+
+            if platform == 'Unknown':
+                continue
+
+            return platform, version
+
+        return 'Unknown', 'Unknown'
