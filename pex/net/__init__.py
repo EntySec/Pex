@@ -29,6 +29,8 @@ import requests
 import ipaddress
 import netifaces
 
+from typing import Union
+
 from scapy.all import *
 
 
@@ -87,11 +89,11 @@ class Net(object):
 
         return list(ipaddress.ip_network(gateway, False).hosts())
 
-    def get_host_alive(self, host: str, method: str = 'arp') -> bool:
+    def get_host_alive(self, host: str, method: str = 'arp') -> Union[str, bool, None]:
         """ Check if host is alive.
 
         :param str host: host to check
-        :return bool: True if alive else False
+        :return Union[str, bool, None]: mac address for arp, True for icmp, None for error
         """
 
         if method.lower() == 'arp':
@@ -102,7 +104,7 @@ class Net(object):
             result = srp(packet, timeout=self.srp_timeout, verbose=0)[0]
 
             if result:
-                return True
+                return result[0][1].hwsrc
 
         elif method.lower() == 'icmp':
             icmp = IP(dst=host) / ICMP()
@@ -110,8 +112,6 @@ class Net(object):
 
             if response:
                 return True
-
-        return False
 
     @staticmethod
     def get_ports(host: str, start: int = 0, end: int = 65535) -> dict:
