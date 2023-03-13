@@ -26,10 +26,10 @@ import struct
 import socket
 import netaddr
 import requests
+import ipaddress
 import netifaces
 
 from scapy.all import *
-from pydantic.utils import deep_update
 
 
 class Net(object):
@@ -44,7 +44,6 @@ class Net(object):
 
         self.srp_timeout = 5
         self.sr1_timeout = 5
-        self.sr_timeout = 3
 
         self.os_ttl = {
             0x3c: 'macos',
@@ -54,8 +53,6 @@ class Net(object):
         }
 
         self.macdb = 'https://macvendors.co/api/'
-
-        self.result = {}
 
     @staticmethod
     def get_gateways() -> list:
@@ -80,42 +77,41 @@ class Net(object):
 
         return gateways
 
-    def get_icmp_hosts(self, gateway: str) -> list:
-        """ Get hosts from gateway using ICMP scanning.
+    @staticmethod
+    def get_gateway_hosts(self, gateway: str) -> list:
+        """ Get all hosts from gateway.
 
-        :param str gateway: gateway to get hosts from
+        :param str gateway: gateway
         :return list: hosts
         """
 
-        hosts = []
+        return list(ipaddress.ip_network(gateway, False).hosts())
 
-        packet = IP(dst=gateway) / ICMP()
-        response = sr(packet, timeout=self.sr_timeout, verbose=False)[0]
+    def get_host_alive(self, host: str, method: str = 'arp') -> bool:
+        """ Check if host is alive.
 
-        for _, recv in response:
-            hosts.append(recv.src)
-
-        return hosts
-
-    def get_arp_hosts(self, gateway: str) -> list:
-        """ Get hosts and MACs from gateway using ARP scanning.
-
-        :param str gateway: gateway to get hosts and MACs from
-        :return list: hosts and MACs
+        :param str host: host to check
+        :return bool: True if alive else False
         """
 
-        hosts = []
+        if method.lower() == 'arp':
+            arp = ARP(pdst=host, hwdst='ff:ff:ff:ff:ff:ff')
+            ether = Ether(dst='ff:ff:ff:ff:ff:ff', src=Ether().src)
 
-        arp = ARP(pdst=gateway)
-        ether = Ether(dst="ff:ff:ff:ff:ff:ff")
+            packet = ether / arp
+            result = srp(packet, timeout=self.srp_timeout, verbose=0)[0]
 
-        response = srp(ether / arp, timeout=self.srp_timeout, verbose=False)[0]
+            if result:
+                return True
 
-        if response:
-            for _, recv in response:
-                hosts.append((recv.psrc, recv.hwsrc))
+        elif method.lower() == 'icmp':
+            icmp = IP(dst=host) / ICMP()
+            response = sr1(icmp, timeout=self.sr1_timeout, verbose=0)
 
-        return hosts
+            if response:
+                return True
+
+        return False
 
     @staticmethod
     def get_ports(host: str, start: int = 0, end: int = 65535) -> dict:
@@ -191,61 +187,3 @@ class Net(object):
                     return self.os_ttl[ttl]
 
         return 'unix'
-
-    def start_full_scan(self, gateway: str, scan: str = 'arp') -> None:
-        """ Start network full scan.
-
-        :param str gateway: gateway to start full scan for
-        :param str scan: scan type (arp/icmp)
-        :return None: None
-        """
-
-        if scan.lower() == 'arp':
-            pairs = self.get_arp_hosts(gateway)
-        elif scan.lower() == 'icmp':
-            pairs = self.get_icmp_hosts(gateway)
-        else:
-            raise RuntimeError(f"Invalid scan type: {scan}!")
-
-        for data in pairs:
-            if isinstance(data, tuple):
-                host = data[0]
-                mac = data[1]
-
-            else:
-                host = ''
-                mac = ''
-
-            self.result = deep_update(self.result, {
-                gateway: {
-                    host: {
-                        'mac': mac,
-                        'vendor': self.get_vendor(mac),
-                        'dns': self.get_dns(host),
-                        'platform': self.get_platform(host),
-                        'ports': {},
-                    }
-                }
-            })
-
-        for data in pairs:
-            if isinstance(data, tuple):
-                host = data[0]
-            else:
-                host = ''
-
-            self.result = deep_update(self.result, {
-                gateway: {
-                    host: {
-                        'ports': self.get_ports(host, end=1000)
-                    }
-                }
-            })
-
-    def full_scan_result(self) -> dict:
-        """ Get network full scan result.
-
-        :return dict: network full scan result
-        """
-
-        return self.result
