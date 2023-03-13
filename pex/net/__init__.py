@@ -130,7 +130,7 @@ class Net(object):
         return ports
 
     @staticmethod
-    def get_host_port(self, host: str, port: int) -> bool:
+    def get_host_port(host: str, port: int) -> bool:
         """ Check if port is opened on host.
 
         :param str host: host
@@ -215,6 +215,9 @@ class Net(object):
         if ans is None:
             return "Unknown", "Unknown"
     
+        if not ans.haslayer(TCP):
+            return "Unknown", "Unknown"
+
         if ans[TCP].window == 8192:
             if ans[TCP].options[3][1] == 1460:
                 return "Windows", "XP/2003"
