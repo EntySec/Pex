@@ -46,7 +46,7 @@ class Cat(object):
     def pull(self, sender: Callable[..., Any], location: str, args: list = []) -> bytes:
         """ Pull file from sender using cat method.
 
-        :param Callable sender: sender to pull file from
+        :param Callable[..., Any] sender: sender to pull file from
         :param str location: location of file to pull
         :param list args: extra sender arguments
         :return bytes: file data
