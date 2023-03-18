@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 from collections import OrderedDict
-from typing import Callable
+from typing import Callable, Any
 
 from pex.type import Type
 from .cat import Cat
@@ -53,12 +53,12 @@ class Pull(object):
             ]
         })
 
-    def pull(self, platform: str, sender: Callable, location: str,
+    def pull(self, platform: str, sender: Callable[..., Any], location: str,
              args: list = [], method: str = '') -> bytes:
         """ Pull file from sender.
 
         :param str platform: sender platform
-        :param Callable sender: sender to pull file from
+        :param Callable[..., Any] sender: sender to pull file from
         :param str location: location of file to pull
         :param list args: extra sender arguments
         :param str method: pull method (see self.pull_methods)
