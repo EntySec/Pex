@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import Callable
+from typing import Callable, Any
 from alive_progress import alive_bar
 
 from pex.post.tools import PostTools
@@ -40,11 +40,11 @@ class Printf(object):
 
         self.post_tools = PostTools()
 
-    def push(self, sender: Callable, data: bytes, location: str,
+    def push(self, sender: Callable[..., Any], data: bytes, location: str,
              args: list = [], linemax: int = 100) -> None:
         """ Push file to sender using bash echo method.
 
-        :param Callable sender: sender to push file to
+        :param Callable[..., Any] sender: sender to push file to
         :param bytes data: data to push to file on sender
         :param str location: location of file to push data to
         :param list args: extra sender arguments
