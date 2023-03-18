@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import Callable
+from typing import Callable, Any
 
 from pex.post.tools import PostTools
 from pex.proto.channel import ChannelTools
@@ -43,7 +43,7 @@ class Cat(object):
         self.string_tools = String()
         self.channel_tools = ChannelTools()
 
-    def pull(self, sender: Callable, location: str, args: list = []) -> bytes:
+    def pull(self, sender: Callable[..., Any], location: str, args: list = []) -> bytes:
         """ Pull file from sender using cat method.
 
         :param Callable sender: sender to pull file from
