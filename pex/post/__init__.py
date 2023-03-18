@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from typing import Callable, Any
+
 from pex.string import String
 from pex.type import Type
 from .push import Push
@@ -46,13 +48,13 @@ class Post(object):
 
         self.post_methods = self.push.push_methods
 
-    def post(self, stage: bytes, sender, platform: str, architecture: str,
+    def post(self, stage: bytes, sender: Callable[..., Any], platform: str, architecture: str,
              args: dict = {}, arguments: str = '', method: str = '', location: str = '',
              concat: str = '', background: str = '', linemax: int = 100) -> None:
         """ Post a stage through the sender function.
 
         :param bytes stage: stage to post
-        :param sender: sender function to port through
+        :param Callable[..., Any] sender: sender function to port through
         :param str platform: target platform
         :param str architecture: target architecture
         :param dict args: sender function arguments
