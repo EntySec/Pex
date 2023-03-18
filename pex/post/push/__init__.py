@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 from collections import OrderedDict
-from typing import Callable
+from typing import Callable, Any
 
 from pex.type import Type
 from .bash_echo import BashEcho
@@ -63,12 +63,12 @@ class Push(object):
             ]
         })
 
-    def push(self, platform: str, sender: Callable, data: bytes, location: str,
+    def push(self, platform: str, sender: Callable[..., Any], data: bytes, location: str,
              args: list = [], method: str = '', linemax: int = 100) -> str:
         """ Push file to sender.
 
         :param str platform: sender platform
-        :param Callable sender: sender to push file to
+        :param Callable[..., Any] sender: sender to push file to
         :param bytes data: data to push to file on sender
         :param str location: location of file to push data to
         :param list args: extra sender arguments
