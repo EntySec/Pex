@@ -27,7 +27,22 @@ import io
 
 
 class FTPSocket(object):
-    def __init__(self, host, port, timeout=10, ssl=False):
+    """ Subclass of pex.proto.ftp module.
+
+    This subclass of pex.proto.ftp module represents Python
+    implementation of the FTP socket.
+    """
+
+    def __init__(self, host: str, port: int, timeout: int = 10, ssl: bool = False) -> None:
+        """ Initialize FTPSocket with socket pair.
+
+        :param str host: FTP host
+        :param int port: FTP port
+        :param int timeout: connection timeout
+        :param bool ssl: True if FTP uses SSL else False
+        :return None: None
+        """
+
         super().__init__()
 
         self.host = host
@@ -41,25 +56,51 @@ class FTPSocket(object):
         else:
             self.client = ftplib.FTP()
 
-    def connect(self):
+    def connect(self) -> None:
+        """ Connect to FTP socket.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.client.connect(self.host, self.port, timeout=self.timeout)
         except Exception:
             raise RuntimeError(f"Connection failed for {self.pair}!")
 
-    def close(self):
+    def close(self) -> None:
+        """ Close FTP socket.
+
+        :return None: None
+        :raise RuntimeError: with trailing error message
+        """
+
         try:
             self.client.close()
         except Exception:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
 
-    def login(self, username, password):
+    def login(self, username: str, password: str) -> None:
+        """ Login to the FTP socket.
+
+        :param str username: FTP username
+        :param str password: FTP password
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.client.login(username, password)
         except Exception:
             raise RuntimeError(f"Authentication via {self.username}:{self.password} failed for {self.pair}!")
 
-    def get_file(self, remote_file):
+    def get_file(self, remote_file: str) -> bytes:
+        """ Get remote file from FTP socket.
+
+        :param str remote_file: remote file to get
+        :return bytes: remote file contents
+        """
+
         try:
             fp_content = io.BytesIO()
             self.client.retrbinary(f"RETR {remote_file}", fp_content.write)
@@ -69,9 +110,24 @@ class FTPSocket(object):
 
 
 class FTPClient(object):
+    """ Subclass of pex.proto.ftp module.
+
+    This subclass of pex.proto.ftp module represents Python
+    implementation of the FTP client.
+    """
+
     def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
-    def open_ftp(host, port, timeout=10, ssl=False):
+    def open_ftp(host: str, port: int, timeout: int = 10, ssl: bool = False) -> FTPSocket:
+        """ Open FTP connection with socket pair.
+
+        :param str host: FTP host
+        :param int port: FTP port
+        :param int timeout: connection timeout
+        :param bool ssl: True if FTP uses SSL else False
+        :return FTPSocket: FTP socket
+        """
+
         return FTPSocket(host, port, timeout, ssl)

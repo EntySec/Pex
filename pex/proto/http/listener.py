@@ -29,17 +29,38 @@ from .tools import HTTPTools
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
-    def log_request(self, fmt, *args):
-        return
+    """ Subclass of pex.proto.http module.
 
-    def send_status(self, code=200):
+    This subclass of pex.proto.http module represents
+    HTTP handler for web server.
+    """
+
+    def log_request(self, fmt, *args) -> None:
+        pass
+
+    def send_status(self, code: int = 200) -> None:
         self.send_response(int(code))
         self.send_header("Content-type", "text/html")
         self.end_headers()
 
 
 class HTTPListen(object):
-    def __init__(self, host, port, methods={}):
+    """ Subclass of pex.proto.http module.
+
+    This subclass of pex.proto.http module represents Python
+    implementation of HTTP listener.
+    """
+
+    def __init__(self, host: str, port: int, methods: dict = {}) -> None:
+        """ Start HTTP listener on socket pair.
+
+        :param str host: host to listen
+        :param int port: port to listen
+        :param dict methods: methods, method names as keys and
+        method handlers as items
+        :return None: None
+        """
+
         super().__init__()
 
         self.http_tools = HTTPTools()
@@ -51,7 +72,13 @@ class HTTPListen(object):
         self.sock = None
         self.methods = methods
 
-    def listen(self):
+    def listen(self) -> None:
+        """ Start HTTP listener.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             for method in self.methods:
                 setattr(self.handler, f"do_{method.upper()}", self.methods[method])
@@ -60,13 +87,25 @@ class HTTPListen(object):
         except Exception:
             raise RuntimeError(f"Failed to start HTTP listener on port {str(self.port)}!")
 
-    def stop(self):
+    def stop(self) -> None:
+        """ Stop HTTP listener.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.sock.server_close()
         except Exception:
             raise RuntimeError(f"HTTP listener is not started!")
 
-    def accept(self):
+    def accept(self) -> None:
+        """ Accept connection.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.sock.handle_request()
         except Exception:
@@ -74,9 +113,24 @@ class HTTPListen(object):
 
 
 class HTTPListener(object):
+    """ Subclass of pex.proto.http module.
+
+    This subclass of pex.proto.http module represents Python
+    implementation of HTTP listener.
+    """
+
     def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
-    def listen_http(host, port, methods={}):
+    def listen_http(host: str, port: int, methods: dict = {}) -> HTTPListen:
+        """ Start HTTP listener on socket pair.
+
+        :param str host: host to listen
+        :param int port: port to listen
+        :param dict methods: methods, method names as keys and
+        method handlers as items
+        :return HTTPListen: HTTP listener
+        """
+
         return HTTPListen(host, port, methods)

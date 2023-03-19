@@ -106,7 +106,7 @@ class TCPClient(object):
     """ Subclass of pex.proto.tcp module.
 
     This subclass of pex.proto.tcp module represents Python
-    implementation of the TCP socket.
+    implementation of the TCP client.
     """
 
     def __init__(self) -> None:

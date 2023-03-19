@@ -24,16 +24,31 @@ SOFTWARE.
 
 
 class HTTPTools(object):
+    """ Subclass of pex.proto.http module.
+
+    This subclass of pex.proto.http module is intended for providing
+    some HTTP tools.
+    """
+
     def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
-    def normalize_url(host, port, path, ssl=False):
+    def normalize_url(host: str, port: int, path: str, ssl: bool = False) -> str:
+        """ Normalize URL.
+
+        :param str host: HTTP host
+        :param int port: HTTP port
+        :param str path: HTTP path
+        :param bool ssl: True if HTTP uses SSL else False
+        :return str: normalized URL
+        """
+
         if ssl:
             url = "https://"
         else:
             url = "http://"
 
-        url += "{}:{}{}".format(host, port, path)
+        url += "{}:{}{}".format(host, str(port), path)
 
         return url

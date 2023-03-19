@@ -27,7 +27,20 @@ import webbrowser
 
 
 class Streamer(object):
-    def __init__(self, path, image):
+    """ Subclass of pex.proto.stream module.
+
+    This subclass of pex.proto.stream module is intended for providing
+    an implementation of streamer for streaming video and audio.
+    """
+
+    def __init__(self, path: str, image: str) -> None:
+        """ Initialize streamer.
+
+        :param str path: path to html file of web page for streamer
+        :param str image: path to image to stream
+        :return None: None
+        """
+
         super().__init__()
 
         self.path = path
@@ -77,35 +90,67 @@ Status : <span id="status"></span>
 </html>
         '''
 
-    def create_audio(self):
+    def create_audio(self) -> None:
+        """ Create audio streamer and write it to html file from path.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         if os.path.isdir(self.path):
             self.path += '/streamer.html'
 
         if os.access(os.path.split(self.path)[0], os.W_OK):
             with open(self.path, 'w') as f:
                 f.write(self.audio_streamer)
+
         else:
             raise RuntimeError("Failed to create audio stream!")
 
-    def create_video(self):
+    def create_video(self) -> None:
+        """ Create video streamer and write it to html file from path.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         if os.path.isdir(self.path):
             self.path += '/streamer.html'
 
         if os.access(os.path.split(self.path)[0], os.W_OK):
             with open(self.path, 'w') as f:
                 f.write(self.video_streamer)
+
         else:
             raise RuntimeError("Failed to create video stream!")
 
-    def stream(self):
+    def stream(self) -> None:
+        """ Open web page of streamer.
+
+        :return None: None
+        """
+
         url = f"file://{os.path.abspath(self.path)}"
         webbrowser.open(url, new=0, autoraise=True)
 
 
 class StreamClient(object):
+    """ Subclass of pex.proto.stream module.
+
+    This subclass of pex.proto.stream module represents Python
+    implementation of the stream client.
+    """
+
     def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
-    def open_stream(path, image):
+    def open_stream(path: str, image: str) -> Streamer:
+        """ Open stream.
+
+        :param str path: path to html file of web page for streamer
+        :param str image: path to image to stream
+        :return Streamer: stream handler
+        """
+
         return Streamer(path, image)

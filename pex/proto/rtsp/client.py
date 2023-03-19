@@ -28,7 +28,21 @@ from pex.string import String
 
 
 class RTSPSocket(object):
-    def __init__(self, host, port, timeout=10):
+    """ Subclass of pex.proto.rtsp module.
+
+    This subclass of pex.proto.rtsp module represents Python
+    implementation of the RTSP socket.
+    """
+
+    def __init__(self, host: str, port: int, timeout: int = 10) -> None:
+        """ Initialize RTSPSocket with socket pair.
+
+        :param str host: RTSP host
+        :param int port: RTSP port
+        :param int timeout: connection timeout
+        :return None: None
+        """
+
         super().__init__()
 
         self.host = host
@@ -40,19 +54,39 @@ class RTSPSocket(object):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(timeout)
 
-    def connect(self):
+    def connect(self) -> None:
+        """ Connect to RTSP socket.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.sock.connect((self.host, self.port))
         except Exception:
             raise RuntimeError(f"Connection failed for {self.pair}!")
 
-    def disconnect(self):
+    def disconnect(self) -> None:
+        """ Disconnect from RTSP socket.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.sock.close()
         except Exception:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
 
-    def authorize(self, username, password):
+    def authorize(self, username: str, password: str) -> None:
+        """ Authorize in the RTSP socket.
+
+        :param str username: RTSP username
+        :param str password: RTSP password
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             request = (
                 f"DESCRIBE {self.pair} RTSP/1.0\r\n"
@@ -65,13 +99,27 @@ class RTSPSocket(object):
         except Exception:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
 
-    def send(self, data):
+    def send(self, data: bytes) -> None:
+        """ Send data to the socket.
+
+        :param bytes data: data to send
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.sock.send(data)
         except Exception:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
 
-    def recv(self, size):
+    def recv(self, size: int) -> bytes:
+        """ Read data from the socket.
+
+        :param int size: size of data
+        :return bytes: read data
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             return self.sock.recv(size)
         except Exception:
@@ -79,9 +127,23 @@ class RTSPSocket(object):
 
 
 class RTSPClient(object):
+    """ Subclass of pex.proto.rtsp module.
+
+    This subclass of pex.proto.rtsp module represents Python
+    implementation of the RTSP client.
+    """
+
     def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
-    def open_rtsp(host, port, timeout=10):
+    def open_rtsp(host: str, port: int, timeout: int = 10) -> RTSPSocket:
+        """ Open RTSP connection with socket pair.
+
+        :param str host: RTSP host
+        :param int port: RTSP port
+        :param int timeout: connection timeout
+        :return RTSPSocket: RTSP socket
+        """
+
         return RTSPSocket(host, port, timeout)

@@ -24,9 +24,28 @@ SOFTWARE.
 
 import paramiko
 
+from typing import Optional
+
 
 class SSHSocket(object):
-    def __init__(self, host, port, username=None, password=None, timeout=10):
+    """ Subclass of pex.proto.ssh module.
+
+    This subclass of pex.proto.ssh module represents Python
+    implementation of the SSH socket.
+    """
+
+    def __init__(self, host: str, port: int, username: Optional[str] = None,
+                 password: Optional[str] = None, timeout: int = 10) -> None:
+        """ Initialize SSHSocket with socket pair and credentials.
+
+        :param str host: SSH host
+        :param int port: SSH port
+        :param Optional[str] username: SSH username
+        :param Optional[str] password: SSH password
+        :param int timeout: connection timeout
+        :return None: None
+        """
+
         super().__init__()
 
         self.host = host
@@ -41,7 +60,13 @@ class SSHSocket(object):
         self.sock = paramiko.SSHClient()
         self.sock.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-    def connect(self):
+    def connect(self) -> None:
+        """ Connect to SSH socket.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.sock.connect(
                 self.host,
@@ -55,13 +80,26 @@ class SSHSocket(object):
         except Exception:
             raise RuntimeError(f"Connection failed for {self.pair}!")
 
-    def disconnect(self):
+    def disconnect(self) -> None:
+        """ Disconnect from SSH socket.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             self.sock.close()
         except Exception:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
 
-    def send_command(self, command):
+    def send_command(self, command: str) -> str:
+        """ Send command to the SSH socket.
+
+        :param str command: command to send
+        :return str: command output
+        :raises RuntimeError: with trailing error message
+        """
+
         try:
             return self.sock.exec_command(command)
         except Exception:
@@ -69,9 +107,26 @@ class SSHSocket(object):
 
 
 class SSHClient(object):
+    """ Subclass of pex.proto.ssh module.
+
+    This subclass of pex.proto.ssh module represents Python
+    implementation of the SSH client.
+    """
+
     def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
-    def open_ssh(host, port, username=None, password=None, timeout=10):
+    def open_ssh(host: str, port: int, username: Optional[str] = None,
+                 password: Optional[str] = None, timeout: int = 10) -> SSHSocket:
+        """ Open SSH socket with socket pair and credentials.
+
+        :param str host: SSH host
+        :param int port: SSH port
+        :param Optional[str] username: SSH username
+        :param Optional[str] password: SSH password
+        :param int timeout: connection timeout
+        :return SSHSocket: SSH socket
+        """
+
         return SSHSocket(host, port, username, password, timeout)

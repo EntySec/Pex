@@ -26,7 +26,21 @@ from pysnmp.entity.rfc3413.oneliner import cmdgen
 
 
 class SNMPSocket(object):
-    def __init__(self, host, port, timeout=10):
+    """ Subclass of pex.proto.snmp module.
+
+    This subclass of pex.proto.snmp module represents Python
+    implementation of the SNMP socket.
+    """
+
+    def __init__(self, host: str, port: int, timeout: int = 15) -> None:
+        """ Initialize SNMPSocket with socket pair.
+
+        :param str host: SNMP host
+        :param int port: SNMP port
+        :param int timeout: connection timeout
+        :return None: None
+        """
+
         super().__init__()
 
         self.host = host
@@ -35,13 +49,22 @@ class SNMPSocket(object):
         self.pair = f"{self.host}:{str(self.port)}"
         self.timeout = float(timeout)
 
-    def get(self, community, oid, version):
+    def get(self, community: str, oid: str, version: int = 1, retries: int = 0) -> bytes:
+        """ Get OID from SNMP server.
+
+        :param str community: SNMP server community string
+        :param str oid: SNMP server oid
+        :param int version: SNMP protocol version
+        :param int retries: number of retries
+        :return bytes: SNMP server response
+        """
+
         cmd_gen = cmdgen.CommandGenerator()
 
         try:
             err_ind, err_stat, err_i, var_binds = cmd_gen.getcmd(
                 cmdgen.CommunityData(community, mp_model=version),
-                cmdgen.UdpTransportTarget((self.host, self.port), self.timeout),
+                cmdgen.UdpTransportTarget((self.host, self.port), timeout=self.timeout, retries=retries),
                 oid
             )
         except Exception:
@@ -53,9 +76,23 @@ class SNMPSocket(object):
 
 
 class SNMPClient(object):
+    """ Subclass of pex.proto.snmp module.
+
+    This subclass of pex.proto.snmp module represents Python
+    implementation of the SNMP client.
+    """
+
     def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
-    def open_snmp(host, port, timeout=10):
+    def open_snmp(host: str, port: int, timeout: int = 15) -> SNMPSocket:
+        """ Open SNMP connection with socket pair.
+
+        :param str host: SNMP host
+        :param int port: SNMP port
+        :param int timeout: connection timeout
+        :return SNMPSocket: SNMP socket
+        """
+
         return SNMPSocket(host, port, timeout)

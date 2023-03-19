@@ -22,13 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from typing import Tuple
+
 
 class ChannelTools(object):
+    """ Subclass of pex.proto.channel module.
+
+    This subclass of pex.proto.channel module is intended for providing
+    some Channel tools.
+    """
+
     def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
-    def token_extract(data, token):
+    def token_extract(data: bytes, token: bytes) -> Tuple[bytes, bytes]:
+        """ Extract token from data received from channel.
+
+        :param bytes data: data
+        :param bytes token: token to extract
+        :return Tuple[bytes, bytes]: data before and data after token (stash)
+        """
+
         result, stashed = b"", b""
 
         if token in data:
