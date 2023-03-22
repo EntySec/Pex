@@ -59,6 +59,6 @@ class Text(object):
 
         for c in name:
             hash_val = ((hash_val >> 13) | (hash_val << 19)) & 0xFFFFFFFF
-            hash_val += c
+            hash_val += ord(c)
 
         return hash_val
