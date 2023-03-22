@@ -47,8 +47,7 @@ class Text(object):
 
         return "0x{:x}".format((mod_hash + fun_hash) & 0xFFFFFFFF)
 
-    @staticmethod
-    def ror13_hash(name: str) -> bytes:
+    def ror13_hash(self, name: str) -> bytes:
         """ Calculate the ROR13 hash of a given string.
 
         :param str name: string
@@ -58,7 +57,25 @@ class Text(object):
         hash_val = 0
 
         for c in name:
-            hash_val = ((hash_val >> 13) | (hash_val << 19)) & 0xFFFFFFFF
+            hash_val = self.ror(hash_val, 13)
             hash_val += ord(c)
 
         return hash_val
+
+    @staticmethod
+    def ror(val: int, cnt: int) -> int:
+        """ Rotate value.
+
+        :param int val: value
+        :param int cnt: count
+        :return int: rotated value
+        """
+
+        bits = format(val, '032b')
+        bits = list(bits)
+
+        for c in range(cnt):
+            bits.insert(0, bits.pop())
+
+        bits = ''.join(bits)
+        return int(bits, 2)
