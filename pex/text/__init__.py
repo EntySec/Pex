@@ -58,7 +58,7 @@ class Text(object):
 
         for c in name:
             hash_val = self.ror(hash_val, 13)
-            hash_val += ord(c)
+            hash_val += c
 
         return hash_val
 
