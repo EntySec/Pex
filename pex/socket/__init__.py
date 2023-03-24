@@ -36,8 +36,7 @@ class Socket(object):
     def __init__(self) -> None:
         super().__init__()
 
-    @staticmethod
-    def pack_host(host: str, endian: str = 'little') -> bytes:
+    def pack_host(self, host: str, endian: str = 'little') -> bytes:
         """ Pack host into binary form.
 
         :param str host: host to pack
@@ -45,8 +44,7 @@ class Socket(object):
         :return bytes: packed host
         """
 
-        inet_aton = socket.inet_aton(host)
-        inet_aton = struct.unpack('>L', inet_aton)[0]
+        inet_aton = self.host(host)
 
         if endian == 'little':
             return struct.pack('<L', inet_aton)
@@ -54,8 +52,7 @@ class Socket(object):
             return struct.pack('>L', inet_aton)
         raise RuntimeError(f"Invalid endian {endian}!")
 
-    @staticmethod
-    def pack_port(port: int, endian: str = 'little') -> bytes:
+    def pack_port(self.port: int, endian: str = 'little') -> bytes:
         """ Pack port into binary form.
 
         :param int port: port to pack
@@ -63,10 +60,33 @@ class Socket(object):
         :return bytes: packed port
         """
 
-        htons = socket.htons(int(port))
+        htons = self.port(port)
 
         if endian == 'little':
             return struct.pack('>H', htons)
         elif endian == 'big':
             return struct.pack('<H', htons)
         raise RuntimeError(f"Invalid endian {endian}!")
+
+    @staticmethod
+    def port(port: int) -> int:
+        """ Convert port using htons().
+
+        :param int port: port to convert
+        :return int: converted port
+        """
+
+        return socket.htons(int(port))
+
+    @staticmethod
+    def host(host: str) -> int:
+        """ Convert host using inet_aton().
+
+        :param str host: host to convert
+        :return int: converted host
+        """
+
+        inet_aton = socket.inet_aton(host)
+        inet_aton = struct.unpack('>L', inet_aton)[0]
+
+        return inet_aton
