@@ -52,7 +52,7 @@ class Socket(object):
             return struct.pack('>L', inet_aton)
         raise RuntimeError(f"Invalid endian {endian}!")
 
-    def pack_port(self.port: int, endian: str = 'little') -> bytes:
+    def pack_port(self, port: int, endian: str = 'little') -> bytes:
         """ Pack port into binary form.
 
         :param int port: port to pack
