@@ -26,6 +26,8 @@ import requests
 import socket
 import urllib3
 
+from typing import Any
+
 from .tools import HTTPTools
 
 
