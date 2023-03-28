@@ -26,7 +26,7 @@ import requests
 import socket
 import urllib3
 
-from typing import Any
+from typing import Any, Union
 
 from .tools import HTTPTools
 
