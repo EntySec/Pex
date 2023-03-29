@@ -117,7 +117,7 @@ class ELF(object):
             elf = ELFFile(f)
 
             symtab_section = elf.get_section_by_name('.symtab')
-            symtab = symtab_section.get_symbol_by_name('function_name')
+            symtab = symtab_section.get_symbol_by_name(name)
 
             func_offset = symtab['st_value'] - symtab_section['sh_addr']
             return func_offset
