@@ -105,23 +105,6 @@ class ELF(object):
 
         return data[:4] in self.elf_magic
 
-    def get_offset(self, file: str, name: str) -> int:
-        """ Get an offset of specific function.
-
-        :param str file: ELF file
-        :param str name: function name
-        :return int: offset of the function
-        """
-
-        with open(file, 'rb') as f:
-            elf = ELFFile(f)
-
-            symtab_section = elf.get_section_by_name('.symtab')
-            symtab = symtab_section.get_symbol_by_name(name)
-
-            func_offset = symtab['st_value'] - symtab_section['sh_addr']
-            return func_offset
-
     def pack_elf(self, arch: str, data: bytes) -> bytes:
         """ Pack data to a Linux executable and linkable format.
 
