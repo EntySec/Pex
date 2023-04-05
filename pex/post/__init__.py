@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import Callable, Any
+from typing import Callable, Any, Union
 
 from pex.string import String
 from pex.type import Type
@@ -48,19 +48,18 @@ class Post(object):
 
         self.post_methods = self.push.push_methods
 
-    def post(self, stage: bytes, sender: Callable[..., Any], platform: str, architecture: str,
-             args: dict = {}, arguments: str = '', method: str = '', location: str = '',
-             concat: str = '', background: str = '', linemax: int = 100) -> None:
-        """ Post a stage through the sender function.
+    def post(self, payload: Union[bytes, str], sender: Callable[..., Any], platform: str,
+             architecture: str, arguments: str = '', method: str = '', location: str = '',
+             concat: str = '', background: str = '', linemax: int = 100, *args, **kwargs) -> None:
+        """ Post a payload through the sender function.
 
-        :param bytes stage: stage to post
+        :param Union[bytes, str] payload: payload to post
         :param Callable[..., Any] sender: sender function to port through
         :param str platform: target platform
         :param str architecture: target architecture
-        :param dict args: sender function arguments
-        :param str arguments: stage arguments
+        :param str arguments: payload arguments
         :param str method: post method to use
-        :param str location: path to save stage
+        :param str location: path to save payload
         :param str concat: post command concat operator
         :param str background: post command background operator
         :param int linemax: maximum size of a post command
@@ -107,7 +106,7 @@ class Post(object):
                         raise RuntimeError(f"Platform {platform} is not supported by {architecture} architecture!")
 
                 else:
-                    self.post_tools.post_command(sender, stage, args)
+                    self.post_tools.post_payload(sender, payload, *args, **kwargs)
                     return
 
             elif platform in platforms['windows']:
@@ -130,19 +129,19 @@ class Post(object):
                         raise RuntimeError(f"Platform {platform} is not supported by {architecture} architecture!")
 
                 else:
-                    self.post_tools.post_command(sender, stage, args)
+                    self.post_tools.post_payload(sender, payload, *args, **kwargs)
                     return
             else:
                 raise RuntimeError(f"Platform {platform} in unsupported!")
 
             self.post_methods[method][1].push(
                 sender=sender,
-                data=stage if isinstance(stage, bytes) else stage.encode(),
+                data=payload if isinstance(payload, bytes) else payload.encode(),
                 location=path,
-                args=args,
-                linemax=linemax
+                linemax=linemax,
+                *args, **kwargs
             )
 
-            self.post_tools.post_command(sender, command, args)
+            self.post_tools.post_payload(sender, command, *args, **kwargs)
         else:
-            self.post_tools.post_command(sender, stage, args)
+            self.post_tools.post_payload(sender, payload, *args, **kwargs)

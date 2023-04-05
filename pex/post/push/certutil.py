@@ -43,13 +43,12 @@ class Certutil(object):
         self.string_tools = String()
 
     def push(self, sender: Callable[..., Any], data: bytes, location: str,
-             args: list = [], linemax: int = 100) -> None:
+             linemax: int = 100, *args, **kwargs) -> None:
         """ Push file to sender using bash echo method.
 
         :param Callable[..., Any] sender: sender to push file to
         :param bytes data: data to push to file on sender
         :param str location: location of file to push data to
-        :param list args: extra sender arguments
         :param int linemax: max command line size for each chunk
         :return None: None
         """
@@ -73,7 +72,7 @@ class Certutil(object):
 
                 if block:
                     command = echo_stream.format(block, location)
-                    self.post_tools.post_command(sender, command, args)
+                    self.post_tools.post_payload(sender, command, *args, **kwargs)
 
         command = decode_stream.format(location, location, location)
-        self.post_tools.post_command(sender, command, args)
+        self.post_tools.post_payload(sender, command, *args, **kwargs)

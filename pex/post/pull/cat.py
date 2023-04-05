@@ -43,12 +43,11 @@ class Cat(object):
         self.string_tools = String()
         self.channel_tools = ChannelTools()
 
-    def pull(self, sender: Callable[..., Any], location: str, args: list = []) -> bytes:
+    def pull(self, sender: Callable[..., Any], location: str, *args, **kwargs) -> bytes:
         """ Pull file from sender using cat method.
 
         :param Callable[..., Any] sender: sender to pull file from
         :param str location: location of file to pull
-        :param list args: extra sender arguments
         :return bytes: file data
         :raises RuntimeError: with trailing error message
         """
@@ -56,7 +55,7 @@ class Cat(object):
         token = self.string_tools.random_string(8)
         command = f'cat "{location}" && echo {token}'
 
-        data = self.post_tools.post_command(sender, command, args)
+        data = self.post_tools.post_payload(sender, command, *args, **kwargs)
         block, _ = self.channel_tools.token_extract(data, token.encode())
 
         return block

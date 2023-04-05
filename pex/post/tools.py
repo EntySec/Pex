@@ -22,6 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import inspect
+
+from typing import Callable, Union
+
 
 class PostTools(object):
     """ Subclass of pex.post module.
@@ -51,16 +55,19 @@ class PostTools(object):
         return ''.join(byte_octals)
 
     @staticmethod
-    def post_command(sender, command: str, args: dict) -> str:
+    def post_payload(sender: Callable[..., str], payload: Union[str, bytes], *args, **kwargs) -> str:
         """ Post command to sender and receive the result.
 
-        :param sender: sender function
-        :param str command: command to post
-        :param dict args: sender function arguments
+        :param Callable[..., Any] sender: sender function
+        :param Union[str, bytes] payload: command to post
         :return str: post command result
         """
 
-        return sender(**{
-            'command': command,
-            **args
-        })
+        if 'command' in inspect.getfullargspec(sender).args:
+            return sender(command=payload, *args, **kwargs)
+
+        elif 'payload' in inspect.getfullargspec(sender).args:
+            return sender(payload=payload, *args, **kwargs)
+
+        else:
+            raise RuntimeError("Payload sender does not contain (command/payload) argument!")

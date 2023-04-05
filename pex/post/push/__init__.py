@@ -64,14 +64,13 @@ class Push(object):
         })
 
     def push(self, platform: str, sender: Callable[..., Any], data: bytes, location: str,
-             args: list = [], method: str = '', linemax: int = 100) -> str:
+             method: str = '', linemax: int = 100, *args, **kwargs) -> str:
         """ Push file to sender.
 
         :param str platform: sender platform
         :param Callable[..., Any] sender: sender to push file to
         :param bytes data: data to push to file on sender
         :param str location: location of file to push data to
-        :param list args: extra sender arguments
         :param str method: push method (see self.push_methods)
         :param int linemax: max command line size for each chunk
         :return str: location of pushed file
@@ -94,8 +93,8 @@ class Push(object):
                 sender=sender,
                 data=data,
                 location=location,
-                args=args,
-                linemax=linemax
+                linemax=linemax,
+                *args, **kwargs
             )
             return location
         raise RuntimeError(f"Post method {method} is unsupported!")
