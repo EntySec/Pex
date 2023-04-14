@@ -23,9 +23,10 @@ SOFTWARE.
 """
 
 from collections import OrderedDict
-from typing import Callable, Any
+from typing import Optional
 
 from pex.type import Type
+
 from .cat import Cat
 from .dd import DD
 
@@ -53,14 +54,11 @@ class Pull(object):
             ]
         })
 
-    def pull(self, platform: str, sender: Callable[..., Any], location: str,
-             method: str = '', *args, **kwargs) -> bytes:
+    def pull(self, platform: str, method: Optional[str] = None, *args, **kwargs) -> bytes:
         """ Pull file from sender.
 
         :param str platform: sender platform
-        :param Callable[..., Any] sender: sender to pull file from
-        :param str location: location of file to pull
-        :param str method: pull method (see self.pull_methods)
+        :param Optional[str] method: pull method (see self.pull_methods)
         :return bytes: file data
         :raises RuntimeError: with trailing error message
         """
@@ -77,9 +75,6 @@ class Pull(object):
                 if platform not in self.pull_methods[method][0]:
                     raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
 
-            return self.pull_methods[method][1].pull(
-                sender=sender,
-                location=location,
-                *args, **kwargs
-            )
+            return self.pull_methods[method][1].pull(*args, **kwargs)
+
         raise RuntimeError(f"Post method {method} is unsupported!")

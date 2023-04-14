@@ -79,4 +79,5 @@ class DD(object):
 
                 if block != data:
                     break
+
         return result

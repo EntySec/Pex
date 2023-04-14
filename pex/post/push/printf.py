@@ -41,18 +41,18 @@ class Printf(object):
         self.post_tools = PostTools()
 
     def push(self, sender: Callable[..., Any], data: bytes, location: str,
-             linemax: int = 100, *args, **kwargs) -> None:
+             space: int = 100, *args, **kwargs) -> None:
         """ Push file to sender using bash echo method.
 
         :param Callable[..., Any] sender: sender to push file to
         :param bytes data: data to push to file on sender
         :param str location: location of file to push data to
-        :param int linemax: max command line size for each chunk
+        :param int space: max command line size for each chunk
         :return None: None
         """
 
         printf_stream = "printf '{}' >> {}"
-        printf_max_length = linemax
+        printf_max_length = space
 
         size = len(data)
         num_parts = int(size / printf_max_length) + 1
