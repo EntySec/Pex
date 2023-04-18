@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import io
 import struct
 
 from elftools.elf.elffile import ELFFile
@@ -104,6 +105,17 @@ class ELF(object):
         """
 
         return data[:4] in self.elf_magic
+
+    def elf_header(self, data: bytes) -> dict:
+        """ Get ELF file data header.
+
+        :param bytes data: data to parse
+        :return dict: header, header names as keys and
+        header offsets as items
+        """
+
+        elf = ELFFile(io.BytesIO(data))
+        return elf.header
 
     def pack_elf(self, arch: str, data: bytes) -> bytes:
         """ Pack data to a Linux executable and linkable format.
