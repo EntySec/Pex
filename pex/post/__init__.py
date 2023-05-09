@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import Callable, Any
+from typing import Callable, Any, Union, Optional
 
 from pex.string import String
 from pex.type import Type
@@ -48,28 +48,34 @@ class Post(object):
 
         self.post_methods = self.push.push_methods
 
-    def post(self, stage: bytes, sender: Callable[..., Any], platform: str, architecture: str,
-             args: dict = {}, arguments: str = '', method: str = '', location: str = '',
-             concat: str = '', background: str = '', linemax: int = 100) -> None:
-        """ Post a stage through the sender function.
+    def post(self,
+             payload: Union[bytes, str],
+             sender: Callable[..., Any],
+             platform: str,
+             arch: str,
+             arguments: Optional[str] = None,
+             method: Optional[str] = None,
+             location: Optional[str] = None,
+             concat: Optional[str] = None,
+             background: Optional[str] = None,
+             *args, **kwargs) -> None:
+        """ Post a payload through the sender function.
 
-        :param bytes stage: stage to post
+        :param Union[bytes, str] payload: payload to post
         :param Callable[..., Any] sender: sender function to port through
         :param str platform: target platform
-        :param str architecture: target architecture
-        :param dict args: sender function arguments
-        :param str arguments: stage arguments
-        :param str method: post method to use
-        :param str location: path to save stage
-        :param str concat: post command concat operator
-        :param str background: post command background operator
-        :param int linemax: maximum size of a post command
+        :param str arch: target architecture
+        :param Optional[str] arguments: payload arguments
+        :param Optional[str] method: post method to use
+        :param Optional[str] location: path to save payload
+        :param Optional[str] concat: post command concat operator
+        :param Optional[str] background: post command background operator
         :return None: None
         :raises RuntimeError: with trailing error message
         """
 
         platforms = self.type_tools.platforms
-        architectures = self.type_tools.architectures
+        arches = self.type_tools.architectures
 
         if method in self.post_methods or not method:
             if not method:
@@ -85,64 +91,63 @@ class Post(object):
                     raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
 
             filename = self.string_tools.random_string(8)
-            arguments = '' if not arguments else arguments
+            arguments = arguments or ''
 
             if platform in platforms['unix']:
-                if not location:
-                    location = '/tmp'
-                if not concat:
-                    concat = ';'
-                if not background:
-                    background = '&'
+                location = location or '/tmp'
+                concat = concat or ';'
+                background = background or '&'
 
                 path = location + '/' + filename
 
-                if architecture in architectures['cpu']:
+                if arch in arches['cpu']:
                     command = f"sh -c 'chmod 777 {path} {concat} {path} {arguments} {concat} rm {path}' {background}"
 
-                elif architecture in architectures['generic']:
-                    if platform in architectures['generic'][architecture]['platforms']:
-                        command = f"{architectures['generic'][architecture]['command']} {path} {arguments} {concat} rm {path}"
+                elif arch in arches['generic']:
+                    current_arch = arches['generic'][arch]
+
+                    if platform in current_arch['platforms']:
+                        command = f"{current_arch['command']} {path} {arguments} {concat} rm {path}"
+
                     else:
-                        raise RuntimeError(f"Platform {platform} is not supported by {architecture} architecture!")
+                        raise RuntimeError(f"Platform {platform} is not supported by {arch} architecture!")
 
                 else:
-                    self.post_tools.post_command(sender, stage, args)
+                    self.post_tools.post_payload(sender, payload, *args, **kwargs)
                     return
 
             elif platform in platforms['windows']:
-                if not location:
-                    location = '%TEMP%'
-                if not concat:
-                    concat = '&'
-                if not background:
-                    background = ''
+                location = location or 'C:\\Windows\\Temp'
+                concat = concat or '&'
+                background = background or ''
 
                 path = location + '\\' + filename
 
-                if architecture in architectures['cpu']:
+                if arch in arches['cpu']:
                     command = f"{background} {path} {arguments} {concat} del {path}"
 
-                elif architecture in architectures['generic']:
-                    if platform in architectures['generic'][architecture]['platforms']:
-                        command = f"{background} {architectures['generic'][architecture]['command']} {path} {arguments} {concat} del {path}"
+                elif arch in arches['generic']:
+                    current_arch = arches['generic'][arch]
+
+                    if platform in current_arch['platforms']:
+                        command = f"{background} {current_arch['command']} {path} {arguments} {concat} del {path}"
+
                     else:
-                        raise RuntimeError(f"Platform {platform} is not supported by {architecture} architecture!")
+                        raise RuntimeError(f"Platform {platform} is not supported by {arch} architecture!")
 
                 else:
-                    self.post_tools.post_command(sender, stage, args)
+                    self.post_tools.post_payload(sender, payload, *args, **kwargs)
                     return
             else:
                 raise RuntimeError(f"Platform {platform} in unsupported!")
 
             self.post_methods[method][1].push(
                 sender=sender,
-                data=stage if isinstance(stage, bytes) else stage.encode(),
+                data=payload if isinstance(payload, bytes) else payload.encode(),
                 location=path,
-                args=args,
-                linemax=linemax
+                *args, **kwargs
             )
 
-            self.post_tools.post_command(sender, command, args)
+            self.post_tools.post_payload(sender, command, *args, **kwargs)
         else:
-            self.post_tools.post_command(sender, stage, args)
+            self.post_tools.post_payload(sender, payload, *args, **kwargs)

@@ -44,12 +44,11 @@ class DD(object):
         self.string_tools = String()
         self.channel_tools = ChannelTools()
 
-    def pull(self, sender: Callable[..., Any], location: str, args: list = []) -> bytes:
+    def pull(self, sender: Callable[..., Any], location: str, *args, **kwargs) -> bytes:
         """ Pull file from sender using dd method.
 
         :param Callable[..., Any] sender: sender to pull file from
         :param str location: location of file to pull
-        :param list args: extra sender arguments
         :return bytes: file data
         :raises RuntimeError: with trailing error message
         """
@@ -73,11 +72,12 @@ class DD(object):
                     token
                 )
 
-                data = self.post_tools.post_command(sender, command, args)
+                data = self.post_tools.post_payload(sender, command, *args, **kwargs)
                 block, _ = self.channel_tools.token_extract(data, token.encode())
 
                 result += block
 
                 if block != data:
                     break
+
         return result

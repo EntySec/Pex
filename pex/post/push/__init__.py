@@ -23,9 +23,10 @@ SOFTWARE.
 """
 
 from collections import OrderedDict
-from typing import Callable, Any
+from typing import Optional
 
 from pex.type import Type
+
 from .bash_echo import BashEcho
 from .certutil import Certutil
 from .echo import Echo
@@ -63,17 +64,12 @@ class Push(object):
             ]
         })
 
-    def push(self, platform: str, sender: Callable[..., Any], data: bytes, location: str,
-             args: list = [], method: str = '', linemax: int = 100) -> str:
+    def push(self, platform: str, location: str, method: Optional[str] = None, *args, **kwargs) -> str:
         """ Push file to sender.
 
         :param str platform: sender platform
-        :param Callable[..., Any] sender: sender to push file to
-        :param bytes data: data to push to file on sender
         :param str location: location of file to push data to
-        :param list args: extra sender arguments
-        :param str method: push method (see self.push_methods)
-        :param int linemax: max command line size for each chunk
+        :param Optional[str] method: push method (see self.push_methods)
         :return str: location of pushed file
         :raises RuntimeError: with trailing error message
         """
@@ -90,12 +86,8 @@ class Push(object):
                 if platform not in self.push_methods[method][0]:
                     raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
 
-            self.push_methods[method][1].push(
-                sender=sender,
-                data=data,
-                location=location,
-                args=args,
-                linemax=linemax
-            )
+            self.push_methods[method][1].push(location=location, *args, **kwargs)
+
             return location
+
         raise RuntimeError(f"Post method {method} is unsupported!")
