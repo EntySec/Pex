@@ -38,6 +38,7 @@ setup(name='pex',
           'adb-shell', 'requests', 'paramiko',
           'alive_progress', 'scapy', 'pydantic',
           'netifaces', 'netaddr', 'manuf', 'pysnmp',
+          'pyelftools',
 
           'hatasm @ git+https://github.com/EntySec/HatAsm'
       ],
