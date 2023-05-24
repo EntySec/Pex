@@ -35,7 +35,7 @@ from typing import Optional, Union, Callable, Any
 from .tools import ChannelTools
 
 
-class ChannelSocket(object):
+class ChannelClient(object):
     """ Subclass of pex.proto.channel module.
 
     This subclass of pex.proto.channel module represents Python
@@ -286,24 +286,3 @@ class ChannelSocket(object):
                         self.sock.write((line + terminator).encode())
         else:
             raise RuntimeError("Socket is not connected!")
-
-
-class ChannelClient(object):
-    """ Subclass of pex.proto.channel module.
-
-    This subclass of pex.proto.channel module represents Python
-    implementation of the Channel socket.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    @staticmethod
-    def open_channel(client: socket.socket) -> ChannelSocket:
-        """ Open channel socket.
-
-        :param socket.socket client: socket
-        :return ChannelSocket: channel socket
-        """
-
-        return ChannelSocket(client)
