@@ -27,16 +27,16 @@ import paramiko
 from typing import Optional
 
 
-class SSHSocket(object):
+class SSHClient(object):
     """ Subclass of pex.proto.ssh module.
 
     This subclass of pex.proto.ssh module represents Python
-    implementation of the SSH socket.
+    implementation of the SSH client.
     """
 
     def __init__(self, host: str, port: int, username: Optional[str] = None,
                  password: Optional[str] = None, timeout: int = 10) -> None:
-        """ Initialize SSHSocket with socket pair and credentials.
+        """ Initialize SSHClient with socket pair and credentials.
 
         :param str host: SSH host
         :param int port: SSH port
@@ -104,29 +104,3 @@ class SSHSocket(object):
             return self.sock.exec_command(command)
         except Exception:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
-
-
-class SSHClient(object):
-    """ Subclass of pex.proto.ssh module.
-
-    This subclass of pex.proto.ssh module represents Python
-    implementation of the SSH client.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    @staticmethod
-    def open_ssh(host: str, port: int, username: Optional[str] = None,
-                 password: Optional[str] = None, timeout: int = 10) -> SSHSocket:
-        """ Open SSH socket with socket pair and credentials.
-
-        :param str host: SSH host
-        :param int port: SSH port
-        :param Optional[str] username: SSH username
-        :param Optional[str] password: SSH password
-        :param int timeout: connection timeout
-        :return SSHSocket: SSH socket
-        """
-
-        return SSHSocket(host, port, username, password, timeout)

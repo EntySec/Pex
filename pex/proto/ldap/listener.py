@@ -89,7 +89,7 @@ class Factory(ServerFactory):
         return proto
 
 
-class LDAPListen:
+class LDAPListener:
     def __init__(self, host, port, methods={}):
         self.http_tools = LDAPTools()
         self.handler = Handler

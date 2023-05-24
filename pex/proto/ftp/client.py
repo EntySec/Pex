@@ -34,7 +34,7 @@ class FTPClient(object):
     """
 
     def __init__(self, host: str, port: int, timeout: int = 10, ssl: bool = False) -> None:
-        """ Initialize FTPSocket with socket pair.
+        """ Initialize FTPClient with socket pair.
 
         :param str host: FTP host
         :param int port: FTP port

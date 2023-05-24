@@ -44,7 +44,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
 
 
-class HTTPListen(object):
+class HTTPListener(object):
     """ Subclass of pex.proto.http module.
 
     This subclass of pex.proto.http module represents Python
@@ -110,27 +110,3 @@ class HTTPListen(object):
             self.sock.handle_request()
         except Exception:
             raise RuntimeError(f"HTTP listener is not started!")
-
-
-class HTTPListener(object):
-    """ Subclass of pex.proto.http module.
-
-    This subclass of pex.proto.http module represents Python
-    implementation of HTTP listener.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    @staticmethod
-    def listen_http(host: str, port: int, methods: dict = {}) -> HTTPListen:
-        """ Start HTTP listener on socket pair.
-
-        :param str host: host to listen
-        :param int port: port to listen
-        :param dict methods: methods, method names as keys and
-        method handlers as items
-        :return HTTPListen: HTTP listener
-        """
-
-        return HTTPListen(host, port, methods)

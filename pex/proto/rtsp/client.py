@@ -27,15 +27,15 @@ import socket
 from pex.string import String
 
 
-class RTSPSocket(object):
+class RTSPClient(object):
     """ Subclass of pex.proto.rtsp module.
 
     This subclass of pex.proto.rtsp module represents Python
-    implementation of the RTSP socket.
+    implementation of the RTSP client.
     """
 
     def __init__(self, host: str, port: int, timeout: int = 10) -> None:
-        """ Initialize RTSPSocket with socket pair.
+        """ Initialize RTSPClient with socket pair.
 
         :param str host: RTSP host
         :param int port: RTSP port
@@ -124,26 +124,3 @@ class RTSPSocket(object):
             return self.sock.recv(size)
         except Exception:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
-
-
-class RTSPClient(object):
-    """ Subclass of pex.proto.rtsp module.
-
-    This subclass of pex.proto.rtsp module represents Python
-    implementation of the RTSP client.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    @staticmethod
-    def open_rtsp(host: str, port: int, timeout: int = 10) -> RTSPSocket:
-        """ Open RTSP connection with socket pair.
-
-        :param str host: RTSP host
-        :param int port: RTSP port
-        :param int timeout: connection timeout
-        :return RTSPSocket: RTSP socket
-        """
-
-        return RTSPSocket(host, port, timeout)

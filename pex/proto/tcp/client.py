@@ -25,15 +25,15 @@ SOFTWARE.
 import socket
 
 
-class TCPSocket(object):
+class TCPClient(object):
     """ Subclass of pex.proto.tcp module.
 
     This subclass of pex.proto.tcp module represents Python
-    implementation of the TCP socket.
+    implementation of the TCP client.
     """
 
     def __init__(self, host: str, port: int, timeout: int = 10) -> None:
-        """ Initialize TCPSocket with socket pair.
+        """ Initialize TCPClient with socket pair.
 
         :param str host: TCP host
         :param int port: TCP port
@@ -100,26 +100,3 @@ class TCPSocket(object):
             return self.sock.recv(size)
         except Exception:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
-
-
-class TCPClient(object):
-    """ Subclass of pex.proto.tcp module.
-
-    This subclass of pex.proto.tcp module represents Python
-    implementation of the TCP client.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    @staticmethod
-    def open_tcp(host: str, port: int, timeout: int = 10) -> TCPSocket:
-        """ Open TCP connection with socket pair.
-
-        :param str host: TCP host
-        :param int port: TCP port
-        :param int timeout: connection timeout
-        :return TCPSocket: TCP socket
-        """
-
-        return TCPSocket(host, port, timeout)

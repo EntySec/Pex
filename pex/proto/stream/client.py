@@ -26,7 +26,7 @@ import os
 import webbrowser
 
 
-class Streamer(object):
+class StreamerClient(object):
     """ Subclass of pex.proto.stream module.
 
     This subclass of pex.proto.stream module is intended for providing
@@ -132,25 +132,3 @@ Status : <span id="status"></span>
 
         url = f"file://{os.path.abspath(self.path)}"
         webbrowser.open(url, new=0, autoraise=True)
-
-
-class StreamClient(object):
-    """ Subclass of pex.proto.stream module.
-
-    This subclass of pex.proto.stream module represents Python
-    implementation of the stream client.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    @staticmethod
-    def open_stream(path: str, image: str) -> Streamer:
-        """ Open stream.
-
-        :param str path: path to html file of web page for streamer
-        :param str image: path to image to stream
-        :return Streamer: stream handler
-        """
-
-        return Streamer(path, image)

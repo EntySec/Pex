@@ -43,7 +43,7 @@ class ChannelClient(object):
     """
 
     def __init__(self, client: socket.socket) -> None:
-        """ Initialize ChannelSocket with socket
+        """ Initialize ChannelClient with socket
 
         :param socket.socket client: socket
         :return None: None

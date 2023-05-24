@@ -25,15 +25,15 @@ SOFTWARE.
 import socket
 
 
-class UDPSocket(object):
+class UDPClient(object):
     """ Subclass of pex.proto.udp module.
 
     This subclass of pex.proto.udp module represents Python
-    implementation of the UDP socket.
+    implementation of the UDP client.
     """
 
     def __init__(self, host: str, port: int, timeout: int = 10) -> None:
-        """ Initialize UDPSocket with socket pair.
+        """ Initialize UDPClient with socket pair.
 
         :param str host: UDP host
         :param int port: UDP port
@@ -76,26 +76,3 @@ class UDPSocket(object):
             return self.sock.recv(size)
         except Exception:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
-
-
-class UDPClient(object):
-    """ Subclass of pex.proto.udp module.
-
-    This subclass of pex.proto.udp module represents Python
-    implementation of UDP client.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    @staticmethod
-    def open_udp(host: str, port: int, timeout: int = 10) -> UDPSocket:
-        """ Open UDP connection with socket pair.
-
-        :param str host: UDP host
-        :param int port: UDP port
-        :param int timeout: connection timeout
-        :return UDPSocket: UDP socket
-        """
-
-        return UDPSocket(host, port, timeout)

@@ -25,7 +25,7 @@ SOFTWARE.
 import socket
 
 
-class TCPListen(object):
+class TCPListener(object):
     """ Subclass of pex.proto.tcp module.
 
     This subclass of pex.proto.tcp module represents Python
@@ -128,26 +128,3 @@ class TCPListen(object):
             return self.client.recv(size)
         except Exception:
             raise RuntimeError(f"Socket {self.address[0]}:{self.address[1]} is not connected!")
-
-
-class TCPListener(object):
-    """ Subclass of pex.proto.tcp module.
-
-    This subclass of pex.proto.tcp module represents Python
-    implementation of TCP listener.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    @staticmethod
-    def listen_tcp(host: str, port: int, timeout: int = 10) -> TCPListen:
-        """ Start TCP listener on socket pair.
-
-        :param str host: host to listen
-        :param int port: port to listen
-        :param int timeout: listener timeout
-        :return TCPListen: TCP listener
-        """
-
-        return TCPListen(host, port, timeout)

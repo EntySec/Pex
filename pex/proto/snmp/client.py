@@ -25,15 +25,15 @@ SOFTWARE.
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 
 
-class SNMPSocket(object):
+class SNMPClient(object):
     """ Subclass of pex.proto.snmp module.
 
     This subclass of pex.proto.snmp module represents Python
-    implementation of the SNMP socket.
+    implementation of the SNMP client.
     """
 
     def __init__(self, host: str, port: int, timeout: int = 15) -> None:
-        """ Initialize SNMPSocket with socket pair.
+        """ Initialize SNMPClient with socket pair.
 
         :param str host: SNMP host
         :param int port: SNMP port
@@ -73,26 +73,3 @@ class SNMPSocket(object):
         if not err_ind or not err_stat:
             return var_binds
         raise RuntimeError(f"Invalid community string in {community}!")
-
-
-class SNMPClient(object):
-    """ Subclass of pex.proto.snmp module.
-
-    This subclass of pex.proto.snmp module represents Python
-    implementation of the SNMP client.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    @staticmethod
-    def open_snmp(host: str, port: int, timeout: int = 15) -> SNMPSocket:
-        """ Open SNMP connection with socket pair.
-
-        :param str host: SNMP host
-        :param int port: SNMP port
-        :param int timeout: connection timeout
-        :return SNMPSocket: SNMP socket
-        """
-
-        return SNMPSocket(host, port, timeout)

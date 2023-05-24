@@ -35,7 +35,7 @@ class ADBClient(object):
     """
 
     def __init__(self, host: str, port: int, timeout: int = 10) -> None:
-        """ ADBSocket takes socket pair and then allows you
+        """ ADBClient takes socket pair and then allows you
         to perform protocol operations on it.
 
         :param str host: ADB host
