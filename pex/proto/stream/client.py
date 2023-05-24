@@ -26,7 +26,7 @@ import os
 import webbrowser
 
 
-class StreamerClient(object):
+class StreamClient(object):
     """ Subclass of pex.proto.stream module.
 
     This subclass of pex.proto.stream module is intended for providing
