@@ -26,11 +26,11 @@ import ftplib
 import io
 
 
-class FTPSocket(object):
+class FTPClient(object):
     """ Subclass of pex.proto.ftp module.
 
     This subclass of pex.proto.ftp module represents Python
-    implementation of the FTP socket.
+    implementation of the FTP client.
     """
 
     def __init__(self, host: str, port: int, timeout: int = 10, ssl: bool = False) -> None:
@@ -107,27 +107,3 @@ class FTPSocket(object):
             return fp_content.getvalue()
         except Exception:
             return b""
-
-
-class FTPClient(object):
-    """ Subclass of pex.proto.ftp module.
-
-    This subclass of pex.proto.ftp module represents Python
-    implementation of the FTP client.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    @staticmethod
-    def open_ftp(host: str, port: int, timeout: int = 10, ssl: bool = False) -> FTPSocket:
-        """ Open FTP connection with socket pair.
-
-        :param str host: FTP host
-        :param int port: FTP port
-        :param int timeout: connection timeout
-        :param bool ssl: True if FTP uses SSL else False
-        :return FTPSocket: FTP socket
-        """
-
-        return FTPSocket(host, port, timeout, ssl)
