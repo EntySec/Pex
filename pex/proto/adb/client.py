@@ -31,7 +31,7 @@ class ADBClient(object):
     """ Subclass of pex.proto.adb module.
 
     This subclass of pex.proto.adb module represents the Python
-    implementation of the Android Debug Bridge socket.
+    implementation of the Android Debug Bridge client.
     """
 
     def __init__(self, host: str, port: int, timeout: int = 10) -> None:
