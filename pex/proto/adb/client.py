@@ -27,7 +27,7 @@ import socket
 from adb_shell.adb_device import AdbDeviceTcp
 
 
-class ADBSocket(object):
+class ADBClient(object):
     """ Subclass of pex.proto.adb module.
 
     This subclass of pex.proto.adb module represents the Python
@@ -87,26 +87,3 @@ class ADBSocket(object):
             return self.sock.shell(command)
         except Exception:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
-
-
-class ADBClient(object):
-    """ Subclass of pex.proto.adb module.
-
-    This subclass of pex.proto.adb module represents Python
-    implementation of the Android Debug Bridge client.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    @staticmethod
-    def open_adb(host: str, port: int, timeout: int = 10) -> ADBSocket:
-        """ Create the ADBSocket with specified socket pair.
-
-        :param str host: ADB host
-        :param int port: ADB port
-        :param int timeout: connection timeout
-        :return ADBSocket: ADBSocket with specified socket pair
-        """
-
-        return ADBSocket(host, port, timeout)
