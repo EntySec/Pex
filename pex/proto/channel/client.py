@@ -39,7 +39,7 @@ class ChannelClient(object):
     """ Subclass of pex.proto.channel module.
 
     This subclass of pex.proto.channel module represents Python
-    implementation of the channel socket.
+    implementation of the channel client.
     """
 
     def __init__(self, client: socket.socket) -> None:
