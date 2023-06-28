@@ -10,6 +10,9 @@
     <a href="https://github.com/EntySec/Pex/stargazers">
         <img src="https://img.shields.io/github/stars/EntySec/Pex?color=yellow">
     </a>
+    <a href="https://github.com/EntySec/Pex/forks">
+        <img src="https://img.shields.io/github/forks/EntySec/Pex?color=green">
+    </a>
 </p>
 
 Python Exploitation is a collection of special utilities for providing high quality penetration testing using pure
