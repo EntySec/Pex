@@ -14,7 +14,7 @@
         <img src="https://img.shields.io/github/stars/EntySec/Pex?color=yellow">
     </a>
     <a href="https://www.codefactor.io/repository/github/EntySec/Pex">
-        <img src="https://www.codefactor.io/repository/github/EntySec/Pex/badge" />
+        <img src="https://www.codefactor.io/repository/github/EntySec/Pex/badge">
     </a>
 </p>
 
