@@ -51,6 +51,26 @@ class Net(object):
         self.syn_timeout = 1
 
     @staticmethod
+    def get_hosts() -> list:
+        """ Get all hosts available on the system.
+
+        :return list: network hosts available on the system.
+        """
+
+        ip_addresses = []
+
+        interfaces = netifaces.interfaces()
+
+        for interface in interfaces:
+            addresses = netifaces.ifaddresses(interface)
+
+            if netifaces.AF_INET in addresses:
+                for address_info in addresses[netifaces.AF_INET]:
+                    ip_addresses.append(address_info['addr'])
+
+        return ip_addresses
+
+    @staticmethod
     def get_gateways() -> list:
         """ Get all network interfaces available on the system.
 
