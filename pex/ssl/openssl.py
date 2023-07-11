@@ -40,7 +40,7 @@ class OpenSSL(object):
     def wrap_client(self, client: socket.socket, keyfile: str = 'hatsploit.key', certfile: str = 'hatsploit.crt',
                     protocol: ssl._SSLMethod = ssl.PROTOCOL_TLS, expire: int = 365, nodename: str = 'HatSploit',
                     country: str = 'US', state: str = 'HatSploit', location: str = 'HatSploit',
-                    organization: str = 'HatSploit', unit: str = 'HatSploit') -> ssl.SSLSocket:
+                    organization: str = 'HatSploit', unit: str = 'HatSploit', server: bool = True) -> ssl.SSLSocket:
         """ Generate a certificate and wrap a socket with it.
 
         :param socket.socket client: socket client
@@ -54,6 +54,7 @@ class OpenSSL(object):
         :param str location: certificate location
         :param str organization: certificate organization
         :param str unit: certificate unit
+        :param bool server: True if server side else False
         :return ssl.SSLSocket: wrapped socket
         """
 
@@ -74,7 +75,7 @@ class OpenSSL(object):
 
         return ssl.wrap_socket(
             client,
-            server_side=True,
+            server_side=server,
             certfile=certfile,
             keyfile=keyfile,
             ssl_version=protocol
