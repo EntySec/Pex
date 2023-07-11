@@ -65,7 +65,7 @@ class BitReader(object):
 
         res = 0
         for i in range(num):
-            res += self.getBit() << num - 1 - i
+            res += self.get_bit() << num - 1 - i
         return res
 
     def get_byte(self) -> int:
@@ -74,7 +74,7 @@ class BitReader(object):
         :return int: represented byte
         """
 
-        return self.getBits(8)
+        return self.get_bits(8)
 
     def __len__(self) -> int:
         """ Get lenght of represented bits.
