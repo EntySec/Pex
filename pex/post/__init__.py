@@ -148,6 +148,6 @@ class Post(object):
                 *args, **kwargs
             )
 
-            self.post_tools.post_payload(sender, command, *args, **kwargs)
+            self.post_tools.post_payload(sender, command)
         else:
-            self.post_tools.post_payload(sender, payload, *args, **kwargs)
+            self.post_tools.post_payload(sender, payload)
