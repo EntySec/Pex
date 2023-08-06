@@ -43,20 +43,20 @@ class Certutil(object):
         self.string_tools = String()
 
     def push(self, sender: Callable[..., Any], data: bytes, location: str,
-             space: int = 100, *args, **kwargs) -> None:
+             linemax: int = 100, *args, **kwargs) -> None:
         """ Push file to sender using bash echo method.
 
         :param Callable[..., Any] sender: sender to push file to
         :param bytes data: data to push to file on sender
         :param str location: location of file to push data to
-        :param int space: max command line size for each chunk
+        :param int linemax: max command line size for each chunk
         :return None: None
         """
 
         decode_stream = "certutil -decode {}.b64 {}.exe & del {}.b64"
 
         echo_stream = "echo {} >> {}.b64"
-        echo_max_length = space
+        echo_max_length = linemax
 
         data = self.string_tools.base64_string(data, decode=False)
 
