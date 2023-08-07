@@ -44,7 +44,7 @@ class DD(object):
         self.string_tools = String()
         self.channel_tools = ChannelTools()
 
-    def pull(self, sender: Callable[..., Any], location: str, *args, **kwargs) -> bytes:
+    def pull(self, sender: Callable[..., Any], location: str) -> bytes:
         """ Pull file from sender using dd method.
 
         :param Callable[..., Any] sender: sender to pull file from
@@ -72,7 +72,7 @@ class DD(object):
                     token
                 )
 
-                data = self.post_tools.post_payload(sender, command, *args, **kwargs)
+                data = self.post_tools.post_payload(sender, command)
                 block, _ = self.channel_tools.token_extract(data, token.encode())
 
                 result += block
