@@ -194,7 +194,7 @@ class ChannelClient(object):
         raise RuntimeError("Socket is not connected!")
 
     def send_command(self, command: str, output: bool = True,
-                     decode: bool = True, newline: bool = False) -> Union[str, None]:
+                     decode: bool = True, newline: bool = True) -> Union[str, None]:
         """ Send command to the channel socket.
 
         :param str command: command to send
@@ -227,7 +227,7 @@ class ChannelClient(object):
         raise RuntimeError("Socket is not connected!")
 
     def send_token_command(self, command: str, token: str, output: bool = True,
-                           decode: bool = True, newline: bool = False,
+                           decode: bool = True, newline: bool = True,
                            printer: Optional[Callable[..., Any]] = None) -> Union[str, None]:
         """ Send command and read output until specific token.
 
