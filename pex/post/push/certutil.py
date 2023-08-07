@@ -43,7 +43,7 @@ class Certutil(object):
         self.string_tools = String()
 
     def push(self, sender: Callable[..., Any], data: bytes, location: str,
-             linemax: int = 100, *args, **kwargs) -> None:
+             linemax: int = 100) -> None:
         """ Push file to sender using bash echo method.
 
         :param Callable[..., Any] sender: sender to push file to
@@ -72,7 +72,7 @@ class Certutil(object):
 
                 if block:
                     command = echo_stream.format(block, location)
-                    self.post_tools.post_payload(sender, command, *args, **kwargs)
+                    self.post_tools.post_payload(sender, command)
 
         command = decode_stream.format(location, location, location)
-        self.post_tools.post_payload(sender, command, *args, **kwargs)
+        self.post_tools.post_payload(sender, command)
