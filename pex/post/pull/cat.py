@@ -43,7 +43,7 @@ class Cat(object):
         self.string_tools = String()
         self.channel_tools = ChannelTools()
 
-    def pull(self, sender: Callable[..., Any], location: str, *args, **kwargs) -> bytes:
+    def pull(self, sender: Callable[..., Any], location: str) -> bytes:
         """ Pull file from sender using cat method.
 
         :param Callable[..., Any] sender: sender to pull file from
@@ -55,7 +55,7 @@ class Cat(object):
         token = self.string_tools.random_string(8)
         command = f'cat "{location}" && echo {token}'
 
-        data = self.post_tools.post_payload(sender, command, *args, **kwargs)
+        data = self.post_tools.post_payload(sender, command)
         block, _ = self.channel_tools.token_extract(data, token.encode())
 
         return block
