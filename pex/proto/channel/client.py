@@ -51,6 +51,7 @@ class ChannelClient(object):
 
         super().__init__()
 
+        self.client = client
         self.channel_tools = ChannelTools()
 
         self.sock = telnetlib.Telnet()
@@ -58,7 +59,7 @@ class ChannelClient(object):
 
         self.terminated = False
 
-        self.read_size = 1024 ** 2
+        self.read_size = 2048
         self.read_delay = 1
 
         self.stashed = b""
@@ -80,7 +81,7 @@ class ChannelClient(object):
         :return None: None
         """
 
-        if self.sock.sock:
+        if self.client:
             self.sock.close()
 
     def send(self, data: bytes) -> None:
@@ -91,8 +92,9 @@ class ChannelClient(object):
         :raises RuntimeError: with trailing error message
         """
 
-        if self.sock.sock:
-            return self.sock.sock.send(data)
+        if self.client:
+            return self.client.send(data)
+
         raise RuntimeError("Socket is not connected!")
 
     def read(self, size: int) -> bytes:
@@ -103,8 +105,9 @@ class ChannelClient(object):
         :raises RuntimeError: with trailing error message
         """
 
-        if self.sock.sock:
-            return self.sock.sock.recv(size)
+        if self.client:
+            return self.client.recv(size)
+
         raise RuntimeError("Socket is not connected!")
 
     def readall(self) -> bytes:
@@ -114,9 +117,9 @@ class ChannelClient(object):
         :raises RuntimeError: with trailing error message
         """
 
-        if self.sock.sock:
+        if self.client:
             result = self.stash()
-            self.sock.sock.setblocking(False)
+            self.client.setblocking(False)
 
             while True:
                 try:
@@ -130,43 +133,10 @@ class ChannelClient(object):
                 result += data
                 time.sleep(self.read_delay)
 
-            self.sock.sock.setblocking(True)
+            self.client.setblocking(True)
             return result
 
         raise RuntimeError("Socket is not connected!")
-
-    def print_until(self, token: str, printer: Callable[..., Any] = print) -> None:
-        """ Read and print data until specific token.
-
-        :param str token: token to read data until
-        :param Callable[..., Any] printer: function that prints data
-        :return None: None
-        :raises RuntimeError: with trailing error message
-        """
-
-        if self.sock.sock:
-            token = token.encode()
-            data = self.stash().decode(errors='ignore')
-
-            if printer != print:
-                printer(data, start='', end='')
-            else:
-                printer(data, end='')
-
-            while True:
-                data = self.read(self.read_size)
-                block, stash = self.channel_tools.token_extract(data, token)
-
-                if printer != print:
-                    printer(block.decode(errors='ignore'), start='', end='')
-                else:
-                    printer(block.decode(errors='ignore'), end='')
-
-                if block != data:
-                    self.stashed = stash
-                    break
-        else:
-            raise RuntimeError("Socket is not connected!")
 
     def read_until(self, token: str) -> bytes:
         """ Read data from the channel socket until specific token.
@@ -194,7 +164,7 @@ class ChannelClient(object):
         raise RuntimeError("Socket is not connected!")
 
     def send_command(self, command: str, output: bool = True,
-                     decode: bool = False, newline: bool = True) -> Union[str, None]:
+                     decode: bool = False, newline: bool = True) -> Union[str, None, bytes]:
         """ Send command to the channel socket.
 
         :param str command: command to send
@@ -220,15 +190,16 @@ class ChannelClient(object):
                         data = data.decode(errors='ignore')
 
                     return data
+
             except Exception:
                 self.terminated = True
                 raise RuntimeError("Channel closed connection unexpectedly!")
+
             return
         raise RuntimeError("Socket is not connected!")
 
     def send_token_command(self, command: str, token: str, output: bool = True,
-                           decode: bool = False, newline: bool = True,
-                           printer: Optional[Callable[..., Any]] = None) -> Union[str, None]:
+                           decode: bool = False, newline: bool = True) -> Union[str, None, bytes]:
         """ Send command and read output until specific token.
 
         :param str command: command to send
@@ -236,9 +207,8 @@ class ChannelClient(object):
         :param bool output: True if wait for output else False
         :param bool decode: True if decode else False
         :param bool newline: True to add newline char else False
-        :param Optional[Callable[..., Any]] printer: function to print data,
         None for not printing but returning read data
-        :return Union[str, None]: output if output is True and printer is None else None
+        :return Union[str, None, bytes]: output if output is True and printer is None else None
         """
 
         if self.sock.sock:
@@ -249,16 +219,13 @@ class ChannelClient(object):
                 buffer = command.encode()
                 self.send(buffer)
 
-                if printer:
-                    self.print_until(token, printer)
-                else:
-                    data = self.read_until(token)
+                data = self.read_until(token)
 
-                    if output:
-                        if decode:
-                            data = data.decode(errors='ignore')
+                if output:
+                    if decode:
+                        data = data.decode(errors='ignore')
 
-                        return data
+                    return data
 
             except Exception:
                 self.terminated = True
@@ -275,7 +242,7 @@ class ChannelClient(object):
         :raises RuntimeError: with trailing error message
         """
 
-        if self.sock.sock:
+        if self.client:
             selector = selectors.SelectSelector()
 
             selector.register(self.sock, selectors.EVENT_READ)
