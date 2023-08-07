@@ -193,38 +193,49 @@ class ChannelClient(object):
             return result
         raise RuntimeError("Socket is not connected!")
 
-    def send_command(self, command: str, output: bool = True) -> Union[str, None]:
+    def send_command(self, command: str, output: bool = True,
+                     decode: bool = True, newline: bool = False) -> Union[str, None]:
         """ Send command to the channel socket.
 
         :param str command: command to send
         :param bool output: True if wait for output else False
-        :return Union[str, None]: output if output is True else None
+        :param bool decode: True if decode else False
+        :param bool newline: True to add newline char else False
+        :return Union[str, None, bytes]: output if output is True else None
         :raises RuntimeError: with trailing error message
         """
 
         if self.sock.sock:
             try:
+                if newline:
+                    command += '\n'
+
                 buffer = command.encode()
                 self.send(buffer)
 
                 if output:
                     data = self.readall()
-                    data = data.decode(errors='ignore')
+
+                    if decode:
+                        data = data.decode(errors='ignore')
 
                     return data
             except Exception:
                 self.terminated = True
                 raise RuntimeError("Channel closed connection unexpectedly!")
-            return None
+            return
         raise RuntimeError("Socket is not connected!")
 
     def send_token_command(self, command: str, token: str, output: bool = True,
+                           decode: bool = True, newline: bool = False,
                            printer: Optional[Callable[..., Any]] = None) -> Union[str, None]:
         """ Send command and read output until specific token.
 
         :param str command: command to send
         :param str token: token to read data until
         :param bool output: True if wait for output else False
+        :param bool decode: True if decode else False
+        :param bool newline: True to add newline char else False
         :param Optional[Callable[..., Any]] printer: function to print data,
         None for not printing but returning read data
         :return Union[str, None]: output if output is True and printer is None else None
@@ -232,6 +243,9 @@ class ChannelClient(object):
 
         if self.sock.sock:
             try:
+                if newline:
+                    command += '\n'
+
                 buffer = command.encode()
                 self.send(buffer)
 
@@ -241,14 +255,16 @@ class ChannelClient(object):
                     data = self.read_until(token)
 
                     if output:
-                        data = data.decode(errors='ignore')
+                        if decode:
+                            data = data.decode(errors='ignore')
+
                         return data
 
             except Exception:
                 self.terminated = True
                 raise RuntimeError("Channel closed connection unexpectedly!")
 
-            return None
+            return
         raise RuntimeError("Socket is not connected!")
 
     def interact(self, terminator: str = '\n') -> None:
