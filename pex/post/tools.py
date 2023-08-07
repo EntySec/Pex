@@ -55,7 +55,7 @@ class PostTools(object):
         return ''.join(byte_octals)
 
     @staticmethod
-    def post_payload(sender: Callable[..., str], payload: Union[str, bytes], *args, **kwargs) -> str:
+    def post_payload(sender: Callable[..., str], payload: Union[str, bytes]) -> str:
         """ Post command to sender and receive the result.
 
         :param Callable[..., Any] sender: sender function
@@ -63,11 +63,4 @@ class PostTools(object):
         :return str: post command result
         """
 
-        if 'command' in inspect.getfullargspec(sender).args:
-            return sender(command=payload, *args, **kwargs)
-
-        elif 'payload' in inspect.getfullargspec(sender).args:
-            return sender(payload=payload, *args, **kwargs)
-
-        else:
-            raise RuntimeError("Payload sender does not contain (command/payload) argument!")
+        return sender(payload)
