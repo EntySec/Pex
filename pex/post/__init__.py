@@ -113,7 +113,7 @@ class Post(object):
                         raise RuntimeError(f"Platform {platform} is not supported by {arch} architecture!")
 
                 else:
-                    self.post_tools.post_payload(sender, payload, *args, **kwargs)
+                    self.post_tools.post_payload(sender, payload)
                     return
 
             elif platform in platforms['windows']:
@@ -136,7 +136,7 @@ class Post(object):
                         raise RuntimeError(f"Platform {platform} is not supported by {arch} architecture!")
 
                 else:
-                    self.post_tools.post_payload(sender, payload, *args, **kwargs)
+                    self.post_tools.post_payload(sender, payload)
                     return
             else:
                 raise RuntimeError(f"Platform {platform} in unsupported!")
