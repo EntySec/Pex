@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from typing import Union
+
 
 class TLVPacket(object):
     """ Subclass of pex.proto.tlv module.
@@ -61,26 +63,28 @@ class TLVPacket(object):
 
         return data
 
-    def get_string(self, type: int) -> str:
+    def get_string(self, type: int) -> Union[list, str]:
         """ Get string from packet.
 
         :param int type: type
-        :return str: string
+        :return Union[list, str]: string or list of strings
         """
 
-        return [i.decode() for i in self.get_raw(type)]
+        data = [i.decode() for i in self.get_raw(type)]
+        return data[0] if len(data) == 1 else data
 
-    def get_int(self, type: int) -> Union[int, None]:
+    def get_int(self, type: int) -> Union[int, None, list]:
         """ Get integer from packet.
 
         :param int type: type
-        :return Union[int, None]: integer if found or None
+        :return Union[int, None, list]: integer or list of integers if found or None
         """
 
         data = self.get_raw(type)
 
         if data:
-            return [int.from_bytes(i, self.endian) for i in data]
+            parsed = [int.from_bytes(i, self.endian) for i in data]
+            return parsed[0] if len(parsed) == 1 else parsed
 
     def add_raw(self, type: int, value: bytes) -> None:
         """ Add raw data to packet.
