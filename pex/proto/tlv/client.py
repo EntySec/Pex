@@ -28,9 +28,9 @@ from .packet import TLVPacket
 
 
 class TLVClient(object):
-    """ Subclass of pex.proto.tcp module.
+    """ Subclass of pex.proto.tlv module.
 
-    This subclass of pex.proto.tcp module represents Python
+    This subclass of pex.proto.tlv module represents Python
     implementation of the TLV client.
     """
 
