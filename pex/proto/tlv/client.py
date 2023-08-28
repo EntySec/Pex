@@ -47,21 +47,37 @@ class TLVClient(object):
         self.endian = endian
         self.max_size = max_size
 
+    def close(self) -> None:
+        """ Close connected socket.
+
+        :return None: None
+        """
+
+        if self.client:
+            self.client.close()
+
     def send(self, packet: TLVPacket) -> None:
         """ Send TLV packet to the socket.
 
         :param TLVPacket packet: TLV packet
         :return None: None
+        :raises RuntimeError: with trailing error message
         """
 
-        if self.client:
+        try:
             self.client.send(packet.buffer)
+        except Exception:
+            raise RuntimeError("Socket is not connected!")
 
     def read(self) -> TLVPacket:
         """ Read TLV packet from the socket.
 
         :return TLVPacket: read TLV packet
+        :raises RuntimeError: with trailing error message
         """
+
+        if not self.client:
+            raise RuntimeError("Socket is not connected!")
 
         self.client.setblocking(False)
         buffer = b''
