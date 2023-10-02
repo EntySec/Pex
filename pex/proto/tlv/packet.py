@@ -63,28 +63,28 @@ class TLVPacket(object):
 
         return data
 
-    def get_string(self, type: int) -> Union[list, str]:
+    def get_string(self, type: int) -> list:
         """ Get string from packet.
 
         :param int type: type
-        :return Union[list, str]: string or list of strings
+        :return list: list of strings
         """
 
-        data = [i.decode() for i in self.get_raw(type)]
-        return data[0] if len(data) == 1 else data
+        return [i.decode() for i in self.get_raw(type)]
 
-    def get_int(self, type: int) -> Union[int, None, list]:
+    def get_int(self, type: int) -> list:
         """ Get integer from packet.
 
         :param int type: type
-        :return Union[int, None, list]: integer or list of integers if found or None
+        :return list: list of integers if found or None
         """
 
         data = self.get_raw(type)
 
         if data:
-            parsed = [int.from_bytes(i, self.endian) for i in data]
-            return parsed[0] if len(parsed) == 1 else parsed
+            return [int.from_bytes(i, self.endian) for i in data]
+
+        return []
 
     def add_raw(self, type: int, value: bytes) -> None:
         """ Add raw data to packet.
