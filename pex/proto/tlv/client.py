@@ -84,7 +84,14 @@ class TLVClient(object):
 
         while True:
             try:
-                buffer += self.client.recv(self.max_size)
+                buffer += self.client.recv(4)
+
+                length = self.client.recv(4)
+                buffer += length
+
+                length = int.from_bytes(length, self.endian)
+                buffer += self.client.recv(length)
+
             except Exception:
                 if buffer:
                     break
