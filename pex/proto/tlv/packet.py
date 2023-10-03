@@ -63,26 +63,28 @@ class TLVPacket(object):
 
         return data
 
-    def get_string(self, type: int) -> list:
+    def get_string(self, type: int) -> Union[list, str]:
         """ Get string from packet.
 
         :param int type: type
-        :return list: list of strings
+        :return Union[list, str]: list of strings if found multiple else string
         """
 
-        return [i.decode() for i in self.get_raw(type)]
+        result = [i.decode() for i in self.get_raw(type)]
+        return result[0] if len(result) == 1 else result
 
-    def get_int(self, type: int) -> list:
+    def get_int(self, type: int) -> Union[list, int]:
         """ Get integer from packet.
 
         :param int type: type
-        :return list: list of integers if found or None
+        :return Union[list, int]: list of integers if found multiple else integer
         """
 
         data = self.get_raw(type)
 
         if data:
-            return [int.from_bytes(i, self.endian) for i in data]
+            result = [int.from_bytes(i, self.endian) for i in data]
+            return result[0] if len(result) == 1 else result
 
         return []
 
