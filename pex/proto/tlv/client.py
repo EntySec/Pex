@@ -61,13 +61,9 @@ class TLVClient(object):
 
         :param TLVPacket packet: TLV packet
         :return None: None
-        :raises RuntimeError: with trailing error message
         """
 
-        try:
-            self.client.send(packet.buffer)
-        except Exception:
-            raise RuntimeError("Socket is not connected!")
+        self.send_raw(packet.buffer)
 
     def read(self) -> TLVPacket:
         """ Read TLV packet from the socket.
@@ -84,16 +80,42 @@ class TLVClient(object):
 
         while True:
             try:
-                buffer += self.client.recv(4)
+                buffer += self.read_raw(4)
 
-                length = self.client.recv(4)
+                length = self.read_raw(4)
                 buffer += length
 
                 length = int.from_bytes(length, self.endian)
-                buffer += self.client.recv(length)
+                buffer += self.read_raw(length)
 
             except Exception:
                 if buffer:
                     break
 
         return TLVPacket(buffer=buffer, endian=self.endian)
+
+    def send_raw(self, data: bytes) -> None:
+        """ Send raw data instead of TLV packet.
+
+        :param bytes data: data to send
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
+        if not self.client:
+            raise RuntimeError("Socket is not connected!")
+
+        self.client.send(data)
+
+    def read_raw(self, size: int) -> bytes:
+        """ Read raw data instead of TLV packet.
+
+        :param int size: size of data to read
+        :return bytes: read data
+        :raises RuntimeError: with trailing error message
+        """
+
+        if not self.client:
+            raise RuntimeError("Socket is not connected!")
+
+        return self.client.recv(size)
