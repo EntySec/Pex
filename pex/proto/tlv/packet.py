@@ -45,7 +45,7 @@ class TLVPacket(object):
         self.endian = endian
         self.buffer = buffer
 
-    def __add__(self, packet: Any) -> self:
+    def __add__(self, packet: Any) -> Any:
         """ Add one packet to the current packet.
 
         :param Any packet: TLV packet to add
