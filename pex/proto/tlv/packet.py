@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import Union
+from typing import Union, Any
 
 
 class TLVPacket(object):
@@ -33,60 +33,76 @@ class TLVPacket(object):
     """
 
     def __init__(self, buffer: bytes = b'', endian: str = 'little') -> None:
+        """ Initialize TLV packet.
+
+        :param bytes buffer: raw packet
+        :param str endian: byte order of raw packet
+        :return None: None
+        """
+
         super().__init__()
 
         self.endian = endian
         self.buffer = buffer
 
-    def get_raw(self, type: int) -> list:
+    def __add__(self, packet: TLVPacket) -> TLVPacket:
+        """ Add one packet to the current packet.
+
+        :param TLVPacket packet: TLV packet to add
+        :return TLVPacket: new TLV packet
+        """
+
+        return TLVPacket(self.buffer + packet.buffer)
+
+    def get_raw(self, type: int) -> bytes:
         """ Get raw data from packet.
 
         :param int type: type
-        :return list: raw data in list
+        :return bytes: raw value
         """
 
         offset = 0
-        data = []
+        data = b''
+        buffer = bytearray(self.buffer)
 
-        while offset < len(self.buffer):
+        while offset < len(buffer):
             cur_type = int.from_bytes(
-                self.buffer[offset:offset + 4], self.endian)
+                buffer[offset:offset + 4], self.endian)
             offset += 4
             cur_length = int.from_bytes(
-                self.buffer[offset:offset + 4], self.endian)
+                buffer[offset:offset + 4], self.endian)
             offset += 4
-            cur_value = self.buffer[offset:offset + cur_length]
+            cur_value = buffer[offset:offset + cur_length]
             offset += cur_length
 
             if cur_type == type:
-                data.append(cur_value)
+                data = cur_value
+                del buffer[offset - cur_length - 8:offset]
+                break
 
+        self.buffer = bytes(buffer)
         return data
 
-    def get_string(self, type: int) -> Union[list, str]:
+    def get_string(self, type: int) -> str:
         """ Get string from packet.
 
         :param int type: type
-        :return Union[list, str]: list of strings if found multiple else string
+        :return str: string
         """
 
-        result = [i.decode() for i in self.get_raw(type)]
-        return result[0] if len(result) == 1 else result
+        return self.get_raw(type).decode()
 
-    def get_int(self, type: int) -> Union[list, int]:
+    def get_int(self, type: int) -> Union[int, None]:
         """ Get integer from packet.
 
         :param int type: type
-        :return Union[list, int]: list of integers if found multiple else integer
+        :return Union[int, None]: integer
         """
 
         data = self.get_raw(type)
 
         if data:
-            result = [int.from_bytes(i, self.endian) for i in data]
-            return result[0] if len(result) == 1 else result
-
-        return []
+            return int.from_bytes(data, self.endian)
 
     def add_raw(self, type: int, value: bytes) -> None:
         """ Add raw data to packet.
