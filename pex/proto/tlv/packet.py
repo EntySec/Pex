@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import Union
+from typing import Union, Any
 
 
 class TLVPacket(object):
@@ -45,11 +45,11 @@ class TLVPacket(object):
         self.endian = endian
         self.buffer = buffer
 
-    def __add__(self, packet: self) -> self:
+    def __add__(self, packet: Any) -> self:
         """ Add one packet to the current packet.
 
-        :param self packet: TLV packet to add
-        :return self: new TLV packet
+        :param Any packet: TLV packet to add
+        :return Any: new TLV packet
         """
 
         return self.__class__(self.buffer + packet.buffer)
