@@ -54,6 +54,25 @@ class TLVPacket(object):
 
         return self.__class__(self.buffer + packet.buffer)
 
+    def __len__(self) -> int:
+        """ Get count of TLV objects.
+
+        :return int: count of TLV objects
+        """
+
+        offset = 0
+        count = 0
+
+        while offset < len(self.buffer):
+            count += 1
+
+            offset += 4
+            length = int.from_bytes(
+                self.buffer[offset:offset + 4], self.endian)
+            offset += 4 + length
+
+        return count
+
     def get_raw(self, type: int) -> bytes:
         """ Get raw data from packet.
 
