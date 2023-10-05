@@ -75,22 +75,12 @@ class TLVClient(object):
         if not self.client:
             raise RuntimeError("Socket is not connected!")
 
-        self.client.setblocking(False)
-        buffer = b''
+        buffer = self.read_raw(4)
+        length = self.read_raw(4)
 
-        while True:
-            try:
-                buffer += self.read_raw(4)
-
-                length = self.read_raw(4)
-                buffer += length
-
-                length = int.from_bytes(length, self.endian)
-                buffer += self.read_raw(length)
-
-            except Exception:
-                if buffer:
-                    break
+        buffer += length
+        buffer += self.read_raw(
+            int.from_bytes(length, self.endian))
 
         return TLVPacket(buffer=buffer, endian=self.endian)
 
