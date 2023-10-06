@@ -32,14 +32,11 @@ class TLVPacket(object):
     an implementation of TLV protocol stack.
     """
 
-    def __init__(self, buffer: bytes = b'',
-                 endian: str = 'little',
-                 clean: bool = False) -> None:
+    def __init__(self, buffer: bytes = b'', endian: str = 'little') -> None:
         """ Initialize TLV packet.
 
         :param bytes buffer: raw packet
         :param str endian: byte order of raw packet
-        :param bool clean: remove object after popping it
         :return None: None
         """
 
@@ -47,7 +44,6 @@ class TLVPacket(object):
 
         self.endian = endian
         self.buffer = buffer
-        self.clean = clean
 
     def __add__(self, packet: Any) -> Any:
         """ Add one packet to the current packet.
@@ -120,10 +116,9 @@ class TLVPacket(object):
             offset += cur_length
 
             if cur_type == type:
-                if self.clean:
-                    self.buffer = bytearray(self.buffer)
-                    self.buffer[offset - cur_length - 8:offset] = b''
-                    self.buffer = bytes(self.buffer)
+                self.buffer = bytearray(self.buffer)
+                self.buffer[offset - cur_length - 8:offset] = b''
+                self.buffer = bytes(self.buffer)
 
                 return cur_value
 
