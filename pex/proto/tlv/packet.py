@@ -54,8 +54,7 @@ class TLVPacket(object):
 
         return self.__class__(
             buffer=self.buffer + packet.buffer,
-            endian=self.endian,
-            clean=self.clean
+            endian=self.endian
         )
 
     def __sub__(self, packet: Any) -> Any:
@@ -73,8 +72,7 @@ class TLVPacket(object):
 
         return self.__class__(
             buffer=buffer,
-            endian=self.endian,
-            clean=self.clean
+            endian=self.endian
         )
 
     def __len__(self) -> int:
