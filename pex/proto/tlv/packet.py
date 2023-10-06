@@ -32,11 +32,14 @@ class TLVPacket(object):
     an implementation of TLV protocol stack.
     """
 
-    def __init__(self, buffer: bytes = b'', endian: str = 'little') -> None:
+    def __init__(self, buffer: bytes = b'',
+                 endian: str = 'little',
+                 clean: bool = False) -> None:
         """ Initialize TLV packet.
 
         :param bytes buffer: raw packet
         :param str endian: byte order of raw packet
+        :param bool clean: remove object after popping it
         :return None: None
         """
 
@@ -44,6 +47,7 @@ class TLVPacket(object):
 
         self.endian = endian
         self.buffer = buffer
+        self.clean = clean
 
     def __add__(self, packet: Any) -> Any:
         """ Add one packet to the current packet.
@@ -52,7 +56,30 @@ class TLVPacket(object):
         :return Any: new TLV packet
         """
 
-        return self.__class__(self.buffer + packet.buffer)
+        return self.__class__(
+            buffer=self.buffer + packet.buffer,
+            endian=self.endian,
+            clean=self.clean
+        )
+
+    def __sub__(self, packet: Any) -> Any:
+        """ Remove one packet from the current packet.
+
+        :param Any packet: TLV packet to remove
+        :return Any: new TLV packet
+        """
+
+        buffer = bytearray(self.buffer)
+        buffer_pos = buffer.find(packet.buffer)
+
+        buffer[buffer_pos:buffer_pos + len(packet.buffer)] = b''
+        buffer = bytes(buffer)
+
+        return self.__class__(
+            buffer=buffer,
+            endian=self.endian,
+            clean=self.clean
+        )
 
     def __len__(self) -> int:
         """ Get count of TLV objects.
@@ -81,26 +108,26 @@ class TLVPacket(object):
         """
 
         offset = 0
-        data = b''
-        buffer = bytearray(self.buffer)
 
-        while offset < len(buffer):
+        while offset < len(self.buffer):
             cur_type = int.from_bytes(
-                buffer[offset:offset + 4], self.endian)
+                self.buffer[offset:offset + 4], self.endian)
             offset += 4
             cur_length = int.from_bytes(
-                buffer[offset:offset + 4], self.endian)
+                self.buffer[offset:offset + 4], self.endian)
             offset += 4
-            cur_value = buffer[offset:offset + cur_length]
+            cur_value = self.buffer[offset:offset + cur_length]
             offset += cur_length
 
             if cur_type == type:
-                data = cur_value
-                del buffer[offset - cur_length - 8:offset]
-                break
+                if self.clean:
+                    self.buffer = bytearray(self.buffer)
+                    self.buffer[offset - cur_length - 8:offset] = b''
+                    self.buffer = bytes(self.buffer)
 
-        self.buffer = bytes(buffer)
-        return data
+                return cur_value
+
+        return b''
 
     def get_string(self, type: int) -> str:
         """ Get string from packet.
