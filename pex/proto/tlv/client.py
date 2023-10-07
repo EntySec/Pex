@@ -84,7 +84,7 @@ class TLVClient(object):
         value = b''
 
         while length > 0:
-            chunk = self.read_raw(4)
+            chunk = self.read_raw(length)
             value += chunk
             length -= len(chunk)
 
