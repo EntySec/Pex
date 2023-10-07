@@ -79,8 +79,16 @@ class TLVClient(object):
         length = self.read_raw(4)
 
         buffer += length
-        buffer += self.read_raw(
-            int.from_bytes(length, self.endian))
+        length = int.from_bytes(length, self.endian)
+
+        value = b''
+
+        while length > 0:
+            chunk = self.read_raw(4)
+            value += chunk
+            length -= len(chunk)
+
+        buffer += value
 
         return TLVPacket(buffer=buffer, endian=self.endian)
 
