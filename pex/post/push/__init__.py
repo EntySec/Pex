@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 from collections import OrderedDict
-from typing import Optional
+from typing import Optional, Union
 
 from pex.platform.types import *
 
