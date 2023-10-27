@@ -48,7 +48,7 @@ class Dylib(object):
         ]
 
         self.dylib_headers = {
-            ARCH_x64: f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/dylib/dylib_x64.dylib'
+            ARCH_X64: f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/dylib/dylib_x64.dylib'
         }
 
     def check_dylib(self, data: bytes) -> bool:
