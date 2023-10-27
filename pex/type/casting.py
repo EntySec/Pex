@@ -36,16 +36,6 @@ class Casting(object):
         super().__init__()
 
     @staticmethod
-    def is_big(arch: str) -> bool:
-        """ Check if arhitecture is big endian.
-
-        :param str arch: architecture to check
-        :return bool: True if big else False
-        """
-
-        return any(e in arch.lower() for e in ['be', 'eb'])
-
-    @staticmethod
     def is_mac(mac: str) -> bool:
         """ Check if string is a MAC address.
 

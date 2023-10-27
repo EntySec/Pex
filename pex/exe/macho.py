@@ -24,6 +24,10 @@ SOFTWARE.
 
 import os
 
+from typing import Union
+
+from pex.arch.types import *
+
 
 class Macho(object):
     """ Subclass of pex.exe module.
@@ -44,7 +48,7 @@ class Macho(object):
         ]
 
         self.macho_headers = {
-            'x64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/macho/macho_x64.macho'
+            ARCH_X64: f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/macho/macho_x64.macho'
         }
 
     def check_macho(self, data: bytes) -> bool:
@@ -56,24 +60,27 @@ class Macho(object):
 
         return data[:4] in self.macho_magic
 
-    def pack_macho(self, arch: str, data: bytes) -> bytes:
+    def pack_macho(self, arch: Union[Arch, str], data: bytes) -> bytes:
         """ Pack data to a macOS macho.
 
-        :param str arch: architecture to pack for
+        :param Union[Arch, str] arch: architecture to pack for
         :param bytes data: data to pack
         :return bytes: packed macOS macho
         :raises RuntimeError: with trailing error message
         """
 
         if not self.check_macho(data):
-            if arch in self.macho_headers:
-                if os.path.exists(self.macho_headers[arch]):
+            for header_arch in self.macho_headers:
+                if arch != header_arch:
+                    continue
+
+                if os.path.exists(self.macho_headers[header_arch]):
                     data_size = len(data)
 
                     pointer = b'payload:'.upper()
                     pointer_size = len(pointer)
 
-                    with open(self.macho_headers[arch], 'rb') as f:
+                    with open(self.macho_headers[header_arch], 'rb') as f:
                         macho = f.read()
                         pointer_index = macho.index(pointer)
 

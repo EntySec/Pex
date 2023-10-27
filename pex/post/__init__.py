@@ -25,9 +25,12 @@ SOFTWARE.
 from typing import Callable, Any, Union, Optional
 
 from pex.string import String
-from pex.type import Type
-from .push import Push
-from .tools import PostTools
+from pex.platform.types import *
+from pex.arch.types import *
+
+from pex.post.method import select_method
+from pex.post.push import Push
+from pex.post.tools import PostTools
 
 
 class Post(object):
@@ -43,16 +46,13 @@ class Post(object):
         self.push = Push()
 
         self.post_tools = PostTools()
-        self.type_tools = Type()
         self.string_tools = String()
-
-        self.post_methods = self.push.push_methods
 
     def post(self,
              payload: Union[bytes, str],
              sender: Callable[..., Any],
-             platform: str,
-             arch: str,
+             platform: Union[Platform, str],
+             arch: Union[Arch, str],
              arguments: Optional[str] = None,
              method: Optional[str] = None,
              location: Optional[str] = None,
@@ -62,9 +62,9 @@ class Post(object):
         """ Post a payload through the sender function.
 
         :param Union[bytes, str] payload: payload to post
-        :param Callable[..., Any] sender: sender function to port through
-        :param str platform: target platform
-        :param str arch: target architecture
+        :param Callable[..., Any] sender: sender function to send payload to
+        :param Union[Platform, str] platform: target platform
+        :param Union[Arch, str] arch: target architecture
         :param Optional[str] arguments: payload arguments
         :param Optional[str] method: post method to use
         :param Optional[str] location: path to save payload
@@ -74,74 +74,44 @@ class Post(object):
         :raises RuntimeError: with trailing error message
         """
 
-        platforms = self.type_tools.platforms
-        arches = self.type_tools.architectures
+        method = select_method(
+            methods=self.push.methods,
+            platform=platform,
+            method=method
+        )
 
-        if method in self.post_methods or not method:
-            if not method:
-                for post_method in self.post_methods:
-                    if platform in self.post_methods[post_method][0]:
-                        method = post_method
-                        break
-
-                if not method:
-                    raise RuntimeError(f"No supported post methods found for {platform} platform!")
-            else:
-                if platform not in self.post_methods[method][0]:
-                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
-
+        if method:
             filename = self.string_tools.random_string(8)
             arguments = arguments or ''
 
-            if platform in platforms['unix']:
+            if platform in OS_UNIX:
                 location = location or '/tmp'
                 concat = concat or ';'
                 background = background or '&'
 
                 path = location + '/' + filename
 
-                if arch in arches['cpu']:
+                if arch.interpreter:
+                    command = f"{arch.interpreter} {path} {arguments} {concat} rm {path}"
+                else:
                     command = f"sh -c 'chmod 777 {path} {concat} {path} {arguments} {concat} rm {path}' {background}"
 
-                elif arch in arches['generic']:
-                    current_arch = arches['generic'][arch]
-
-                    if platform in current_arch['platforms']:
-                        command = f"{current_arch['command']} {path} {arguments} {concat} rm {path}"
-
-                    else:
-                        raise RuntimeError(f"Platform {platform} is not supported by {arch} architecture!")
-
-                else:
-                    self.post_tools.post_payload(sender, payload)
-                    return
-
-            elif platform in platforms['windows']:
+            elif platform in OS_WINDOWS:
                 location = location or 'C:\\Windows\\Temp'
                 concat = concat or '&'
                 background = background or ''
 
                 path = location + '\\' + filename
 
-                if arch in arches['cpu']:
+                if arch.interpreter:
+                    command = f"{background} {arch.interpreter} {path} {arguments} {concat} del {path}"
+                else:
                     command = f"{background} {path} {arguments} {concat} del {path}"
 
-                elif arch in arches['generic']:
-                    current_arch = arches['generic'][arch]
-
-                    if platform in current_arch['platforms']:
-                        command = f"{background} {current_arch['command']} {path} {arguments} {concat} del {path}"
-
-                    else:
-                        raise RuntimeError(f"Platform {platform} is not supported by {arch} architecture!")
-
-                else:
-                    self.post_tools.post_payload(sender, payload)
-                    return
             else:
                 raise RuntimeError(f"Platform {platform} in unsupported!")
 
-            self.post_methods[method][1].push(
+            method.handler.push(
                 sender=sender,
                 data=payload if isinstance(payload, bytes) else payload.encode(),
                 location=path,

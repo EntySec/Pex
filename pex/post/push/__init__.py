@@ -25,12 +25,13 @@ SOFTWARE.
 from collections import OrderedDict
 from typing import Optional
 
-from pex.type import Type
+from pex.platform.types import *
 
-from .bash_echo import BashEcho
-from .certutil import Certutil
-from .echo import Echo
-from .printf import Printf
+from pex.post.method import Method, select_method
+from pex.post.push.bash_echo import BashEcho
+from pex.post.push.certutil import Certutil
+from pex.post.push.echo import Echo
+from pex.post.push.printf import Printf
 
 
 class Push(object):
@@ -43,51 +44,33 @@ class Push(object):
     def __init__(self) -> None:
         super().__init__()
 
-        self.type_tools = Type()
+        self.methods = [
+            Method(name='printf', platform=OS_UNIX, handler=Printf()),
+            Method(name='echo', platform=OS_UNIX, handler=Echo()),
+            Method(name='bash_echo', platform=OS_UNIX, handler=BashEcho()),
+            Method(name='certutil', platform=OS_WINDOWS, handler=Certutil()),
+        ]
 
-        self.push_methods = OrderedDict({
-            'printf': [
-                self.type_tools.platforms['unix'],
-                Printf()
-            ],
-            'echo': [
-                self.type_tools.platforms['unix'],
-                Echo()
-            ],
-            'bash_echo': [
-                self.type_tools.platforms['unix'],
-                BashEcho()
-            ],
-            'certutil': [
-                self.type_tools.platforms['windows'],
-                Certutil()
-            ]
-        })
-
-    def push(self, platform: str, location: str, method: Optional[str] = None, *args, **kwargs) -> str:
+    def push(self, platform: Union[Platform, str], location: str, method: Optional[str] = None, *args, **kwargs) -> str:
         """ Push file to sender.
 
-        :param str platform: sender platform
+        :param Union[Platform, str] platform: sender platform
         :param str location: location of file to push data to
         :param Optional[str] method: push method (see self.push_methods)
         :return str: location of pushed file
         :raises RuntimeError: with trailing error message
         """
 
-        if method in self.push_methods or not method:
-            if not method:
-                for push_method in self.push_methods:
-                    if platform in self.push_methods[push_method][0]:
-                        method = push_method
+        method = select_method(
+            methods=self.methods,
+            platform=platform,
+            method=method
+        )
 
-                if not method:
-                    raise RuntimeError(f"No supported post methods found for {platform} platform!")
-            else:
-                if platform not in self.push_methods[method][0]:
-                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
-
-            self.push_methods[method][1].push(location=location, *args, **kwargs)
+        if method:
+            method.handler.push(
+                location=location, *args, **kwargs)
 
             return location
 
-        raise RuntimeError(f"Post method {method} is unsupported!")
+        raise RuntimeError(f"No supported push method found!")

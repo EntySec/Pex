@@ -24,6 +24,10 @@ SOFTWARE.
 
 import os
 
+from typing import Union
+
+from pex.arch.types import *
+
 
 class Dylib(object):
     """ Subclass of pex.exe module.
@@ -44,7 +48,7 @@ class Dylib(object):
         ]
 
         self.dylib_headers = {
-            'x64': f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/dylib/dylib_x64.dylib'
+            ARCH_x64: f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/dylib/dylib_x64.dylib'
         }
 
     def check_dylib(self, data: bytes) -> bool:
@@ -56,24 +60,27 @@ class Dylib(object):
 
         return data[:4] in self.dylib_magic
 
-    def pack_dylib(self, arch: str, data: bytes) -> bytes:
+    def pack_dylib(self, arch: Union[Arch, str], data: bytes) -> bytes:
         """ Pack data to a macOS dynamic library.
 
-        :param str arch: architecture to pack for
+        :param Union[Arch, str] arch: architecture to pack for
         :param bytes data: data to pack
         :return bytes: packed macOS dynamic library
         :raises RuntimeError: with trailing error message
         """
 
         if not self.check_dylib(data):
-            if arch in self.dylib_headers:
-                if os.path.exists(self.dylib_headers[arch]):
+            for header_arch in self.dylib_headers:
+                if arch != header_arch:
+                    continue
+
+                if os.path.exists(self.dylib_headers[header_arch]):
                     data_size = len(data)
 
                     pointer = b'payload:'.upper()
                     pointer_size = len(pointer)
 
-                    with open(self.dylib_headers[arch], 'rb') as f:
+                    with open(self.dylib_headers[header_arch], 'rb') as f:
                         dylib = f.read()
                         pointer_index = dylib.index(pointer)
 

@@ -24,6 +24,10 @@ SOFTWARE.
 
 import struct
 
+from typing import Union
+
+from pex.arch.types import *
+
 
 class DLL(object):
     """ Subclass of pex.exe module.
@@ -40,7 +44,7 @@ class DLL(object):
         ]
 
         self.dll_headers = {
-            'x86': (
+            ARCH_X86: (
                 b'\x4d\x5a\x90\x00\x03\x00\x00\x00\x04\x00\x00\x00\xff\xff\x00\x00\xb8\x00\x00\x00\x00\x00\x00\x00'
                 b'\x40\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
                 b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x0e\x1f\xba\x0e\x00\xb4\x09\xcd'
@@ -73,10 +77,11 @@ class DLL(object):
 
         return data[:2] in self.dll_magic
 
-    def pack_dll(self, arch: str, data: bytes, dll_inj_funcs: list = [], filename: str = 'kernel32') -> bytes:
+    def pack_dll(self, arch: Union[Arch, str], data: bytes,
+                 dll_inj_funcs: list = [], filename: str = 'kernel32') -> bytes:
         """ Pack data to a Windows dynamic library.
 
-        :param str arch: architecture to pack for
+        :param Union[Arch, str] arch: architecture to pack for
         :param bytes data: data to pack
         :param list dll_inj_funcs: list of functions to inject
         :param str filename: filename specified in dynamic library
@@ -85,8 +90,11 @@ class DLL(object):
         """
 
         if not self.check_dll(data):
-            if arch in self.dll_headers:
-                pe = self.dll_headers[arch] + b'\x00' * 546 + data
+            for header_arch in self.dll_headers:
+                if arch != header_arch:
+                    continue
+
+                pe = self.dll_headers[header_arch] + b'\x00' * 546 + data
 
                 if arch == 'x86':
                     pe += b'\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff\xff'

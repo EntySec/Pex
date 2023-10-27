@@ -22,6 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from pex.arch.types import *
+
+from typing import Union
+
 
 class PE(object):
     """ Subclass of pex.exe module.
@@ -38,7 +42,7 @@ class PE(object):
         ]
 
         self.pe_headers = {
-            'x86': (
+            ARCH_X86: (
                 b'\x4d\x5a\x90\x00\x03\x00\x00\x00\x04\x00\x00\x00\xff\xff\x00\x00\xb8\x00\x00\x00\x00\x00\x00\x00'
                 b'\x40\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
                 b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x0e\x1f\xba\x0e\x00\xb4\x09\xcd'
@@ -62,7 +66,7 @@ class PE(object):
                 b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
                 b'\x00\x00\x00\x00\x00\x00\x00\x00'
             ),
-            'x64': (
+            ARCH_X64: (
                 b'\x4d\x5a\x90\x00\x03\x00\x00\x00\x04\x00\x00\x00\xff\xff\x00\x00\xb8\x00\x00\x00\x00\x00\x00\x00'
                 b'\x40\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
                 b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x0e\x1f\xba\x0e\x00\xb4\x09\xcd'
@@ -97,27 +101,33 @@ class PE(object):
 
         return data[:2] in self.pe_magic
 
-    def pack_pe(self, arch: str, data: bytes) -> bytes:
+    def pack_pe(self, arch: Union[Arch, str], data: bytes) -> bytes:
         """ Pack data to a Windows portable executable.
 
-        :param str arch: architecture to pack for
+        :param Union[Arch, str] arch: architecture to pack for
         :param bytes data: data to pack
         :return bytes: packed Windows portable executable
         :raises RuntimeError: with trailing error message
         """
 
         if not self.check_pe(data):
-            if arch in self.pe_headers:
-                pe = self.pe_headers[arch] + data
+            for header_arch in self.pe_headers:
+                if arch != header_arch:
+                    continue
 
-                if arch == 'x86':
+                pe = self.pe_headers[header_arch] + data
+
+                if arch == ARCH_X86:
                     pe += b'\xff' * 4 + b'\x00' * 4 + b'\xff' * 4
                     content = pe.ljust(1536, b'\x00')
-                elif arch == 'x64':
+
+                elif arch == ARCH_X64:
                     pe += b'\x00' * 7 + b'\xff' * 8 + b'\x00' * 8 + b'\xff' * 8
                     content = pe.ljust(2048, b'\x00')
+
                 else:
                     raise RuntimeError("PE header corrupted!")
+
                 return content
 
             raise RuntimeError("Failed to find compatible PE header!")

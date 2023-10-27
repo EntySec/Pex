@@ -25,10 +25,11 @@ SOFTWARE.
 from collections import OrderedDict
 from typing import Optional
 
-from pex.type import Type
+from pex.platform.types import *
 
-from .cat import Cat
-from .dd import DD
+from pex.post.method import Method, select_method
+from pex.post.pull.cat import Cat
+from pex.post.pull.dd import DD
 
 
 class Pull(object):
@@ -41,40 +42,27 @@ class Pull(object):
     def __init__(self) -> None:
         super().__init__()
 
-        self.type_tools = Type()
+        self.methods = [
+            Method(name='cat', platform=OS_UNIX, handler=Cat()),
+            Method(name='dd', platform=OS_UNIX, handler=DD())
+        ]
 
-        self.pull_methods = OrderedDict({
-            'cat': [
-                self.type_tools.platforms['unix'],
-                Cat()
-            ],
-            'dd': [
-                self.type_tools.platforms['unix'],
-                DD()
-            ]
-        })
-
-    def pull(self, platform: str, method: Optional[str] = None, *args, **kwargs) -> bytes:
+    def pull(self, platform: Union[Platform, str], method: Optional[str] = None, *args, **kwargs) -> bytes:
         """ Pull file from sender.
 
-        :param str platform: sender platform
+        :param Union[Platform, str] platform: sender platform
         :param Optional[str] method: pull method (see self.pull_methods)
         :return bytes: file data
         :raises RuntimeError: with trailing error message
         """
 
-        if method in self.pull_methods or not method:
-            if not method:
-                for pull_method in self.pull_methods:
-                    if platform in self.pull_methods[pull_method][0]:
-                        method = pull_method
+        method = select_method(
+            methods=self.methods,
+            platform=platform,
+            method=method
+        )
 
-                if not method:
-                    raise RuntimeError(f"No supported post methods found for {platform} platform!")
-            else:
-                if platform not in self.pull_methods[method][0]:
-                    raise RuntimeError(f"Post method {method} is unsupported for {platform} platform!")
+        if method:
+            return method.handler.pull(*args, **kwargs)
 
-            return self.pull_methods[method][1].pull(*args, **kwargs)
-
-        raise RuntimeError(f"Post method {method} is unsupported!")
+        raise RuntimeError(f"No supported pull method found!")
