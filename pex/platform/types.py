@@ -64,6 +64,28 @@ class Platform(object):
 
         return hash(self.name)
 
+    def __add__(self, platform: Any) -> Any:
+        """ Add platform to current platform sub sets.
+
+        :param Any platform: platform to add
+        :return Any: updated platform
+        """
+
+        self.sub_sets.append(platform)
+        return self.__class__(**vars(self))
+
+    def __sub__(self, platform: Any) -> Any:
+        """ Remove platform from current sub sets.
+
+        :param Any platform: platform to remove
+        :return Any: updated platform
+        """
+
+        if platform in self.sub_sets:
+            self.sub_sets.remove(platform)
+
+        return self.__class__(**vars(self))
+
     def __str__(self) -> str:
         """ Covert to string.
 

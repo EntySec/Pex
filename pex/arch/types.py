@@ -62,6 +62,28 @@ class Arch(object):
         self.interpreter = interpreter
         self.sub_sets = sub_sets
 
+    def __add__(self, arch: Any) -> Any:
+        """ Add architecture to current architecture sub sets.
+
+        :param Any arch: architecture to add
+        :return Any: updated architecture
+        """
+
+        self.sub_sets.append(arch)
+        return self.__class__(**vars(self))
+
+    def __sub__(self, arch: Any) -> Any:
+        """ Remove architecture from current sub sets.
+
+        :param Any arch: architecture to remove
+        :return Any: updated architecture
+        """
+
+        if arch in self.sub_sets:
+            self.sub_sets.remove(arch)
+
+        return self.__class__(**vars(self))
+
     def __len__(self) -> int:
         """ Get bits.
 

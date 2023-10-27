@@ -52,10 +52,8 @@ class TLVPacket(object):
         :return Any: new TLV packet
         """
 
-        return self.__class__(
-            buffer=self.buffer + packet.buffer,
-            endian=self.endian
-        )
+        self.buffer += packet.buffer
+        return self.__class__(**vars(self))
 
     def __sub__(self, packet: Any) -> Any:
         """ Remove one packet from the current packet.
@@ -68,12 +66,9 @@ class TLVPacket(object):
         buffer_pos = buffer.find(packet.buffer)
 
         buffer[buffer_pos:buffer_pos + len(packet.buffer)] = b''
-        buffer = bytes(buffer)
+        self.buffer = bytes(buffer)
 
-        return self.__class__(
-            buffer=buffer,
-            endian=self.endian
-        )
+        return self.__class__(**vars(self))
 
     def __len__(self) -> int:
         """ Get count of TLV objects.

@@ -89,9 +89,9 @@ class Post(object):
                 concat = concat or ';'
                 background = background or '&'
 
-                path = location + '/' + filename
+                path = '/'.join((location, filename))
 
-                if arch.interpreter:
+                if isinstance(arch, Arch) and arch.interpreter:
                     command = f"{arch.interpreter} {path} {arguments} {concat} rm {path}"
                 else:
                     command = f"sh -c 'chmod 777 {path} {concat} {path} {arguments} {concat} rm {path}' {background}"
@@ -101,9 +101,9 @@ class Post(object):
                 concat = concat or '&'
                 background = background or ''
 
-                path = location + '\\' + filename
+                path = '\\'.join((location, filename))
 
-                if arch.interpreter:
+                if isinstance(arch, Arch) and arch.interpreter:
                     command = f"{background} {arch.interpreter} {path} {arguments} {concat} del {path}"
                 else:
                     command = f"{background} {path} {arguments} {concat} del {path}"
