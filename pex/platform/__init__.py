@@ -21,33 +21,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-
-from .casting import Casting
-
-
-class Type(object):
-    """ Main class of pex.type module.
-
-    This main class of pex.type module is intended for providing
-    some important constants and type casting methods.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-        self.casting = Casting()
-
-        self.types = {
-            'mac': self.casting.is_mac,
-            'ip': self.casting.is_ip,
-            'ipv4': self.casting.is_ipv4,
-            'ipv6': self.casting.is_ipv6,
-            'ipv4_cidr': self.casting.is_ipv4_cidr,
-            'ipv6_cidr': self.casting.is_ipv6_cidr,
-            'port': self.casting.is_port,
-            'port_range': self.casting.is_port_range,
-            'number': self.casting.is_number,
-            'integer': self.casting.is_integer,
-            'float': self.casting.is_float,
-            'boolean': self.casting.is_boolean
-        }

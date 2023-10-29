@@ -22,7 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from typing import Union
+
 from hatasm import HatAsm
+
+from pex.arch.types import Arch
 
 
 class Assembler(object):
@@ -37,17 +41,17 @@ class Assembler(object):
 
         self.hatasm = HatAsm()
 
-    def assemble(self, arch: str, code: str, mode: str = '', syntax: str = 'intel') -> bytes:
+    def assemble(self, arch: Union[Arch, str], code: str, mode: str = '', syntax: str = 'intel') -> bytes:
         """ Assemble code for the specified architecture.
 
-        :param str arch: architecture to assemble for
+        :param Union[Arch, str] arch: architecture to assemble for
         :param str code: code to assemble
         :param str mode: special assembler mode
         :param str syntax: special assembler syntax
         :return bytes: assembled code for the specified architecture
         """
 
-        return self.hatasm.assemble(arch, code, mode, syntax)
+        return self.hatasm.assemble(str(arch), code, mode, syntax)
 
     def hexdump(self, code: bytes, length: int = 16, sep: str = '.') -> list:
         """ Dump assembled code as hex.

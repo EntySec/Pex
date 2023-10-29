@@ -22,32 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from .casting import Casting
+from typing import NamedTuple, Any, Union
+
+from pex.platform.types import *
 
 
-class Type(object):
-    """ Main class of pex.type module.
+class Method(NamedTuple):
+    name: str
+    platform: Platform
+    handler: Any
 
-    This main class of pex.type module is intended for providing
-    some important constants and type casting methods.
+
+def select_method(methods: list, platform: Union[Platform, str],
+                  method: str = '') -> Union[Method, None]:
+    """ Select appropriate method for platform
+    or check if method compatible.
+
+    :param list methods: list of methods
+    :param Union[Platform, str] platform: platform to check compatibility with
+    :param str method: method to check if presented
+    :return Method: method
     """
 
-    def __init__(self) -> None:
-        super().__init__()
+    for _method in methods:
+        if method == _method.name and \
+                platform in _method.platform:
+            return _method
 
-        self.casting = Casting()
-
-        self.types = {
-            'mac': self.casting.is_mac,
-            'ip': self.casting.is_ip,
-            'ipv4': self.casting.is_ipv4,
-            'ipv6': self.casting.is_ipv6,
-            'ipv4_cidr': self.casting.is_ipv4_cidr,
-            'ipv6_cidr': self.casting.is_ipv6_cidr,
-            'port': self.casting.is_port,
-            'port_range': self.casting.is_port_range,
-            'number': self.casting.is_number,
-            'integer': self.casting.is_integer,
-            'float': self.casting.is_float,
-            'boolean': self.casting.is_boolean
-        }
+    for _method in methods:
+        if platform in _method.platform:
+            return _method

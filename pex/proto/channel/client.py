@@ -239,7 +239,7 @@ class ChannelClient(object):
 
         :param str terminator: data to send after each command
         :return None: None
-        :raises RuntimeError: with trailing error message
+        :raises RuntimeWarning: with trailing warning message
         """
 
         if self.client:
@@ -255,7 +255,7 @@ class ChannelClient(object):
                             response = self.stash() + self.sock.read_eager()
                         except Exception:
                             self.terminated = True
-                            raise RuntimeError("Channel closed connection unexpectedly!")
+                            raise RuntimeWarning("Connection terminated.")
 
                         if response:
                             print(response.decode(errors='ignore'), end='')

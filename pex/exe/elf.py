@@ -25,7 +25,11 @@ SOFTWARE.
 import io
 import struct
 
+from typing import Union
+
 from elftools.elf.elffile import ELFFile
+
+from pex.arch.types import *
 
 
 class ELF(object):
@@ -43,7 +47,7 @@ class ELF(object):
         ]
 
         self.elf_headers = {
-            'armle': (
+            ARCH_ARMLE: (
                 b"\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
                 b"\x02\x00\x28\x00\x01\x00\x00\x00\x54\x80\x00\x00\x34\x00\x00\x00"
                 b"\x00\x00\x00\x00\x00\x00\x00\x00\x34\x00\x20\x00\x01\x00\x00\x00"
@@ -51,7 +55,7 @@ class ELF(object):
                 b"\x00\x80\x00\x00\xef\xbe\xad\xde\xef\xbe\xad\xde\x07\x00\x00\x00"
                 b"\x00\x10\x00\x00"
             ),
-            'mipsbe': (
+            ARCH_MIPSBE: (
                 b"\x7f\x45\x4c\x46\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
                 b"\x00\x02\x00\x08\x00\x00\x00\x01\x00\x40\x00\x54\x00\x00\x00\x34"
                 b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x34\x00\x20\x00\x01\x00\x00"
@@ -59,7 +63,7 @@ class ELF(object):
                 b"\x00\x40\x00\x00\xde\xad\xbe\xef\xde\xad\xbe\xef\x00\x00\x00\x07"
                 b"\x00\x00\x10\x00"
             ),
-            'mipsle': (
+            ARCH_MIPSLE: (
                 b"\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
                 b"\x02\x00\x08\x00\x01\x00\x00\x00\x54\x00\x40\x00\x34\x00\x00\x00"
                 b"\x00\x00\x00\x00\x00\x00\x00\x00\x34\x00\x20\x00\x01\x00\x00\x00"
@@ -67,7 +71,7 @@ class ELF(object):
                 b"\x00\x00\x40\x00\xef\xbe\xad\xde\xef\xbe\xad\xde\x07\x00\x00\x00"
                 b"\x00\x10\x00\x00"
             ),
-            'x86': (
+            ARCH_X86: (
                 b"\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
                 b"\x02\x00\x03\x00\x01\x00\x00\x00\x54\x80\x04\x08\x34\x00\x00\x00"
                 b"\x00\x00\x00\x00\x00\x00\x00\x00\x34\x00\x20\x00\x01\x00\x00\x00"
@@ -75,7 +79,7 @@ class ELF(object):
                 b"\x00\x80\x04\x08\xef\xbe\xad\xde\xef\xbe\xad\xde\x07\x00\x00\x00"
                 b"\x00\x10\x00\x00"
             ),
-            'aarch64': (
+            ARCH_AARCH64: (
                 b"\x7f\x45\x4c\x46\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
                 b"\x02\x00\xb7\x00\x00\x00\x00\x00\x78\x00\x40\x00\x00\x00\x00\x00"
                 b"\x40\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
@@ -85,7 +89,7 @@ class ELF(object):
                 b"\xef\xbe\xad\xde\x00\x00\x00\x00\xef\xbe\xad\xde\x00\x00\x00\x00"
                 b"\x00\x10\x00\x00\x00\x00\x00\x00"
             ),
-            'x64': (
+            ARCH_X64: (
                 b"\x7f\x45\x4c\x46\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
                 b"\x02\x00\x3e\x00\x01\x00\x00\x00\x78\x00\x40\x00\x00\x00\x00\x00"
                 b"\x40\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
@@ -106,7 +110,8 @@ class ELF(object):
 
         return data[:4] in self.elf_magic
 
-    def elf_header(self, data: bytes) -> dict:
+    @staticmethod
+    def elf_header(data: bytes) -> dict:
         """ Get ELF file data header.
 
         :param bytes data: data to parse
@@ -117,18 +122,21 @@ class ELF(object):
         elf = ELFFile(io.BytesIO(data))
         return elf.header
 
-    def pack_elf(self, arch: str, data: bytes) -> bytes:
+    def pack_elf(self, arch: Union[Arch, str], data: bytes) -> bytes:
         """ Pack data to a Linux executable and linkable format.
 
-        :param str arch: architecture to pack for
+        :param Union[Arch, str] arch: architecture to pack for
         :param bytes data: data to pack
         :return bytes: packed Linux executable and linkable format
         :raises RuntimeError: with trailing error message
         """
 
         if not self.check_elf(data):
-            if arch in self.elf_headers:
-                elf = self.elf_headers[arch] + data
+            for header_arch in self.elf_headers:
+                if arch != header_arch:
+                    continue
+
+                elf = self.elf_headers[header_arch] + data
 
                 if elf[4] == 1:
                     if arch.endswith('be'):
@@ -147,6 +155,7 @@ class ELF(object):
                         p_filesz = struct.pack("<Q", len(elf))
                         p_memsz = struct.pack("<Q", len(elf) + len(data))
                     content = elf[:0x60] + p_filesz + p_memsz + elf[0x70:]
+
                 else:
                     raise RuntimeError("ELF header corrupted!")
                 return content
