@@ -116,7 +116,7 @@ class ELF(object):
 
         :param bytes data: data to parse
         :return dict: header, header names as keys and
-        header offsets as items
+            header offsets as items
         """
 
         elf = ELFFile(io.BytesIO(data))

@@ -207,7 +207,7 @@ class ChannelClient(object):
         :param bool output: True if wait for output else False
         :param bool decode: True if decode else False
         :param bool newline: True to add newline char else False
-        None for not printing but returning read data
+            None for not printing but returning read data
         :return Union[str, None, bytes]: output if output is True and printer is None else None
         """
 

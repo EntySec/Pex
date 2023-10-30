@@ -277,7 +277,7 @@ class X86(object):
 
         :param int length: length of a stub
         :return bytes: buffer that will copy memory immediately following
-        the stub that us generated to be copied to the stack
+            the stub that us generated to be copied to the stack
         """
 
         length = (length + 3) & ~0x3
@@ -300,6 +300,7 @@ class X86(object):
         :param bytes tag: tag to search for
         :return bytes: tag-based search routine
         """
+
         return (
                 b"\xbe" + self.dword_adjust(tag, -1) +
                 b"\x46"

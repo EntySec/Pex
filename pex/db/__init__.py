@@ -116,7 +116,7 @@ class DB(object):
         :param str database: path to the database to parse
         :param str partner: partner to parse chat for
         :return list: list of entries from WhatsApp chat database
-        for specified partner
+            for specified partner
         """
 
         partner = partner.replace(" ", "").replace("+", "")
@@ -177,7 +177,7 @@ class DB(object):
         :param str partner: partner to parse chat for
         :param bool imessage: is chat from iMessage or not
         :return list: list of entries from Apple SMS or iMessage chat database
-        for specified partner
+            for specified partner
         """
 
         partner = partner.replace(" ", "")

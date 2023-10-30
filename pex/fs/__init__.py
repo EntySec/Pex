@@ -43,7 +43,7 @@ class FS(object):
 
         :param str path: path to check
         :return Tuple[bool, bool]: first entry is True if path exists
-        second entry is True if path is directory
+            second entry is True if path is directory
         """
 
         if os.path.isdir(path):
