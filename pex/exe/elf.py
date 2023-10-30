@@ -139,7 +139,7 @@ class ELF(object):
                 elf = self.elf_headers[header_arch] + data
 
                 if elf[4] == 1:
-                    if arch.endswith('be'):
+                    if str(arch).endswith('be'):
                         p_filesz = struct.pack(">L", len(elf))
                         p_memsz = struct.pack(">L", len(elf) + len(data))
                     else:
@@ -148,7 +148,7 @@ class ELF(object):
                     content = elf[:0x44] + p_filesz + p_memsz + elf[0x4c:]
 
                 elif elf[4] == 2:
-                    if arch.endswith('be'):
+                    if str(arch).endswith('be'):
                         p_filesz = struct.pack(">Q", len(elf))
                         p_memsz = struct.pack(">Q", len(elf) + len(data))
                     else:
