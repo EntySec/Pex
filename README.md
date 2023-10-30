@@ -27,4 +27,4 @@ python programming language.
 pip3 install git+https://github.com/EntySec/Pex
 ```
 
-## [Documentation](https://github.com/EntySec/Pex/wiki)
+## [Documentation](https://docs.entysec.com/pex)
