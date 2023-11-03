@@ -45,14 +45,6 @@ class TLVPacket(object):
         self.endian = endian
         self.buffer = buffer
 
-    def __bool__(self) -> bool:
-        """ Check if packet is empty or not.
-
-        :return bool: False if empty else True
-        """
-
-        return len(self) > 0
-
     def __add__(self, packet: Any) -> Any:
         """ Add one packet to the current packet.
 
@@ -96,6 +88,14 @@ class TLVPacket(object):
             offset += 4 + length
 
         return count
+
+    def __bool__(self) -> bool:
+        """ Check if packet is empty or not.
+
+        :return bool: False if empty else True
+        """
+
+        return self.__len__() > 0
 
     def get_raw(self, type: int) -> bytes:
         """ Get raw data from packet.
