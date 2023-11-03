@@ -138,6 +138,16 @@ class TLVPacket(object):
         if data:
             return int.from_bytes(data, self.endian)
 
+    def get_tlv(self, type: int) -> TLVPacket:
+        """ Get TLV from packet.
+
+        :param int type: type
+        :return TLVPacket: TLV packet
+        """
+
+        return self.__class__(
+            buffer=self.get_raw(type), endian=self.endian)
+
     def add_raw(self, type: int, value: bytes) -> None:
         """ Add raw data to packet.
 
@@ -173,6 +183,22 @@ class TLVPacket(object):
         self.buffer += int.to_bytes(type, 4, self.endian)
         self.buffer += int.to_bytes(4, 4, self.endian)
         self.buffer += int.to_bytes(value, 4, self.endian)
+
+    def add_tlv(self, type: int, value: Any) -> None:
+        """ Add TLV packet to packet.
+
+        :param int type: type
+        :param Any value: TLV packet
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
+        if value.endian != self.endian:
+            raise RuntimeError("Impossible to merge packets with different endians!")
+
+        self.buffer += int.to_bytes(type, 4, self.endian)
+        self.buffer += int.to_bytes(len(value.buffer), 4, self.endian)
+        self.buffer += value.buffer
 
     def add_from_dict(self, values: dict) -> None:
         """ Add packets from dictionary.
