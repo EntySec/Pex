@@ -146,7 +146,7 @@ class TLVPacket(object):
         if data:
             return int.from_bytes(data, self.endian)
 
-    def get_tlv(self, type: int) -> TLVPacket:
+    def get_tlv(self, type: int) -> Any:
         """ Get TLV from packet.
 
         :param int type: type
@@ -192,7 +192,7 @@ class TLVPacket(object):
         self.buffer += int.to_bytes(4, 4, self.endian)
         self.buffer += int.to_bytes(value, 4, self.endian)
 
-    def add_tlv(self, type: int, value: Any) -> Any:
+    def add_tlv(self, type: int, value: Any) -> None:
         """ Add TLV packet to packet.
 
         :param int type: type
