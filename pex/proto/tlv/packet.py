@@ -192,7 +192,7 @@ class TLVPacket(object):
         self.buffer += int.to_bytes(4, 4, self.endian)
         self.buffer += int.to_bytes(value, 4, self.endian)
 
-    def add_tlv(self, type: int, value: Any) -> None:
+    def add_tlv(self, type: int, value: Any) -> Any:
         """ Add TLV packet to packet.
 
         :param int type: type
