@@ -220,5 +220,7 @@ class TLVPacket(object):
                 self.add_string(value, value)
             elif isinstance(values[value], int):
                 self.add_int(value, values[value])
+            elif isinstance(values[value], self.__class__):
+                self.add_tlv(value, values[value])
             else:
                 self.add_raw(value, values[value])
