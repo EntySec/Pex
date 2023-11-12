@@ -158,6 +158,10 @@ OS_LINUX = Platform(
     name='linux',
     exec='elf'
 )
+OS_BSD = Platform(
+    name='bsd',
+    exec='elf'
+)
 OS_IPHONE = Platform(
     name='apple_ios',
     alter_names=['iphoneos'],
@@ -174,3 +178,9 @@ OS_UNIX = Platform(
 OS_GENERIC = Platform(
     name='generic',
 )
+
+EXEC_FORMATS = {
+    OS_MACOS.exec: [OS_MACOS, OS_IPHONE],
+    OS_LINUX.exec: [OS_LINUX, OS_UNIX, OS_ANDROID, OS_BSD],
+    OS_WINDOWS.exec: [OS_WINDOWS]
+}
