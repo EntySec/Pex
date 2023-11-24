@@ -25,7 +25,7 @@ SOFTWARE.
 import os
 import lief
 
-from typing import Union, Any
+from typing import Union
 
 from pex.arch.types import *
 
@@ -53,11 +53,11 @@ class Macho(object):
         }
 
     @staticmethod
-    def flatten_macho(data: bytes) -> Any:
+    def flatten_macho(data: bytes) -> bytes:
         """ Flatten MachO.
 
         :param bytes data: data to flatten
-        :return Any: flattened MachO
+        :return bytes: flattened MachO
         """
 
         macho = lief.MachO.parse(data)
