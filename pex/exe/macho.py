@@ -23,8 +23,9 @@ SOFTWARE.
 """
 
 import os
+import lief
 
-from typing import Union
+from typing import Union, Any
 
 from pex.arch.types import *
 
@@ -50,6 +51,38 @@ class Macho(object):
         self.macho_headers = {
             ARCH_X64: f'{os.path.dirname(os.path.dirname(__file__))}/exe/templates/macho/macho_x64.macho'
         }
+
+    @staticmethod
+    def flatten_macho(data: bytes) -> Any:
+        """ Flatten MachO.
+
+        :param bytes data: data to flatten
+        :return Any: flattened MachO
+        """
+
+        macho = lief.MachO.parse(data)
+        min_addr = -1
+        max_addr = 0
+
+        for segment in macho.segments:
+            if segment.name == '__PAGEZERO':
+                if min_addr == -1 or min_addr > segment.virtual_address:
+                    min_addr = segment.virtual_address
+
+                if max_addr < segment.virtual_address + segment.virtual_size:
+                    max_addr = segment.virtual_address + segment.virtual_size
+
+        flat = b'\x00' * (max_addr - min_addr)
+
+        for segment in macho.segments:
+            for section in segment.sections:
+                flat_addr = section.virtual_address
+                flat_data = data[section.offset:section.size]
+
+                if flat_data:
+                    flat[flat_addr:len(flat_data)] = flat_data
+
+        return flat
 
     def check_macho(self, data: bytes) -> bool:
         """ Check if data is a macOS macho.
