@@ -217,7 +217,7 @@ class TLVPacket(object):
 
         for value in values:
             if isinstance(values[value], str):
-                self.add_string(value, value)
+                self.add_string(value, values[value])
             elif isinstance(values[value], int):
                 self.add_int(value, values[value])
             elif isinstance(values[value], self.__class__):
