@@ -171,6 +171,25 @@ class DB(object):
         return result_arr
 
     @staticmethod
+    def parse_sms_chats(database: str) -> list:
+        """ Parse Apple SMS or iMessage chats.
+
+        :param str database: path to the database to parse
+        :return list: list of entries from Apple SMS or iMessage chat database
+        """
+
+        db = sqlite3.connect(database)
+        db.row_factory = sqlite3.Row
+
+        cursor = db.cursor()
+        cursor.execute('''SELECT
+                guid
+            FROM chat
+        ''')
+
+        return list(map(dict, cursor.fetchall()))
+
+    @staticmethod
     def parse_sms_chat(database: str, partner: str, imessage: bool = True) -> list:
         """ Parse Apple SMS or iMessage chat database for specified partner.
 
