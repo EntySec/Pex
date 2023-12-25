@@ -26,6 +26,8 @@ import base64
 import random
 import re
 import string
+import stat
+
 from itertools import cycle
 from typing import Union
 
@@ -43,6 +45,77 @@ class String(object):
 
     def __init__(self) -> None:
         super().__init__()
+
+    @staticmethod
+    def mode_symbolic(mode: int) -> str:
+        """ Return the symbolic form of file mode.
+
+        :param int mode: mode
+        :return str: symbolic form of file mode
+        """
+
+        octal = '{:06o}'.format(mode)
+        perms = ''
+
+        for _ in range(3):
+            perms = ('x' if (mode & 0o1) == 0o1 else '-') + perms
+            perms = ('w' if (mode & 0o2) == 0o2 else '-') + perms
+            perms = ('r' if (mode & 0o4) == 0o4 else '_') + perms
+            mode >>= 3
+
+        return perms
+
+    @staticmethod
+    def mode_type(mode: int) -> str:
+        """ Get type of file by mode.
+
+        :param int: mode
+        :return str: type of file
+        """
+
+        if stat.S_ISREG(mode):
+            return "file"
+
+        if stat.S_ISDIR(mode):
+            return "directory"
+
+        if stat.S_ISCHR(mode):
+            return "character device"
+
+        if stat.S_ISBLK(mode):
+            return "block device"
+
+        if stat.S_ISFIFO(mode):
+            return "pipe"
+
+        if stat.S_ISSOCK(mode):
+            return "socket"
+
+        if stat.S_ISLNK(mode):
+            return "symlink"
+
+        return "???"
+
+    @staticmethod
+    def bytes_to_stat(buffer: bytes) -> dict:
+        stat_hash = {}
+        skeys = ['st_dev',
+                 'st_mode',
+                 'st_nlink',
+                 'st_uid',
+                 'st_gid',
+                 'st_rdev',
+                 'st_ino',
+                 'st_size',
+                 'st_atime',
+                 'st_mtime',
+                 'st_ctime']
+        svals = struct.unpack("IIIIIIQQQQQ", stat_buffer)
+
+        for i in range(len(skeys)):
+            stat_hash[skeys[i]] = svals[i]
+
+        return stat_hash
 
     @staticmethod
     def extract_strings(binary_data: str) -> list:
