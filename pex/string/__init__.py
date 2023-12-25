@@ -30,6 +30,7 @@ import stat
 
 from itertools import cycle
 from typing import Union
+from datetime import datetime
 
 from .bit_reader import BitReader
 from .lzs_decompress import LZSDecompress
@@ -45,6 +46,16 @@ class String(object):
 
     def __init__(self) -> None:
         super().__init__()
+
+    @staticmethod
+    def time_normalize(timestamp: int) -> str:
+        """ Normalize time format from timestamp.
+
+        :param int timestamp: timestamp
+        :return str: formatted time
+        """
+
+        return datetime.utcfromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
 
     @staticmethod
     def mode_symbolic(mode: int) -> str:
