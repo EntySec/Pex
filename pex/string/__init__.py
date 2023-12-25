@@ -48,6 +48,23 @@ class String(object):
         super().__init__()
 
     @staticmethod
+    def size_normalize(size: int) -> str:
+        """ Size to B, KB, MB, GB, TB
+
+        :param int size: size
+        :return str: size with units
+        """
+
+        units = ["B", "KB", "MB", "GB", "TB"]
+        index = 0
+
+        while size >= 1000 and index < len(units) - 1:
+            size /= 1000
+            index += 1
+
+        return f"{size:.2f} {units[index]}"
+
+    @staticmethod
     def time_normalize(timestamp: int) -> str:
         """ Normalize time format from timestamp.
 
