@@ -26,6 +26,7 @@ import base64
 import random
 import re
 import string
+import struct
 import stat
 
 from itertools import cycle
