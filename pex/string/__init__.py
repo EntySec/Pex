@@ -89,7 +89,7 @@ class String(object):
         for _ in range(3):
             perms = ('x' if (mode & 0o1) == 0o1 else '-') + perms
             perms = ('w' if (mode & 0o2) == 0o2 else '-') + perms
-            perms = ('r' if (mode & 0o4) == 0o4 else '_') + perms
+            perms = ('r' if (mode & 0o4) == 0o4 else '-') + perms
             mode >>= 3
 
         return perms
