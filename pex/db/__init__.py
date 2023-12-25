@@ -49,6 +49,7 @@ class DB(object):
         cursor = db.cursor()
         cursor.execute('''SELECT
                 c0First,
+                c1Last,
                 c16Phone
             FROM ABPersonFullTextSearch_content''')
 
