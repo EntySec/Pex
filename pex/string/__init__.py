@@ -139,7 +139,7 @@ class String(object):
                  'st_atime',
                  'st_mtime',
                  'st_ctime']
-        svals = struct.unpack("IIIIIIQQQQQ", stat_buffer)
+        svals = struct.unpack("IIIIIIQQQQQ", buffer)
 
         for i in range(len(skeys)):
             stat_hash[skeys[i]] = svals[i]
