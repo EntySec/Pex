@@ -234,7 +234,7 @@ class DB(object):
             cursor.execute('''SELECT
                     ROWID as 'message_id',
                     text,
-                    date as 'timestamp',
+                    ddatetime(substr(date, 1, 9) + 978307200, 'unixepoch', 'localtime') as 'date',
                     is_from_me
                 FROM message
                 WHERE ROWID = {message_id}
@@ -267,7 +267,7 @@ class DB(object):
                 sender,
                 receiver,
                 duration,
-                date as 'timestamp'
+                datetime(substr(date, 1, 9) + 978307200, 'unixepoch', 'localtime') as 'date'
             FROM voicemail
             ORDER BY date''')
 
