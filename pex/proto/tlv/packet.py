@@ -97,10 +97,11 @@ class TLVPacket(object):
 
         return self.__len__() > 0
 
-    def get_raw(self, type: int) -> bytes:
+    def get_raw(self, type: int, delete: bool = True) -> bytes:
         """ Get raw data from packet.
 
         :param int type: type
+        :param bool delete: True to delete element else False
         :return bytes: raw value
         """
 
@@ -117,44 +118,42 @@ class TLVPacket(object):
             offset += cur_length
 
             if cur_type == type:
-                self.buffer = bytearray(self.buffer)
-                self.buffer[offset - cur_length - 8:offset] = b''
-                self.buffer = bytes(self.buffer)
+                if delete:
+                    self.buffer = bytearray(self.buffer)
+                    self.buffer[offset - cur_length - 8:offset] = b''
+                    self.buffer = bytes(self.buffer)
 
                 return cur_value
 
         return b''
 
-    def get_string(self, type: int) -> str:
+    def get_string(self, *args, **kwargs) -> str:
         """ Get string from packet.
 
-        :param int type: type
         :return str: string
         """
 
-        return self.get_raw(type).decode()
+        return self.get_raw(*args, **kwargs).decode()
 
-    def get_int(self, type: int) -> Union[int, None]:
+    def get_int(self, *args, **kwargs) -> Union[int, None]:
         """ Get integer from packet.
 
-        :param int type: type
         :return Union[int, None]: integer
         """
 
-        data = self.get_raw(type)
+        data = self.get_raw(*args, **kwargs)
 
         if data:
             return int.from_bytes(data, self.endian)
 
-    def get_tlv(self, type: int) -> Any:
+    def get_tlv(self, *args, **kwargs) -> Any:
         """ Get TLV from packet.
 
-        :param int type: type
         :return TLVPacket: TLV packet
         """
 
         return self.__class__(
-            buffer=self.get_raw(type), endian=self.endian)
+            buffer=self.get_raw(*args, **kwargs), endian=self.endian)
 
     def add_raw(self, type: int, value: bytes) -> None:
         """ Add raw data to packet.
