@@ -164,7 +164,7 @@ OS_BSD = Platform(
 )
 OS_IPHONE = Platform(
     name='apple_ios',
-    alter_names=['iphoneos'],
+    alter_names=['iphoneos', 'ios'],
     exec='macho'
 )
 OS_UNIX = Platform(
