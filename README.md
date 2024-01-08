@@ -1,22 +1,10 @@
 # Pex
 
-<p>
-    <a href="https://entysec.com">
-        <img src="https://img.shields.io/badge/developer-EntySec-blue.svg">
-    </a>
-    <a href="https://github.com/EntySec/Pex">
-        <img src="https://img.shields.io/badge/language-Python-blue.svg">
-    </a>
-    <a href="https://github.com/EntySec/Pex/forks">
-        <img src="https://img.shields.io/github/forks/EntySec/Pex?color=green">
-    </a>
-    <a href="https://github.com/EntySec/Pex/stargazers">
-        <img src="https://img.shields.io/github/stars/EntySec/Pex?color=yellow">
-    </a>
-    <a href="https://www.codefactor.io/repository/github/EntySec/Pex">
-        <img src="https://www.codefactor.io/repository/github/EntySec/Pex/badge">
-    </a>
-</p>
+[![Developer](https://img.shields.io/badge/developer-EntySec-blue.svg)](https://entysec.com)
+[![Language](https://img.shields.io/badge/language-Python-blue.svg)](https://github.com/EntySec/Pex)
+[![Forks](https://img.shields.io/github/forks/EntySec/Pex?style=flat&color=green)](https://github.com/EntySec/Pex/forks)
+[![Stars](https://img.shields.io/github/stars/EntySec/Pex?style=flat&color=yellow)](https://github.com/EntySec/Pex/stargazers)
+[![CodeFactor](https://www.codefactor.io/repository/github/EntySec/Pex/badge)](https://www.codefactor.io/repository/github/EntySec/Pex)
 
 Python Exploitation is a collection of special utilities for providing high quality penetration testing using pure
 python programming language.
