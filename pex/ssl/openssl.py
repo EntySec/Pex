@@ -38,7 +38,7 @@ class OpenSSL(object):
         super().__init__()
 
     def wrap_client(self, client: socket.socket, keyfile: str = 'hatsploit.key', certfile: str = 'hatsploit.crt',
-                    protocol: ssl._SSLMethod = ssl.PROTOCOL_TLS, expire: int = 365, nodename: str = 'HatSploit',
+                    protocol: ssl._SSLMethod = ssl.PROTOCOL_TLS_SERVER, expire: int = 365, nodename: str = 'HatSploit',
                     country: str = 'US', state: str = 'HatSploit', location: str = 'HatSploit',
                     organization: str = 'HatSploit', unit: str = 'HatSploit', server: bool = True) -> ssl.SSLSocket:
         """ Generate a certificate and wrap a socket with it.
@@ -73,13 +73,10 @@ class OpenSSL(object):
         self.write_key(key, keyfile)
         self.write_cert(cert, certfile)
 
-        return ssl.wrap_socket(
-            client,
-            server_side=server,
-            certfile=certfile,
-            keyfile=keyfile,
-            ssl_version=protocol
-        )
+        context = ssl.SSLContext(protocol)
+        context.load_cert_chain(certfile=certfile, keyfile=keyfile)
+
+        return context.wrap_socket(client, server_side=server)
 
     def write_key(self, key: crypto.PKey, filename: str) -> None:
         """ Write generated key to a file.
