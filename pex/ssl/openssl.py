@@ -22,8 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import os
 import socket
 import ssl
+
 from OpenSSL import crypto
 
 
@@ -58,20 +60,22 @@ class OpenSSL(object):
         :return ssl.SSLSocket: wrapped socket
         """
 
-        key = self.generate_key()
-        cert = self.generate_cert(
-            key,
-            expire=expire,
-            nodename=nodename,
-            country=country,
-            state=state,
-            location=location,
-            organization=organization,
-            unit=unit
-        )
+        if not os.path.exists(keyfile):
+            key = self.generate_key()
+            self.write_key(key, keyfile)
 
-        self.write_key(key, keyfile)
-        self.write_cert(cert, certfile)
+        if not os.path.exists(certfile):
+            cert = self.generate_cert(
+                key,
+                expire=expire,
+                nodename=nodename,
+                country=country,
+                state=state,
+                location=location,
+                organization=organization,
+                unit=unit
+            )
+            self.write_cert(cert, certfile)
 
         context = ssl.SSLContext(protocol)
         context.load_cert_chain(certfile=certfile, keyfile=keyfile)
