@@ -105,8 +105,19 @@ class OpenSSL(object):
             f.write(self.dump_cert(cert))
 
     @staticmethod
+    def dump_public_key(key: crypto.PKey) -> bytes:
+        """ Dump public key.
+
+        :param crypto.PKey key: generated key to dump
+        :return bytes: generated key contents
+        """
+
+        pem_type = crypto.FILETYPE_PEM
+        return crypto.dump_publickey(pem_type, key)
+
+    @staticmethod
     def dump_key(key: crypto.PKey) -> bytes:
-        """ Dump generated key contents.
+        """ Dump private key.
 
         :param crypto.PKey key: generated key to dump
         :return bytes: generated key contents
