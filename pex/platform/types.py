@@ -152,6 +152,7 @@ OS_MACOS = Platform(
 )
 OS_WINDOWS = Platform(
     name='windows',
+    alter_names=['w64'],
     exec='pe'
 )
 OS_LINUX = Platform(
@@ -164,7 +165,7 @@ OS_BSD = Platform(
 )
 OS_IPHONE = Platform(
     name='apple_ios',
-    alter_names=['iphoneos', 'ios'],
+    alter_names=['iphoneos', 'ios', 'iphone'],
     exec='macho'
 )
 OS_UNIX = Platform(
