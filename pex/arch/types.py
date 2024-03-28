@@ -183,26 +183,29 @@ ARCH_APPLESCRIPT = Arch(
 )
 ARCH_X64 = Arch(
     name='x64',
+    bits=64,
     alter_names=['x86_64']
 )
 ARCH_X86 = Arch(
     name='x86',
+    bits=32,
     alter_names=['i386']
 )
 ARCH_AARCH64 = Arch(
     name='aarch64',
+    bits=64,
     alter_names=['arm64']
 )
 ARCH_ARMLE = Arch(
     name='armle',
     bits=32,
-    alter_names=['armel']
+    alter_names=['armel', 'arm5l']
 )
 ARCH_ARMBE = Arch(
     name='armbe',
     endian='big',
     bits=32,
-    alter_names=['armeb']
+    alter_names=['armeb', 'arm5b']
 )
 ARCH_MIPSLE = Arch(
     name='mipsle',
@@ -213,7 +216,30 @@ ARCH_MIPSBE = Arch(
     name='mipsbe',
     endian='little',
     bits=32,
-    alter_names=['mipseb']
+    alter_names=['mipseb', 'mips']
+)
+ARCH_MIPS64 = Arch(
+    name='mips64',
+    endian='little',
+    bits=64,
+)
+ARCH_PPC = Arch(
+    name='ppc',
+    endian='big',
+    bits=32,
+    alter_names=['powerpc']
+)
+ARCH_PPC64 = Arch(
+    name='ppc64',
+    endian='little',
+    bits=64,
+    alter_names=['powerpc64', 'powerpc64le', 'powerpc64el']
+)
+ARCH_S390X = Arch(
+    name='s390x',
+    endian='big',
+    bits=32,
+    alter_names=['zarch', 'ibmz']
 )
 ARCH_GENERIC = Arch(
     name='generic',
