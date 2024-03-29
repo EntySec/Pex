@@ -147,7 +147,7 @@ OS_ANDROID = Platform(
 )
 OS_MACOS = Platform(
     name='macos',
-    alter_names=['osx'],
+    alter_names=['osx', 'apple'],
     exec='macho'
 )
 OS_WINDOWS = Platform(
