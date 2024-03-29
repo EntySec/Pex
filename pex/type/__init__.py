@@ -22,7 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from typing import Tuple
 from .casting import Casting
+
+from pex.arch.types import *
+from pex.platform.types import *
 
 
 class Type(object):
@@ -51,3 +55,35 @@ class Type(object):
             'float': self.casting.is_float,
             'boolean': self.casting.is_boolean
         }
+
+    def from_target(target: str) -> Tuple[Platform, Arch]:
+        """ Normalize target tuple.
+
+        :param str target: target (e.g. aarch64-linux-musl)
+        :return Tuple[Platform, Arch]: tuple of platform and arch
+        :raises RuntimeError: with trailing error message
+        """
+
+        target = target.split('-')
+
+        if len(target) != 3:
+            raise RuntimeError("Invalid target tuple provided!")
+
+        platforms = []
+        arches = []
+
+        for name, item in locals().items():
+            if name.startswith('OS'):
+                platforms.append(item)
+            if name.startswith('ARCH'):
+                arches.append(item)
+
+        platform = OS_GENERIC
+        arch = ARCH_GENERIC
+
+        if target[1] in platforms:
+            platform = platforms[platforms.index(target[1])]
+        if target[0] in arches:
+            arch = arches[arches.index(target[0])]
+
+        return platform, arch
