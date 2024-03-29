@@ -73,7 +73,7 @@ class Type(object):
         platforms = []
         arches = []
 
-        for name, item in locals().items():
+        for name, item in globals().items():
             if name.startswith('OS'):
                 platforms.append(item)
             if name.startswith('ARCH'):
