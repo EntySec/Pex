@@ -56,6 +56,7 @@ class Type(object):
             'boolean': self.casting.is_boolean
         }
 
+    @staticmethod
     def from_target(target: str) -> Tuple[Platform, Arch]:
         """ Normalize target tuple.
 
