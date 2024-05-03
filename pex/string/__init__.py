@@ -49,18 +49,19 @@ class String(object):
         super().__init__()
 
     @staticmethod
-    def size_normalize(size: int) -> str:
+    def size_normalize(size: int, ratio: int = 1024) -> str:
         """ Size to B, KB, MB, GB, TB
 
-        :param int size: size
+        :param int size: size in bytes
+        :param int ratio: ratio (divide by it)
         :return str: size with units
         """
 
         units = ["B", "KB", "MB", "GB", "TB"]
         index = 0
 
-        while size >= 1000 and index < len(units) - 1:
-            size /= 1000
+        while size >= ratio and index < len(units) - 1:
+            size /= ratio
             index += 1
 
         return f"{size:.2f} {units[index]}"
