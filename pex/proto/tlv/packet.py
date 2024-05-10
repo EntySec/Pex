@@ -97,6 +97,19 @@ class TLVPacket(object):
 
         return self.__len__() > 0
 
+    def next_int(self, offset: int = 0) -> Union[int, None]:
+        """ Get next integer from buffer.
+
+        :param int offset: buffer offset
+        :return Union[int, None]: integer if there is integer else None
+        """
+
+        value = self.buffer[offset:offset + 4]
+        if len(value) != 4:
+            return
+
+        return struct.unpack('!I', value)[0]
+
     def get_raw(self, type: int, delete: bool = True) -> bytes:
         """ Get raw data from packet.
 
@@ -108,11 +121,15 @@ class TLVPacket(object):
         offset = 0
 
         while offset < len(self.buffer):
-            cur_type = struct.unpack('!I', self.buffer[
-                                           offset:offset + 4])[0]
+            cur_type = self.next_int(offset)
+            if cur_type is None:
+                break
+
             offset += 4
-            cur_length = struct.unpack('!I', self.buffer[
-                                             offset:offset + 4])[0]
+            cur_length = self.next_int(offset)
+            if cur_length is None:
+                break
+
             offset += 4
             cur_value = self.buffer[offset:offset + cur_length]
             offset += cur_length
@@ -143,7 +160,7 @@ class TLVPacket(object):
 
         data = self.get_raw(*args, **kwargs)
 
-        if data:
+        if data and len(data) == 4:
             return struct.unpack('!I', data)[0]
 
     def get_tlv(self, *args, **kwargs) -> Any:
