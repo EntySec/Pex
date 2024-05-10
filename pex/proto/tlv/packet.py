@@ -83,8 +83,11 @@ class TLVPacket(object):
             count += 1
 
             offset += 4
-            length = struct.unpack('!I', self.buffer[
-                                         offset:offset + 4])[0]
+            length = self.next_int(offset)
+
+            if length is None:
+                break
+
             offset += 4 + length
 
         return count
@@ -105,10 +108,9 @@ class TLVPacket(object):
         """
 
         value = self.buffer[offset:offset + 4]
-        if len(value) != 4:
-            return
 
-        return struct.unpack('!I', value)[0]
+        if len(value) == 4:
+            return struct.unpack('!I', value)[0]
 
     def get_raw(self, type: int, delete: bool = True) -> bytes:
         """ Get raw data from packet.
