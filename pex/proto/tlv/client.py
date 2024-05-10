@@ -23,6 +23,7 @@ SOFTWARE.
 """
 
 import struct
+import socket
 
 from .packet import TLVPacket
 
