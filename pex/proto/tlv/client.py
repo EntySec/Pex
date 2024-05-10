@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import socket
+import struct
 
 from .packet import TLVPacket
 
@@ -34,7 +34,7 @@ class TLVClient(object):
     implementation of the TLV client.
     """
 
-    def __init__(self, client: socket.socket, endian: str = 'little', max_size: int = 4096) -> None:
+    def __init__(self, client: socket.socket, max_size: int = 4096) -> None:
         """ Initialize TLVClient with socket.
 
         :param socket.socket client: socket
@@ -44,7 +44,6 @@ class TLVClient(object):
         super().__init__()
 
         self.client = client
-        self.endian = endian
         self.max_size = max_size
 
     def close(self) -> None:
@@ -79,7 +78,7 @@ class TLVClient(object):
         length = self.read_raw(4)
 
         buffer += length
-        length = int.from_bytes(length, self.endian)
+        length = struct.unpack('!I', length)[0]
 
         value = b''
 
@@ -90,7 +89,7 @@ class TLVClient(object):
 
         buffer += value
 
-        return TLVPacket(buffer=buffer, endian=self.endian)
+        return TLVPacket(buffer=buffer)
 
     def send_raw(self, data: bytes) -> None:
         """ Send raw data instead of TLV packet.

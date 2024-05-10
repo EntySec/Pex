@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import struct
+
 from typing import Union, Any
 
 
@@ -32,17 +34,15 @@ class TLVPacket(object):
     an implementation of TLV protocol stack.
     """
 
-    def __init__(self, buffer: bytes = b'', endian: str = 'little') -> None:
+    def __init__(self, buffer: bytes = b'') -> None:
         """ Initialize TLV packet.
 
         :param bytes buffer: raw packet
-        :param str endian: byte order of raw packet
         :return None: None
         """
 
         super().__init__()
 
-        self.endian = endian
         self.buffer = buffer
 
     def __add__(self, packet: Any) -> Any:
@@ -83,8 +83,8 @@ class TLVPacket(object):
             count += 1
 
             offset += 4
-            length = int.from_bytes(
-                self.buffer[offset:offset + 4], self.endian)
+            length = struct.unpack('!I', self.buffer[
+                                         offset:offset + 4])[0]
             offset += 4 + length
 
         return count
@@ -108,11 +108,11 @@ class TLVPacket(object):
         offset = 0
 
         while offset < len(self.buffer):
-            cur_type = int.from_bytes(
-                self.buffer[offset:offset + 4], self.endian)
+            cur_type = struct.unpack('!I', self.buffer[
+                                           offset:offset + 4])[0]
             offset += 4
-            cur_length = int.from_bytes(
-                self.buffer[offset:offset + 4], self.endian)
+            cur_length = struct.unpack('!I', self.buffer[
+                                             offset:offset + 4])[0]
             offset += 4
             cur_value = self.buffer[offset:offset + cur_length]
             offset += cur_length
@@ -144,7 +144,7 @@ class TLVPacket(object):
         data = self.get_raw(*args, **kwargs)
 
         if data:
-            return int.from_bytes(data, self.endian)
+            return struct.unpack('!I', data)[0]
 
     def get_tlv(self, *args, **kwargs) -> Any:
         """ Get TLV from packet.
@@ -153,7 +153,7 @@ class TLVPacket(object):
         """
 
         return self.__class__(
-            buffer=self.get_raw(*args, **kwargs), endian=self.endian)
+            buffer=self.get_raw(*args, **kwargs))
 
     def add_raw(self, type: int, value: bytes) -> None:
         """ Add raw data to packet.
@@ -163,8 +163,8 @@ class TLVPacket(object):
         :return None: None
         """
 
-        self.buffer += int.to_bytes(type, 4, self.endian)
-        self.buffer += int.to_bytes(len(value), 4, self.endian)
+        self.buffer += struct.pack('!I', type)
+        self.buffer += struct.pack('!I', len(value))
         self.buffer += value
 
     def add_string(self, type: int, value: str) -> None:
@@ -175,9 +175,7 @@ class TLVPacket(object):
         :return None: None
         """
 
-        self.buffer += int.to_bytes(type, 4, self.endian)
-        self.buffer += int.to_bytes(len(value), 4, self.endian)
-        self.buffer += value.encode()
+        self.add_raw(type, value.encode())
 
     def add_int(self, type: int, value: int) -> None:
         """ Add integer to packet.
@@ -187,9 +185,7 @@ class TLVPacket(object):
         :return None: None
         """
 
-        self.buffer += int.to_bytes(type, 4, self.endian)
-        self.buffer += int.to_bytes(4, 4, self.endian)
-        self.buffer += int.to_bytes(value, 4, self.endian)
+        self.add_raw(type, struct.pack('!I', value))
 
     def add_tlv(self, type: int, value: Any) -> None:
         """ Add TLV packet to packet.
@@ -200,12 +196,7 @@ class TLVPacket(object):
         :raises RuntimeError: with trailing error message
         """
 
-        if value.endian != self.endian:
-            raise RuntimeError("Impossible to merge packets with different endians!")
-
-        self.buffer += int.to_bytes(type, 4, self.endian)
-        self.buffer += int.to_bytes(len(value.buffer), 4, self.endian)
-        self.buffer += value.buffer
+        self.add_raw(type, value.buffer)
 
     def add_from_dict(self, values: dict) -> None:
         """ Add packets from dictionary.
