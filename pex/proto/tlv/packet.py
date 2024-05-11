@@ -154,6 +154,17 @@ class TLVPacket(object):
 
         return self.get_raw(*args, **kwargs).decode()
 
+    def get_short(self, *args, **kwargs) -> Union[int, None]:
+        """ Get short integer from packet.
+
+        :return Union[int, None]: short integer
+        """
+
+        data = self.get_raw(*args, **kwargs)
+
+        if data and len(data) == 2:
+            return struct.unpack('!H', data)[0]
+
     def get_int(self, *args, **kwargs) -> Union[int, None]:
         """ Get integer from packet.
 
@@ -164,6 +175,17 @@ class TLVPacket(object):
 
         if data and len(data) == 4:
             return struct.unpack('!I', data)[0]
+
+    def get_long(self, *args, **kwargs) -> Union[int, None]:
+        """ Get long integer from packet. (i.e. long long)
+
+        :return Union[int, None]: long integer
+        """
+
+        data = self.get_raw(*args, **kwargs)
+
+        if data and len(data) == 8:
+            return struct.unpack('!Q', data)[0]
 
     def get_tlv(self, *args, **kwargs) -> Any:
         """ Get TLV from packet.
@@ -196,6 +218,16 @@ class TLVPacket(object):
 
         self.add_raw(type, value.encode())
 
+    def add_short(self, type: int, value: int) -> None:
+        """ Add short integer to packet.
+
+        :param int type: type
+        :param int value: value
+        :return None: None
+        """
+
+        self.add_raw(type, struct.pack('!H', value))
+
     def add_int(self, type: int, value: int) -> None:
         """ Add integer to packet.
 
@@ -205,6 +237,16 @@ class TLVPacket(object):
         """
 
         self.add_raw(type, struct.pack('!I', value))
+
+    def add_long(self, type: int, value: int) -> None:
+        """ Add long integer to packet. (i.e. long long)
+
+        :param int type: type
+        :param int value: value
+        :return None: None
+        """
+
+        self.add_raw(type, struct.pack('!Q', value))
 
     def add_tlv(self, type: int, value: Any) -> None:
         """ Add TLV packet to packet.
