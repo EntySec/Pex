@@ -35,7 +35,7 @@ class TLVClient(object):
     implementation of the TLV client.
     """
 
-    def __init__(self, client: socket.socket, max_size: int = 4096) -> None:
+    def __init__(self, client: socket.socket) -> None:
         """ Initialize TLVClient with socket.
 
         :param socket.socket client: socket
@@ -45,7 +45,6 @@ class TLVClient(object):
         super().__init__()
 
         self.client = client
-        self.max_size = max_size
 
     def close(self) -> None:
         """ Close connected socket.
