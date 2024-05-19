@@ -112,6 +112,36 @@ class TLVPacket(object):
         if len(value) == 4:
             return struct.unpack('!I', value)[0]
 
+    def clean(self) -> None:
+        """ Clean TLV packet (e.g. from padding)
+
+        :return None: None
+        """
+
+        offset = 0
+        buffer = b""
+
+        while offset < len(self.buffer):
+            curr_type = self.next_int(offset)
+            if curr_type is None:
+                break
+
+            offset += 4
+            cur_length = self.next_int(offset)
+            if cur_length is None:
+                break
+
+            offset += 4
+            cur_value = self.buffer[offset:offset + cur_length]
+
+            if len(cur_value) != cur_length:
+                break
+
+            offset += cur_length
+            buffer = self.buffer[:offset]
+
+        self.buffer = buffer
+
     def get_raw(self, type: int, delete: bool = True) -> bytes:
         """ Get raw data from packet.
 
