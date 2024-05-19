@@ -49,7 +49,7 @@ class TCPListener(object):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.client = None
-        self.address = []
+        self.address = ()
 
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.settimeout(timeout)
@@ -88,6 +88,7 @@ class TCPListener(object):
 
         try:
             self.client, self.address = self.sock.accept()
+            self.host, self.port = self.client.getsockname()
         except Exception:
             raise RuntimeError("TCP listener is not started!")
 
