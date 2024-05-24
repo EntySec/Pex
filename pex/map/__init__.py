@@ -30,7 +30,7 @@ MAPS = {
         'data': r'''
                        . _..::__:  ,-"-"._       |7       ,     _,.__     
        _.___ _ _<_>`!(._`.`-.    /        _._     `_ ,_/  '  '-._.---.-.__
-     .{     " " `-==,',._\{  \  / {)     / _ ">_,-' `                mt-2_
+     .{     " " `-==,',._\{  \  / {)     / _ ">_,-' `                 .--?_
       \_.:--.       `._ )`^-. "'      , [_/(                       __,/-' 
      '"'     \         "    _L       oD_,--'                )     /. (|   
               |           ,'         _)_.\\._<> 6              _,' /  '   
@@ -60,7 +60,7 @@ class Map(object):
     an interface for plotting ASCII map
     """
 
-    def __init__(self, map_name: str = 'world') -> None:
+    def __init__(self, map_name: str = 'world', dot: str = '*') -> None:
         """ Initialise map.
 
         :param str map_name: map name
@@ -69,6 +69,7 @@ class Map(object):
 
         self.map = MAPS[map_name]
         self.data = self.map['data'].splitlines()
+        self.dot = dot
 
     def location(self, latitude: float, longitude: float) -> Tuple[int, int]:
         """ Convert latitude and longitude to coordinates.
@@ -100,7 +101,7 @@ class Map(object):
         """
 
         x, y = self.location(latitude, longitude)
-        self.data[y] = self.data[y][:x] + '\033[31m*\033[0m' + self.data[y][x + 1:]
+        self.data[y] = self.data[y][:x] + self.dot + self.data[y][x + 1:]
 
     def get_map(self) -> str:
         """ Get map.
