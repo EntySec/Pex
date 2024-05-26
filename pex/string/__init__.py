@@ -49,6 +49,23 @@ class String(object):
         super().__init__()
 
     @staticmethod
+    def split_args(args: str) -> list:
+        """ Split argv/args list.
+
+        :param str args: argv/args list
+        :return list: array of args
+        """
+
+        args = re.split(''' (?=(?:[^'"]|'[^']*'|"[^"]*")*$)''', args)
+        argv = []
+
+        for arg in args:
+            if arg:
+                argv.append(arg.strip('"').strip("'"))
+
+        return argv
+
+    @staticmethod
     def size_normalize(size: int, ratio: int = 1024) -> str:
         """ Size to B, KB, MB, GB, TB
 

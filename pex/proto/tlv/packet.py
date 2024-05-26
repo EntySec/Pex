@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import struct
+
 from typing import Union, Any
 
 
@@ -32,17 +34,15 @@ class TLVPacket(object):
     an implementation of TLV protocol stack.
     """
 
-    def __init__(self, buffer: bytes = b'', endian: str = 'little') -> None:
+    def __init__(self, buffer: bytes = b'') -> None:
         """ Initialize TLV packet.
 
         :param bytes buffer: raw packet
-        :param str endian: byte order of raw packet
         :return None: None
         """
 
         super().__init__()
 
-        self.endian = endian
         self.buffer = buffer
 
     def __add__(self, packet: Any) -> Any:
@@ -83,8 +83,11 @@ class TLVPacket(object):
             count += 1
 
             offset += 4
-            length = int.from_bytes(
-                self.buffer[offset:offset + 4], self.endian)
+            length = self.next_int(offset)
+
+            if length is None:
+                break
+
             offset += 4 + length
 
         return count
@@ -97,6 +100,48 @@ class TLVPacket(object):
 
         return self.__len__() > 0
 
+    def next_int(self, offset: int = 0) -> Union[int, None]:
+        """ Get next integer from buffer.
+
+        :param int offset: buffer offset
+        :return Union[int, None]: integer if there is integer else None
+        """
+
+        value = self.buffer[offset:offset + 4]
+
+        if len(value) == 4:
+            return struct.unpack('!I', value)[0]
+
+    def clean(self) -> None:
+        """ Clean TLV packet (e.g. from padding)
+
+        :return None: None
+        """
+
+        offset = 0
+        buffer = b""
+
+        while offset < len(self.buffer):
+            curr_type = self.next_int(offset)
+            if curr_type is None:
+                break
+
+            offset += 4
+            cur_length = self.next_int(offset)
+            if cur_length is None:
+                break
+
+            offset += 4
+            cur_value = self.buffer[offset:offset + cur_length]
+
+            if len(cur_value) != cur_length:
+                break
+
+            offset += cur_length
+            buffer = self.buffer[:offset]
+
+        self.buffer = buffer
+
     def get_raw(self, type: int, delete: bool = True) -> bytes:
         """ Get raw data from packet.
 
@@ -108,11 +153,15 @@ class TLVPacket(object):
         offset = 0
 
         while offset < len(self.buffer):
-            cur_type = int.from_bytes(
-                self.buffer[offset:offset + 4], self.endian)
+            cur_type = self.next_int(offset)
+            if cur_type is None:
+                break
+
             offset += 4
-            cur_length = int.from_bytes(
-                self.buffer[offset:offset + 4], self.endian)
+            cur_length = self.next_int(offset)
+            if cur_length is None:
+                break
+
             offset += 4
             cur_value = self.buffer[offset:offset + cur_length]
             offset += cur_length
@@ -135,6 +184,17 @@ class TLVPacket(object):
 
         return self.get_raw(*args, **kwargs).decode()
 
+    def get_short(self, *args, **kwargs) -> Union[int, None]:
+        """ Get short integer from packet.
+
+        :return Union[int, None]: short integer
+        """
+
+        data = self.get_raw(*args, **kwargs)
+
+        if data and len(data) == 2:
+            return struct.unpack('!H', data)[0]
+
     def get_int(self, *args, **kwargs) -> Union[int, None]:
         """ Get integer from packet.
 
@@ -143,8 +203,19 @@ class TLVPacket(object):
 
         data = self.get_raw(*args, **kwargs)
 
-        if data:
-            return int.from_bytes(data, self.endian)
+        if data and len(data) == 4:
+            return struct.unpack('!I', data)[0]
+
+    def get_long(self, *args, **kwargs) -> Union[int, None]:
+        """ Get long integer from packet. (i.e. long long)
+
+        :return Union[int, None]: long integer
+        """
+
+        data = self.get_raw(*args, **kwargs)
+
+        if data and len(data) == 8:
+            return struct.unpack('!Q', data)[0]
 
     def get_tlv(self, *args, **kwargs) -> Any:
         """ Get TLV from packet.
@@ -153,7 +224,7 @@ class TLVPacket(object):
         """
 
         return self.__class__(
-            buffer=self.get_raw(*args, **kwargs), endian=self.endian)
+            buffer=self.get_raw(*args, **kwargs))
 
     def add_raw(self, type: int, value: bytes) -> None:
         """ Add raw data to packet.
@@ -163,8 +234,8 @@ class TLVPacket(object):
         :return None: None
         """
 
-        self.buffer += int.to_bytes(type, 4, self.endian)
-        self.buffer += int.to_bytes(len(value), 4, self.endian)
+        self.buffer += struct.pack('!I', type)
+        self.buffer += struct.pack('!I', len(value))
         self.buffer += value
 
     def add_string(self, type: int, value: str) -> None:
@@ -175,9 +246,17 @@ class TLVPacket(object):
         :return None: None
         """
 
-        self.buffer += int.to_bytes(type, 4, self.endian)
-        self.buffer += int.to_bytes(len(value), 4, self.endian)
-        self.buffer += value.encode()
+        self.add_raw(type, value.encode())
+
+    def add_short(self, type: int, value: int) -> None:
+        """ Add short integer to packet.
+
+        :param int type: type
+        :param int value: value
+        :return None: None
+        """
+
+        self.add_raw(type, struct.pack('!H', value))
 
     def add_int(self, type: int, value: int) -> None:
         """ Add integer to packet.
@@ -187,9 +266,17 @@ class TLVPacket(object):
         :return None: None
         """
 
-        self.buffer += int.to_bytes(type, 4, self.endian)
-        self.buffer += int.to_bytes(4, 4, self.endian)
-        self.buffer += int.to_bytes(value, 4, self.endian)
+        self.add_raw(type, struct.pack('!I', value))
+
+    def add_long(self, type: int, value: int) -> None:
+        """ Add long integer to packet. (i.e. long long)
+
+        :param int type: type
+        :param int value: value
+        :return None: None
+        """
+
+        self.add_raw(type, struct.pack('!Q', value))
 
     def add_tlv(self, type: int, value: Any) -> None:
         """ Add TLV packet to packet.
@@ -200,12 +287,7 @@ class TLVPacket(object):
         :raises RuntimeError: with trailing error message
         """
 
-        if value.endian != self.endian:
-            raise RuntimeError("Impossible to merge packets with different endians!")
-
-        self.buffer += int.to_bytes(type, 4, self.endian)
-        self.buffer += int.to_bytes(len(value.buffer), 4, self.endian)
-        self.buffer += value.buffer
+        self.add_raw(type, value.buffer)
 
     def add_from_dict(self, values: dict) -> None:
         """ Add packets from dictionary.
