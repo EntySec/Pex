@@ -226,6 +226,24 @@ class TLVPacket(object):
         return self.__class__(
             buffer=self.get_raw(*args, **kwargs))
 
+    def get_from_dict(self, values: dict, *args, **kwargs) -> Any:
+        """ Get packets from query from dictionary.
+
+        :param dict values: type as key, value type as item
+        (e.g. for int, it should be any instance of int)
+        :return Any: any result
+        """
+
+        for type, value in values.items():
+            if isinstance(value, str):
+                return self.get_string(type, *args, **kwargs)
+            elif isinstance(value, int):
+                return self.get_int(type, *args, **kwargs)
+            elif isinstance(value, self.__class__):
+                return self.get_tlv(type, *args, **kwargs)
+            else:
+                return self.get_raw(type, values[value])
+
     def add_raw(self, type: int, value: bytes) -> None:
         """ Add raw data to packet.
 
@@ -296,12 +314,12 @@ class TLVPacket(object):
         :return None: None
         """
 
-        for value in values:
-            if isinstance(values[value], str):
-                self.add_string(value, values[value])
-            elif isinstance(values[value], int):
-                self.add_int(value, values[value])
-            elif isinstance(values[value], self.__class__):
-                self.add_tlv(value, values[value])
+        for type, value in values.items():
+            if isinstance(value, str):
+                self.add_string(type, value)
+            elif isinstance(value, int):
+                self.add_int(type, value)
+            elif isinstance(value, self.__class__):
+                self.add_tlv(type, value)
             else:
-                self.add_raw(value, values[value])
+                self.add_raw(type, value)
