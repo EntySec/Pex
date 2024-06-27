@@ -25,6 +25,7 @@ SOFTWARE.
 import struct
 import socket
 
+from typing import Union
 from .packet import TLVPacket
 
 
@@ -35,15 +36,17 @@ class TLVClient(object):
     implementation of the TLV client.
     """
 
-    def __init__(self, client: socket.socket) -> None:
+    def __init__(self, client: socket.socket, block: bool = True) -> None:
         """ Initialize TLVClient with socket.
 
         :param socket.socket client: socket
+        :param bool block: True to block socket else False
         :return None: None
         """
 
         super().__init__()
 
+        self.block = block
         self.client = client
 
     def close(self) -> None:
@@ -64,17 +67,26 @@ class TLVClient(object):
 
         self.send_raw(packet.buffer)
 
-    def read(self) -> TLVPacket:
+    def read(self) -> Union[TLVPacket, None]:
         """ Read TLV packet from the socket.
 
-        :return TLVPacket: read TLV packet
+        :return Union[TLVPacket, None]: read TLV packet
+        (returns None in case of blocking I/O)
         :raises RuntimeError: with trailing error message
         """
 
         if not self.client:
             raise RuntimeError("Socket is not connected!")
 
-        buffer = self.read_raw(4)
+        self.client.setblocking(self.block)
+
+        try:
+            buffer = self.read_raw(4)
+        except socket.error, e:
+            if e.errno == errno.EAGAIN:
+                return
+
+        self.client.setblocking(True)
         length = self.read_raw(4)
 
         buffer += length
