@@ -32,6 +32,8 @@ from pex.post.push.bash_echo import BashEcho
 from pex.post.push.certutil import Certutil
 from pex.post.push.echo import Echo
 from pex.post.push.printf import Printf
+from pex.post.push.wget import Wget
+from pex.post.push.curl import Curl
 
 
 class Push(object):
@@ -45,10 +47,12 @@ class Push(object):
         super().__init__()
 
         self.methods = [
-            Method(name='printf', platform=OS_UNIX, handler=Printf()),
-            Method(name='echo', platform=OS_UNIX, handler=Echo()),
-            Method(name='bash_echo', platform=OS_UNIX, handler=BashEcho()),
-            Method(name='certutil', platform=OS_WINDOWS, handler=Certutil()),
+            Method(name='printf', platform=OS_UNIX, handler=Printf(), uri=False),
+            Method(name='echo', platform=OS_UNIX, handler=Echo(), uri=False),
+            Method(name='bash_echo', platform=OS_UNIX, handler=BashEcho(), uri=False),
+            Method(name='certutil', platform=OS_WINDOWS, handler=Certutil(), uri=False),
+            Method(name='wget', platform=OS_UNIX, handler=Wget(), uri=True),
+            Method(name='curl', platform=OS_UNIX, handler=Curl(), uri=True)
         ]
 
     def push(self, platform: Union[Platform, str], location: str, method: Optional[str] = None, *args, **kwargs) -> str:

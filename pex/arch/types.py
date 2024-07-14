@@ -22,67 +22,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import Any, Optional
+from typing import Optional
+from pex.type.dataset import DataSet
 
 
-class Arch(object):
+class Arch(DataSet):
     """ Subclass of pex.arch.types module.
 
     This subclass of pex.arch.types module is intended for providing
-    an implementation of architecture descriptor.
+    an implementation of architecture set.
     """
 
     def __init__(self,
-                 name: str,
                  endian: str = 'little',
                  bits: int = 64,
-                 alter_names: list = [],
                  interpreter: Optional[str] = None,
-                 sub_sets: list = []) -> None:
+                 *args, **kwargs) -> None:
         """ Set architecture.
 
-        :param str name: architecture name
         :param str endian: endian (little or big)
-        :param list alter_names: architecture alternative names if presented
         :param int bits: bits (32 or 64)
         (e.g. mipsle - mipsle, ppc - powerpc)
         :param Optional[str] interpreter: interpreter if architecture is not a CPU
         (e.g. python, php)
-        :param list sub_sets: sub sets of this platform
-        (e.g. cpu may have a sub set of x64, x86, etc.)
         :return None: None
         """
 
-        super().__init__()
+        super().__init__(*args, **kwargs)
 
-        self.name = name.lower()
         self.endian = endian.lower()
-        self.alter_names = alter_names
         self.bits = int(bits)
         self.interpreter = interpreter
-        self.sub_sets = sub_sets
-
-    def __add__(self, arch: Any) -> Any:
-        """ Add architecture to current architecture sub sets.
-
-        :param Any arch: architecture to add
-        :return Any: updated architecture
-        """
-
-        self.sub_sets.append(arch)
-        return self.__class__(**vars(self))
-
-    def __sub__(self, arch: Any) -> Any:
-        """ Remove architecture from current sub sets.
-
-        :param Any arch: architecture to remove
-        :return Any: updated architecture
-        """
-
-        if arch in self.sub_sets:
-            self.sub_sets.remove(arch)
-
-        return self.__class__(**vars(self))
 
     def __len__(self) -> int:
         """ Get bits.
@@ -91,68 +61,6 @@ class Arch(object):
         """
 
         return self.bits
-
-    def __hash__(self) -> int:
-        """ Make this architecture hashable.
-
-        :return int: architecture hash
-        """
-
-        return hash(self.name)
-
-    def __str__(self) -> str:
-        """ Covert to string.
-
-        :return str: architecture name
-        """
-
-        return self.name
-
-    def __contains__(self, arch: Any) -> bool:
-        """ Check if architecture is a sub set of current one.
-
-        :param Any arch: can be architecture name of alternative name
-        :return bool: True if contains else False
-        """
-
-        if isinstance(arch, str):
-            if arch.lower() == self:
-                return True
-
-            for sub_set in self.sub_sets:
-                if arch.lower() == sub_set:
-                    return True
-
-        elif isinstance(arch, self.__class__):
-            if arch == self:
-                return True
-
-            for sub_set in self.sub_sets:
-                if arch == sub_set or arch in sub_set:
-                    return True
-
-        return False
-
-    def __eq__(self, arch: Any) -> bool:
-        """ Check if architecture compatible with current one.
-
-        :param Any arch: can be arch name or alternative name
-        :return bool: True if compatible else False
-        """
-
-        if isinstance(arch, str):
-            if arch.lower() == 'generic' or \
-                    arch.lower() == self.name or \
-                    arch in self.alter_names:
-                return True
-
-        elif isinstance(arch, self.__class__):
-            if arch.name == 'generic' or \
-                    arch.name == self.name or \
-                    arch.name in self.alter_names:
-                return True
-
-        return False
 
 
 ARCH_PYTHON = Arch(
@@ -243,4 +151,5 @@ ARCH_S390X = Arch(
 )
 ARCH_GENERIC = Arch(
     name='generic',
+    alter_names=['cmd']
 )

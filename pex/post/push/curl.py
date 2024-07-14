@@ -22,33 +22,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import Tuple
-from .casting import Casting
+from typing import Callable, Any
+from alive_progress import alive_bar
+
+from pex.post.tools import PostTools
 
 
-class Type(object):
-    """ Main class of pex.type module.
+class Curl(object):
+    """ Subclass of pex.post.push module.
 
-    This main class of pex.type module is intended for providing
-    some important constants and type casting methods.
+    This subclass of pex.post.push module is intended for providing
+    implementation of wget method of pushing file to sender.
     """
 
     def __init__(self) -> None:
         super().__init__()
 
-        self.casting = Casting()
+        self.post_tools = PostTools()
 
-        self.types = {
-            'mac': self.casting.is_mac,
-            'ip': self.casting.is_ip,
-            'ipv4': self.casting.is_ipv4,
-            'ipv6': self.casting.is_ipv6,
-            'ipv4_cidr': self.casting.is_ipv4_cidr,
-            'ipv6_cidr': self.casting.is_ipv6_cidr,
-            'port': self.casting.is_port,
-            'port_range': self.casting.is_port_range,
-            'number': self.casting.is_number,
-            'integer': self.casting.is_integer,
-            'float': self.casting.is_float,
-            'boolean': self.casting.is_boolean
-        }
+    def push(self, sender: Callable[..., Any], uri: str, location: str,
+             *args, **kwargs) -> None:
+        """ Push file to sender using wget method.
+
+        :param Callable[..., Any] sender: sender to push file to
+        :param str uri: URI to push file from
+        :param str location: location of file to push data to
+        :return None: None
+        """
+
+        command = "curl -sko {} {}"
+        command.format(location, uri)
+
+        self.post_tools.post_payload(sender, command)

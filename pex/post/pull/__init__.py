@@ -43,8 +43,8 @@ class Pull(object):
         super().__init__()
 
         self.methods = [
-            Method(name='cat', platform=OS_UNIX, handler=Cat()),
-            Method(name='dd', platform=OS_UNIX, handler=DD())
+            Method(name='cat', platform=OS_UNIX, handler=Cat(), uri=False),
+            Method(name='dd', platform=OS_UNIX, handler=DD(), uri=False)
         ]
 
     def pull(self, platform: Union[Platform, str], method: Optional[str] = None, *args, **kwargs) -> bytes:

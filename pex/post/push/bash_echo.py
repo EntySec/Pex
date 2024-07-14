@@ -41,7 +41,7 @@ class BashEcho(object):
         self.post_tools = PostTools()
 
     def push(self, sender: Callable[..., Any], data: bytes, location: str,
-             linemax: int = 100) -> None:
+             linemax: int = 100, *args, **kwargs) -> None:
         """ Push file to sender using bash echo method.
 
         :param Callable[..., Any] sender: sender to push file to
