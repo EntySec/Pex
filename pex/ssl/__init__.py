@@ -22,26 +22,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from setuptools import setup, find_packages
-
-setup(name='pex',
-      version='1.0.0',
-      description='Python Exploitation is a collection of special tools for providing high quality penetration testing using pure python programming language.',
-      url='https://github.com/EntySec/Pex',
-      author='EntySec',
-      author_email='entysec@gmail.com',
-      license='MIT',
-      python_requires='>=3.7.0',
-      packages=find_packages(),
-      include_package_data=True,
-      install_requires=[
-          'adb-shell', 'requests', 'paramiko',
-          'alive_progress', 'scapy', 'pydantic',
-          'netifaces', 'netaddr', 'manuf', 'pysnmp',
-          'pychromecast', 'pyasyncore',
-          'pyOpenSSL',
-
-          'hatasm @ git+https://github.com/EntySec/HatAsm'
-      ],
-      zip_safe=False
-      )
+from .openssl import OpenSSL

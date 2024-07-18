@@ -22,26 +22,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from setuptools import setup, find_packages
+from typing import (
+    NamedTuple,
+    Any,
+    Union
+)
 
-setup(name='pex',
-      version='1.0.0',
-      description='Python Exploitation is a collection of special tools for providing high quality penetration testing using pure python programming language.',
-      url='https://github.com/EntySec/Pex',
-      author='EntySec',
-      author_email='entysec@gmail.com',
-      license='MIT',
-      python_requires='>=3.7.0',
-      packages=find_packages(),
-      include_package_data=True,
-      install_requires=[
-          'adb-shell', 'requests', 'paramiko',
-          'alive_progress', 'scapy', 'pydantic',
-          'netifaces', 'netaddr', 'manuf', 'pysnmp',
-          'pychromecast', 'pyasyncore',
-          'pyOpenSSL',
+from pex.platform import Platform
 
-          'hatasm @ git+https://github.com/EntySec/HatAsm'
-      ],
-      zip_safe=False
-      )
+
+class Method(NamedTuple):
+    name: str
+    platform: Platform
+    handler: Any
+    uri: bool
+
+
+def select_method(methods: list, platform: Union[Platform, str],
+                  method: str = '') -> Union[Method, None]:
+    """ Select appropriate method for platform
+    or check if method compatible.
+
+    :param list methods: list of methods
+    :param Union[Platform, str] platform: platform to check compatibility with
+    :param str method: method to check if presented
+    :return Method: method
+    """
+
+    for _method in methods:
+        if method == _method.name and \
+                platform in _method.platform:
+            return _method
+
+    for _method in methods:
+        if platform in _method.platform:
+            return _method

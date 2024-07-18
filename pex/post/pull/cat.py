@@ -22,26 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from setuptools import setup, find_packages
+from typing import Callable, Any
 
-setup(name='pex',
-      version='1.0.0',
-      description='Python Exploitation is a collection of special tools for providing high quality penetration testing using pure python programming language.',
-      url='https://github.com/EntySec/Pex',
-      author='EntySec',
-      author_email='entysec@gmail.com',
-      license='MIT',
-      python_requires='>=3.7.0',
-      packages=find_packages(),
-      include_package_data=True,
-      install_requires=[
-          'adb-shell', 'requests', 'paramiko',
-          'alive_progress', 'scapy', 'pydantic',
-          'netifaces', 'netaddr', 'manuf', 'pysnmp',
-          'pychromecast', 'pyasyncore',
-          'pyOpenSSL',
+from pex.post.tools import PostTools
+from pex.proto.channel import ChannelTools
+from pex.string import String
 
-          'hatasm @ git+https://github.com/EntySec/HatAsm'
-      ],
-      zip_safe=False
-      )
+
+class Cat(PostTools, ChannelTools, String):
+    """ Subclass of pex.post.pull module.
+
+    This subclass of pex.post.pull module is intended for providing
+    implementation of cat method of pulling file from sender.
+    """
+
+    def pull(self, sender: Callable[..., Any], location: str) -> bytes:
+        """ Pull file from sender using cat method.
+
+        :param Callable[..., Any] sender: sender to pull file from
+        :param str location: location of file to pull
+        :return bytes: file data
+        :raises RuntimeError: with trailing error message
+        """
+
+        token = self.random_string(8)
+        command = f'cat "{location}" && echo {token}'
+
+        data = self.post_payload(sender, command)
+        block, _ = self.token_extract(data, token.encode())
+
+        return block

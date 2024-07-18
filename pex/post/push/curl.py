@@ -22,26 +22,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from setuptools import setup, find_packages
+from typing import Callable, Any
+from alive_progress import alive_bar
 
-setup(name='pex',
-      version='1.0.0',
-      description='Python Exploitation is a collection of special tools for providing high quality penetration testing using pure python programming language.',
-      url='https://github.com/EntySec/Pex',
-      author='EntySec',
-      author_email='entysec@gmail.com',
-      license='MIT',
-      python_requires='>=3.7.0',
-      packages=find_packages(),
-      include_package_data=True,
-      install_requires=[
-          'adb-shell', 'requests', 'paramiko',
-          'alive_progress', 'scapy', 'pydantic',
-          'netifaces', 'netaddr', 'manuf', 'pysnmp',
-          'pychromecast', 'pyasyncore',
-          'pyOpenSSL',
+from pex.post.tools import PostTools
 
-          'hatasm @ git+https://github.com/EntySec/HatAsm'
-      ],
-      zip_safe=False
-      )
+
+class Curl(PostTools):
+    """ Subclass of pex.post.push module.
+
+    This subclass of pex.post.push module is intended for providing
+    implementation of wget method of pushing file to sender.
+    """
+
+    def push(self, sender: Callable[..., Any], uri: str, location: str,
+             *args, **kwargs) -> None:
+        """ Push file to sender using wget method.
+
+        :param Callable[..., Any] sender: sender to push file to
+        :param str uri: URI to push file from
+        :param str location: location of file to push data to
+        :return None: None
+        """
+
+        command = "curl -sko {} {}"
+        command.format(location, uri)
+
+        self.post_payload(sender, command)

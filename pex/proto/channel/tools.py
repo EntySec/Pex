@@ -22,26 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from setuptools import setup, find_packages
+from typing import Tuple
 
-setup(name='pex',
-      version='1.0.0',
-      description='Python Exploitation is a collection of special tools for providing high quality penetration testing using pure python programming language.',
-      url='https://github.com/EntySec/Pex',
-      author='EntySec',
-      author_email='entysec@gmail.com',
-      license='MIT',
-      python_requires='>=3.7.0',
-      packages=find_packages(),
-      include_package_data=True,
-      install_requires=[
-          'adb-shell', 'requests', 'paramiko',
-          'alive_progress', 'scapy', 'pydantic',
-          'netifaces', 'netaddr', 'manuf', 'pysnmp',
-          'pychromecast', 'pyasyncore',
-          'pyOpenSSL',
 
-          'hatasm @ git+https://github.com/EntySec/HatAsm'
-      ],
-      zip_safe=False
-      )
+class ChannelTools(object):
+    """ Subclass of pex.proto.channel module.
+
+    This subclass of pex.proto.channel module is intended for providing
+    some Channel tools.
+    """
+
+    @staticmethod
+    def token_extract(data: bytes, token: bytes) -> Tuple[bytes, bytes]:
+        """ Extract token from data received from channel.
+
+        :param bytes data: data
+        :param bytes token: token to extract
+        :return Tuple[bytes, bytes]: data before and data after token (stash)
+        """
+
+        result, stashed = b"", b""
+
+        if token in data:
+            token_index = data.index(token)
+            token_size = len(token)
+
+            result += data[:token_index]
+            stashed += data[token_index + token_size:]
+        else:
+            result = data
+
+        return result, stashed

@@ -22,26 +22,47 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from setuptools import setup, find_packages
+from hatasm import HatAsm
 
-setup(name='pex',
-      version='1.0.0',
-      description='Python Exploitation is a collection of special tools for providing high quality penetration testing using pure python programming language.',
-      url='https://github.com/EntySec/Pex',
-      author='EntySec',
-      author_email='entysec@gmail.com',
-      license='MIT',
-      python_requires='>=3.7.0',
-      packages=find_packages(),
-      include_package_data=True,
-      install_requires=[
-          'adb-shell', 'requests', 'paramiko',
-          'alive_progress', 'scapy', 'pydantic',
-          'netifaces', 'netaddr', 'manuf', 'pysnmp',
-          'pychromecast', 'pyasyncore',
-          'pyOpenSSL',
 
-          'hatasm @ git+https://github.com/EntySec/HatAsm'
-      ],
-      zip_safe=False
-      )
+class X64(HatAsm):
+    """ Subclass of pex.craft module.
+
+    This subclass of pex.craft module is intended for providing
+    implementations of some x64 CPU features and models.
+    """
+
+    def popad(self) -> bytes:
+        """ Pack popad x64 assembler model.
+
+        :return bytes: packed popad x64 assembler model
+        """
+
+        return self.assemble(
+            'x64',
+            """
+            start:
+                pop rdi
+                pop rsi
+                pop rbp
+                pop rbx
+                pop rbx
+                pop rdx
+                pop rcx
+                pop rax
+            """
+        )
+
+    def crash(self) -> bytes:
+        """ Pack crash x64 assembler model.
+
+        :return bytes: packed crash x64 assembler model
+        """
+
+        return self.popad() + self.assemble(
+            'x64',
+            """
+            xor rsp, rsp
+            jmp rsp
+            """
+        )
