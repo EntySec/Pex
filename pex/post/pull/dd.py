@@ -23,7 +23,12 @@ SOFTWARE.
 """
 
 from typing import Callable, Any
+
 from alive_progress import alive_bar
+
+from pex.post.tools import PostTools
+from pex.proto.channel import ChannelTools
+from pex.string import String
 
 
 class DD(PostTools, ChannelTools, String):
