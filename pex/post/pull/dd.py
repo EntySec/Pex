@@ -23,7 +23,6 @@ SOFTWARE.
 """
 
 from typing import Callable, Any
-
 from alive_progress import alive_bar
 
 from pex.post.tools import PostTools
