@@ -109,7 +109,7 @@ class Post(Push, PostTools, String):
         else:
             raise RuntimeError(f"Platform {platform} in unsupported!")
 
-        if method_object.uri:
+        if not method_object.uri:
             self.push(
                 platform=platform,
                 method=method,
