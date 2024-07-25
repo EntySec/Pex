@@ -25,7 +25,8 @@ SOFTWARE.
 from typing import (
     NamedTuple,
     Any,
-    Union
+    Union,
+    Optional
 )
 
 from pex.platform import Platform
@@ -38,16 +39,19 @@ class Method(NamedTuple):
     uri: bool
 
 
-def select_method(methods: list, platform: Union[Platform, str],
+def select_method(methods: list, platform: Optional[Union[Platform, str]],
                   method: str = '') -> Union[Method, None]:
     """ Select appropriate method for platform
     or check if method compatible.
 
     :param list methods: list of methods
-    :param Union[Platform, str] platform: platform to check compatibility with
+    :param Optional[Union[Platform, str]] platform: platform to check compatibility with
     :param str method: method to check if presented
     :return Method: method
     """
+
+    if not platform:
+        return methods[0]
 
     for _method in methods:
         if method == _method.name and \
