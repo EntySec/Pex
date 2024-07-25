@@ -39,7 +39,7 @@ class Method(NamedTuple):
     uri: bool
 
 
-def select_method(methods: list, platform: Optional[Union[Platform, str]],
+def select_method(methods: list, platform: Optional[Union[Platform, str]] = None,
                   method: str = '') -> Union[Method, None]:
     """ Select appropriate method for platform
     or check if method compatible.
