@@ -46,6 +46,25 @@ class String(object):
     """
 
     @staticmethod
+    def bytes_to_octal(bytes_obj: bytes, extra_zero: bool = False) -> str:
+        """ Convert bytes to their octal representation.
+
+        :param bytes bytes_obj: bytes to convert
+        :param bool extra_zero: add extra_zero to the result
+        :return str: octal representation of bytes
+        """
+
+        byte_octals = []
+
+        for byte in bytes_obj:
+            byte_octal = '\\0' if extra_zero else '\\'
+            byte_octal += oct(byte)[2:]
+
+            byte_octals.append(byte_octal)
+
+        return ''.join(byte_octals)
+
+    @staticmethod
     def split_args(args: str) -> list:
         """ Split argv/args list.
 
