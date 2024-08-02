@@ -41,8 +41,6 @@ class StreamClient(object):
         :return None: None
         """
 
-        super().__init__()
-
         self.path = path
         self.image = image
 

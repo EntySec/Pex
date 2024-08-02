@@ -24,7 +24,6 @@ SOFTWARE.
 
 from typing import Callable, Any
 
-from pex.post.tools import PostTools
 from pex.proto.channel import ChannelTools
 from pex.string import String
 
@@ -36,26 +35,35 @@ class Cat(object):
     implementation of cat method of pulling file from sender.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, config: dict = {}) -> None:
+        """ Initialize cat method.
 
-        self.post_tools = PostTools()
-        self.string_tools = String()
-        self.channel_tools = ChannelTools()
-
-    def pull(self, sender: Callable[..., Any], location: str) -> bytes:
-        """ Pull file from sender using cat method.
-
-        :param Callable[..., Any] sender: sender to pull file from
-        :param str location: location of file to pull
-        :return bytes: file data
+        :param dict config: configuration for method
+        :return None: None
         :raises RuntimeError: with trailing error message
         """
 
-        token = self.string_tools.random_string(8)
+        self.config = {
+            'location': None,
+        }
+        self.config.update(config)
+
+        if not self.config.get('location'):
+            raise RuntimeError("Cat: Location is not specified!")
+
+    def pull(self, sender: Callable[..., Any]) -> bytes:
+        """ Pull file from sender using cat method.
+
+        :param Callable[..., Any] sender: sender to send commands
+        :return bytes: file data
+        """
+
+        location = self.config.get('location')
+
+        token = String().random_string(8)
         command = f'cat "{location}" && echo {token}'
 
-        data = self.post_tools.post_payload(sender, command)
-        block, _ = self.channel_tools.token_extract(data, token.encode())
+        data = sender(command)
+        block, _ = ChannelTools().token_extract(data, token.encode())
 
         return block

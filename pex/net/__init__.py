@@ -23,16 +23,12 @@ SOFTWARE.
 """
 
 import manuf
-
-import struct
 import socket
 import netaddr
-import requests
 import ipaddress
 import netifaces
 
 from typing import Union, Tuple
-
 from scapy.all import *
 
 
@@ -43,12 +39,9 @@ class Net(object):
     implementations of various network tools.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-
-        self.srp_timeout = 5
-        self.sr1_timeout = 5
-        self.syn_timeout = 1
+    srp_timeout = 5
+    sr1_timeout = 5
+    syn_timeout = 1
 
     @staticmethod
     def get_hosts() -> list:
@@ -107,6 +100,7 @@ class Net(object):
         """ Check if host is alive.
 
         :param str host: host to check
+        :param str method: method to check if host alive (arp/icmp)
         :return Union[str, bool, None]: mac address for arp, True for icmp, None for error
         """
 

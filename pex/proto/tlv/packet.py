@@ -41,9 +41,10 @@ class TLVPacket(object):
         :return None: None
         """
 
-        super().__init__()
-
         self.buffer = buffer
+        self.values = {}
+
+        self.serialize()
 
     def __add__(self, packet: Any) -> Any:
         """ Add one packet to the current packet.
@@ -112,8 +113,41 @@ class TLVPacket(object):
         if len(value) == 4:
             return struct.unpack('!I', value)[0]
 
+    def serialize(self) -> None:
+        """ Serialize TLV packet.
+
+        :return None: None
+        """
+
+        offset = 0
+
+        while offset < len(self.buffer):
+            cur_type = self.next_int(offset)
+            if cur_type is None:
+                break
+
+            offset += 4
+            cur_length = self.next_int(offset)
+            if cur_length is None:
+                break
+
+            offset += 4
+            cur_value = self.buffer[offset:offset + cur_length]
+            offset += cur_length
+
+            if cur_type not in self.values:
+                self.values[cur_type] = cur_value
+                continue
+
+            if not isinstance(self.values[cur_type], list):
+                self.values[cur_type] = [
+                    self.values[cur_type], cur_value]
+                continue
+
+            self.values[cur_type].append(cur_value)
+
     def clean(self) -> None:
-        """ Clean TLV packet (e.g. from padding)
+        """ Clean TLV packet buffer (e.g. from padding)
 
         :return None: None
         """
@@ -147,34 +181,27 @@ class TLVPacket(object):
 
         :param int type: type
         :param bool delete: True to delete element else False
-        :return bytes: raw value
+        :return Union[bytes, list]: raw value or list of raw values
         """
 
-        offset = 0
+        if not self.values:
+            raise RuntimeError("TLV packet is not serialized!")
 
-        while offset < len(self.buffer):
-            cur_type = self.next_int(offset)
-            if cur_type is None:
-                break
+        value = self.values.get(type, b'')
 
-            offset += 4
-            cur_length = self.next_int(offset)
-            if cur_length is None:
-                break
+        if not value:
+            return value
 
-            offset += 4
-            cur_value = self.buffer[offset:offset + cur_length]
-            offset += cur_length
+        if not isinstance(value, list):
+            if delete:
+                del self.values[type]
 
-            if cur_type == type:
-                if delete:
-                    self.buffer = bytearray(self.buffer)
-                    self.buffer[offset - cur_length - 8:offset] = b''
-                    self.buffer = bytes(self.buffer)
+            return value
 
-                return cur_value
+        if delete:
+            return value.pop(0)
 
-        return b''
+        return value[0]
 
     def get_string(self, *args, **kwargs) -> str:
         """ Get string from packet.

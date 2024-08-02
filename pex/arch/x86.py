@@ -32,21 +32,18 @@ class X86(object):
     implementations of some x86 architecture features.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
+    EAX = AL = AX = ES = 0
+    ECX = CL = CX = CS = 1
+    EDX = DL = DX = SS = 2
+    EBX = BL = BX = DS = 3
+    ESP = AH = SP = FS = 4
+    EBP = CH = BP = GS = 5
+    ESI = DH = SI = 6
+    EDI = BH = DI = 7
 
-        self.EAX = self.AL = self.AX = self.ES = 0
-        self.ECX = self.CL = self.CX = self.CS = 1
-        self.EDX = self.DL = self.DX = self.SS = 2
-        self.EBX = self.BL = self.BX = self.DS = 3
-        self.ESP = self.AH = self.SP = self.FS = 4
-        self.EBP = self.CH = self.BP = self.GS = 5
-        self.ESI = self.DH = self.SI = 6
-        self.EDI = self.BH = self.DI = 7
-
-        self.REG_NAMES32 = ['eax', 'ecx', 'edx', 'ebx', 'esp', 'ebp', 'esi', 'edi']
-        self.REG_NAMES16 = ['ax', 'cx', 'dx', 'bx', 'sp', 'bp', 'si', 'di']
-        self.REG_NAMES8L = ['al', 'cl', 'dl', 'bl', None, None, None, None]
+    REG_NAMES32 = ['eax', 'ecx', 'edx', 'ebx', 'esp', 'ebp', 'esi', 'edi']
+    REG_NAMES16 = ['ax', 'cx', 'dx', 'bx', 'sp', 'bp', 'si', 'di']
+    REG_NAMES8L = ['al', 'cl', 'dl', 'bl', None, None, None, None]
 
     def get_reg_num(self, reg: str) -> int:
         """ Get register number from a register name.

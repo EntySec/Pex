@@ -61,8 +61,6 @@ class HTTPListener(object):
         :return None: None
         """
 
-        super().__init__()
-
         self.http_tools = HTTPTools()
         self.handler = Handler
 

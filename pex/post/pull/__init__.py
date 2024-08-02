@@ -22,10 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from collections import OrderedDict
 from typing import Optional, Union
-
-from pex.platform.types import *
+from pex.platform import Platform, OS_UNIX
 
 from pex.post.method import Method, select_method
 from pex.post.pull.cat import Cat
@@ -39,20 +37,19 @@ class Pull(object):
     implementations of some functions for pulling files from sender.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
+    methods = [
+        Method(name='cat', platform=OS_UNIX, handler=Cat),
+        Method(name='dd', platform=OS_UNIX, handler=DD)
+    ]
 
-        self.methods = [
-            Method(name='cat', platform=OS_UNIX, handler=Cat()),
-            Method(name='dd', platform=OS_UNIX, handler=DD())
-        ]
-
-    def pull(self, platform: Union[Platform, str], method: Optional[str] = None, *args, **kwargs) -> bytes:
+    def pull(self, platform: Union[Platform, str], method: Optional[str] = None,
+             config: dict = {}) -> Method:
         """ Pull file from sender.
 
         :param Union[Platform, str] platform: sender platform
         :param Optional[str] method: pull method (see self.pull_methods)
-        :return bytes: file data
+        :return Method: method to use
+        :param dict config: config to initialize method with
         :raises RuntimeError: with trailing error message
         """
 
@@ -63,6 +60,6 @@ class Pull(object):
         )
 
         if method:
-            return method.handler.pull(*args, **kwargs)
+            return method.handler(config)
 
         raise RuntimeError(f"No supported pull method found!")

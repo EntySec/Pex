@@ -32,9 +32,6 @@ class ChannelTools(object):
     some Channel tools.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-
     @staticmethod
     def token_extract(data: bytes, token: bytes) -> Tuple[bytes, bytes]:
         """ Extract token from data received from channel.

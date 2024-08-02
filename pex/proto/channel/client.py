@@ -49,8 +49,6 @@ class ChannelClient(object):
         :return None: None
         """
 
-        super().__init__()
-
         self.client = client
         self.channel_tools = ChannelTools()
 

@@ -41,8 +41,6 @@ class TCPClient(object):
         :return None: None
         """
 
-        super().__init__()
-
         self.host = host
         self.port = int(port)
 

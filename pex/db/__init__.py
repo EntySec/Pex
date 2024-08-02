@@ -32,9 +32,6 @@ class DB(object):
     implementations of some database parsing methods.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-
     @staticmethod
     def parse_addressbook(database: str) -> list:
         """ Parse Apple iOS addressbook database.

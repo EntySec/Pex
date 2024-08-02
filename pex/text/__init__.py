@@ -30,9 +30,6 @@ class Text(object):
     implementations of tools for working with various text data.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-
     def block_api_hash(self, mod: str, fun: str) -> str:
         """ Calculate the block API hash for the given module/function.
 
@@ -74,7 +71,7 @@ class Text(object):
         bits = format(val, '032b')
         bits = list(bits)
 
-        for c in range(cnt):
+        for _ in range(cnt):
             bits.insert(0, bits.pop())
 
         bits = ''.join(bits)

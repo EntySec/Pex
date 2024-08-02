@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import errno
 import struct
 import socket
 
@@ -36,17 +37,13 @@ class TLVClient(object):
     implementation of the TLV client.
     """
 
-    def __init__(self, client: socket.socket, block: bool = True) -> None:
+    def __init__(self, client: socket.socket) -> None:
         """ Initialize TLVClient with socket.
 
         :param socket.socket client: socket
-        :param bool block: True to block socket else False
         :return None: None
         """
 
-        super().__init__()
-
-        self.block = block
         self.client = client
 
     def close(self) -> None:
@@ -67,18 +64,20 @@ class TLVClient(object):
 
         self.send_raw(packet.buffer)
 
-    def read(self) -> Union[TLVPacket, None]:
+    def read(self, block: bool = True) -> Union[TLVPacket, None]:
         """ Read TLV packet from the socket.
 
         :return Union[TLVPacket, None]: read TLV packet
         (returns None in case of blocking I/O)
+        :param bool block: True to block socket else False
         :raises RuntimeError: with trailing error message
         """
 
         if not self.client:
             raise RuntimeError("Socket is not connected!")
 
-        self.client.setblocking(self.block)
+        self.client.setblocking(block)
+        buffer = b''
 
         try:
             buffer = self.read_raw(4)

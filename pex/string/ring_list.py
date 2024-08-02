@@ -42,8 +42,6 @@ class RingList(object):
         :return None: None
         """
 
-        super().__init__()
-
         self.__data__ = collections.deque()
         self.__full__ = False
         self.__max__ = length

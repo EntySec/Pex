@@ -34,9 +34,6 @@ class FS(object):
     implementations of filesystem features.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-
     @staticmethod
     def exists(path: str) -> Tuple[bool, bool]:
         """ Check if path exist in the filesystem.

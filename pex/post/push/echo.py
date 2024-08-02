@@ -25,7 +25,7 @@ SOFTWARE.
 from typing import Callable, Any
 from alive_progress import alive_bar
 
-from pex.post.tools import PostTools
+from pex.string import String
 
 
 class Echo(object):
@@ -35,24 +35,76 @@ class Echo(object):
     implementation of echo method of pushing file to sender.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, sender: Callable[..., Any],
+                 config: dict = {}) -> None:
+        """ Initialize echo method.
 
-        self.post_tools = PostTools()
+        :param Callable[..., Any] sender: sender to execute commands on
+        :param dict config: configuration for method
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
 
-    def push(self, sender: Callable[..., Any], data: bytes, location: str,
-             linemax: int = 100) -> None:
-        """ Push file to sender using bash echo method.
+        self.sender = sender
 
-        :param Callable[..., Any] sender: sender to push file to
-        :param bytes data: data to push to file on sender
-        :param str location: location of file to push data to
-        :param int linemax: max command line size for each chunk
+        self.config = {
+            'path': '/tmp',
+            'location': None,
+            'linemax': 1024,
+            'data': b'',
+            'concat': ' ; ',
+            'background': True,
+            'delete': True,
+            'args': None,
+            'interpreter': None,
+            'debug': False,
+        }
+        self.config.update(config)
+
+        self.config['location'] = self.config['location'] or \
+            self.config['path'] + '/' + String().random_string(8)
+
+    def exec(self) -> None:
+        """ Execute pushed file.
+
         :return None: None
         """
 
+        if self.config['interpreter']:
+            cmds = [
+                f"{self.config['interpreter']}"
+                f"{self.config['location']}"
+                f"{' ' + self.config['args'] if self.config['args'] else ''}"
+                f"{' & echo' if self.config['background'] else ''}"
+            ]
+        else:
+            cmds = [
+                f"chmod 777 {self.config['location']}",
+                f"{self.config['location']}"
+                f"{' ' + self.config['args'] if self.config['args'] else ''}"
+                f"{' & echo' if self.config['background'] else ''}"
+            ]
+
+        if self.config['delete']:
+            cmds.append(f"rm -f {self.config['location']}")
+
+        command = self.config['concat'].join(cmds)
+
+        if self.config['debug']:
+            print(command)
+
+        self.sender(command)
+
+    def push(self) -> str:
+        """ Push file to sender using bash echo method.
+
+        :return str: location of new file
+        """
+
+        data = self.config['data']
+
         echo_stream = "echo -n '{}' >> {}"
-        echo_max_length = linemax
+        echo_max_length = self.config['linemax']
 
         size = len(data)
         num_parts = int(size / echo_max_length) + 1
@@ -62,8 +114,10 @@ class Echo(object):
                 bar()
 
                 current = i * echo_max_length
-                block = self.post_tools.bytes_to_octal(data[current:current + echo_max_length], True)
+                block = String().bytes_to_octal(data[current:current + echo_max_length], True)
 
                 if block:
-                    command = echo_stream.format(block, location)
-                    self.post_tools.post_payload(sender, command)
+                    command = echo_stream.format(block, self.config['location'])
+                    self.sender(command)
+
+        return self.config['location']

@@ -28,18 +28,14 @@ from pex.arch import X86
 from .opty2_tables import Opty2Tables
 
 
-class Opty2(object):
+class Opty2(X86):
     """ Subclass of pex.nop module.
 
     This subclass of pex.nop module is intended for providing
     an implementation of Opty2 NOP sled generator.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-
-        self.x86 = X86()
-        self.table = Opty2Tables().StateTable
+    table = Opty2Tables().StateTable
 
     def generate_sled(self, length: int, save_registers: list = [], badchars: bytes = b'') -> bytes:
         """ Generate Opty2 NOP sled.
@@ -62,7 +58,7 @@ class Opty2(object):
 
         mask = 0
         for i in save_registers:
-            mask |= 1 << self.x86.get_reg_num(i)
+            mask |= 1 << self.get_reg_num(i)
 
         mask = mask << 16
 

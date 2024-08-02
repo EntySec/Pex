@@ -22,16 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from collections import OrderedDict
 from typing import Optional, Union
 
-from pex.platform.types import *
+from pex.platform import (
+    Platform,
+    OS_WINDOWS,
+    OS_UNIX
+)
 
 from pex.post.method import Method, select_method
+
 from pex.post.push.bash_echo import BashEcho
 from pex.post.push.certutil import Certutil
 from pex.post.push.echo import Echo
 from pex.post.push.printf import Printf
+from pex.post.push.wget import Wget
+from pex.post.push.curl import Curl
 
 
 class Push(object):
@@ -41,23 +47,23 @@ class Push(object):
     implementations of some functions for pushing files to sender.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
+    methods = [
+        Method(name='printf', platform=OS_UNIX, handler=Printf),
+        Method(name='echo', platform=OS_UNIX, handler=Echo),
+        Method(name='bash_echo', platform=OS_UNIX, handler=BashEcho),
+        Method(name='certutil', platform=OS_WINDOWS, handler=Certutil),
+        Method(name='wget', platform=OS_UNIX, handler=Wget),
+        Method(name='curl', platform=OS_UNIX, handler=Curl)
+    ]
 
-        self.methods = [
-            Method(name='printf', platform=OS_UNIX, handler=Printf()),
-            Method(name='echo', platform=OS_UNIX, handler=Echo()),
-            Method(name='bash_echo', platform=OS_UNIX, handler=BashEcho()),
-            Method(name='certutil', platform=OS_WINDOWS, handler=Certutil()),
-        ]
-
-    def push(self, platform: Union[Platform, str], location: str, method: Optional[str] = None, *args, **kwargs) -> str:
+    def push(self, platform: Union[Platform, str], method: Optional[str] = None,
+             config: dict = {}) -> Method:
         """ Push file to sender.
 
         :param Union[Platform, str] platform: sender platform
-        :param str location: location of file to push data to
         :param Optional[str] method: push method (see self.push_methods)
-        :return str: location of pushed file
+        :param dict config: method configuration
+        :return Method: selected method
         :raises RuntimeError: with trailing error message
         """
 
@@ -68,9 +74,6 @@ class Push(object):
         )
 
         if method:
-            method.handler.push(
-                location=location, *args, **kwargs)
-
-            return location
+            return method.handler(config)
 
         raise RuntimeError(f"No supported push method found!")

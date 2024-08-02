@@ -25,7 +25,6 @@ SOFTWARE.
 from typing import Callable, Any
 from alive_progress import alive_bar
 
-from pex.post.tools import PostTools
 from pex.proto.channel import ChannelTools
 from pex.string import String
 
@@ -37,22 +36,30 @@ class DD(object):
     implementation of dd method of pulling file from sender.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, config: dict = {}) -> None:
+        """ Initialize dd method.
 
-        self.post_tools = PostTools()
-        self.string_tools = String()
-        self.channel_tools = ChannelTools()
-
-    def pull(self, sender: Callable[..., Any], location: str) -> bytes:
-        """ Pull file from sender using dd method.
-
-        :param Callable[..., Any] sender: sender to pull file from
-        :param str location: location of file to pull
-        :return bytes: file data
+        :param dict config: configuration for method
+        :return None: None
         :raises RuntimeError: with trailing error message
         """
 
+        self.config = {
+            'location': None,
+        }
+        self.config.update(config)
+
+        if not self.config.get('location'):
+            raise RuntimeError("DD: Location is not specified!")
+
+    def pull(self, sender: Callable[..., Any]) -> bytes:
+        """ Pull file from sender using dd method.
+
+        :param Callable[..., Any] sender: sender to send commands
+        :return bytes: file data
+        """
+
+        location = self.config.get('location')
         result = b""
 
         dd_stream = "dd if={} of=/dev/stdout bs={} count=1 skip={} 2>/dev/null && echo {}"
@@ -64,7 +71,7 @@ class DD(object):
             while True:
                 bar()
 
-                token = self.string_tools.random_string(8)
+                token = String().random_string(8)
                 command = dd_stream.format(
                     location,
                     str(dd_chunk_size),
@@ -72,8 +79,8 @@ class DD(object):
                     token
                 )
 
-                data = self.post_tools.post_payload(sender, command)
-                block, _ = self.channel_tools.token_extract(data, token.encode())
+                data = sender(command)
+                block, _ = ChannelTools().token_extract(data, token.encode())
 
                 result += block
 

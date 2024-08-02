@@ -22,19 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import re
+import stat
 import base64
 import random
-import re
 import string
 import struct
-import stat
 
 from itertools import cycle
 from typing import Union
 from datetime import datetime
 
 from .bit_reader import BitReader
-from .lzs_decompress import LZSDecompress
+from .lzs_decompress import lzs_decompress
 from .ring_list import RingList
 
 
@@ -45,8 +45,24 @@ class String(object):
     implementations of some string features and methods.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
+    @staticmethod
+    def bytes_to_octal(bytes_obj: bytes, extra_zero: bool = False) -> str:
+        """ Convert bytes to their octal representation.
+
+        :param bytes bytes_obj: bytes to convert
+        :param bool extra_zero: add extra_zero to the result
+        :return str: octal representation of bytes
+        """
+
+        byte_octals = []
+
+        for byte in bytes_obj:
+            byte_octal = '\\0' if extra_zero else '\\'
+            byte_octal += oct(byte)[2:]
+
+            byte_octals.append(byte_octal)
+
+        return ''.join(byte_octals)
 
     @staticmethod
     def split_args(args: str) -> list:
@@ -101,7 +117,6 @@ class String(object):
         :return str: symbolic form of file mode
         """
 
-        octal = '{:06o}'.format(mode)
         perms = ''
 
         for _ in range(3):
@@ -116,7 +131,7 @@ class String(object):
     def mode_type(mode: int) -> str:
         """ Get type of file by mode.
 
-        :param int: mode
+        :param int mode: mode
         :return str: type of file
         """
 
@@ -257,7 +272,7 @@ class String(object):
         :return tuple: decompressed data and RingList
         """
 
-        result, window = LZSDecompress(data, window)
+        result, window = lzs_decompress(data, window)
         return result
 
     @staticmethod

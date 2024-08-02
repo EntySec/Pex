@@ -22,29 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from pex.assembler import Assembler
+from hatasm import HatAsm
 
 
-class X64(object):
+class X64(HatAsm):
     """ Subclass of pex.craft module.
 
     This subclass of pex.craft module is intended for providing
     implementations of some x64 CPU features and models.
     """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-        self.assembler = Assembler()
-
-    def assemble(self, code: str) -> bytes:
-        """ Assemble code for x64 architecture.
-
-        :param str code: code to assemble
-        :return bytes: assembled code for x64 architecture
-        """
-
-        return self.assembler.assemble('x64', code)
 
     def popad(self) -> bytes:
         """ Pack popad x64 assembler model.
@@ -53,6 +39,7 @@ class X64(object):
         """
 
         return self.assemble(
+            'x64',
             """
             start:
                 pop rdi
@@ -73,6 +60,7 @@ class X64(object):
         """
 
         return self.popad() + self.assemble(
+            'x64',
             """
             xor rsp, rsp
             jmp rsp

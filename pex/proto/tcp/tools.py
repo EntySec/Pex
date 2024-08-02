@@ -32,9 +32,6 @@ class TCPTools(object):
     some TCP tools.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-
     @staticmethod
     def get_local_host() -> str:
         """ Get local host.

@@ -30,9 +30,6 @@ class HTTPTools(object):
     some HTTP tools.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-
     @staticmethod
     def normalize_url(host: str, port: int, path: str, ssl: bool = False) -> str:
         """ Normalize URL.

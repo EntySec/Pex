@@ -36,9 +36,6 @@ class OpenSSL(object):
     Python realization of OpenSSL library.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-
     def wrap_client(self, client: socket.socket, keyfile: str = 'hatsploit.key', certfile: str = 'hatsploit.crt',
                     protocol: ssl._SSLMethod = ssl.PROTOCOL_TLS_SERVER, expire: int = 365, nodename: str = 'HatSploit',
                     country: str = 'US', state: str = 'HatSploit', location: str = 'HatSploit',
@@ -60,9 +57,12 @@ class OpenSSL(object):
         :return ssl.SSLSocket: wrapped socket
         """
 
-        if not os.path.exists(keyfile):
-            key = self.generate_key()
-            self.write_key(key, keyfile)
+        """
+        TODO: Read key from file
+        """
+
+        key = self.generate_key()
+        self.write_key(key, keyfile)
 
         if not os.path.exists(certfile):
             cert = self.generate_cert(

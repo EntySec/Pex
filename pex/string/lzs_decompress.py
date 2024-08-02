@@ -28,7 +28,7 @@ from .ring_list import RingList
 from typing import Tuple
 
 
-def LZSDecompress(data: bytes, window: RingList = RingList(2048)) -> Tuple[bytes, list]:
+def lzs_decompress(data: bytes, window: RingList = RingList(2048)) -> Tuple[bytes, list]:
     """ Decompress LZS compressed data.
 
     :param bytes data: LZS compressed data to decompress

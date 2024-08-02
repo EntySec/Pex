@@ -33,9 +33,6 @@ class Socket(object):
     implementations of socket features.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-
     def pack_host(self, host: str, endian: str = 'little') -> bytes:
         """ Pack host into binary form.
 

@@ -41,7 +41,6 @@ class BitReader(object):
         :return None: None
         """
 
-        super().__init__()
         self._bits = collections.deque()
 
         for byte in data_bytes:
