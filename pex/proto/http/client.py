@@ -44,7 +44,7 @@ class HTTPClient(object):
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     def http_request(self, method: str, host: str, port: int, path: str = '/', ssl: bool = False, timeout: int = 10,
-                     output: bool = True, session: Any = requests, **kwargs) -> Union[str, None]:
+                     errors: bool = True, session: Any = requests, **kwargs) -> Union[str, None]:
         """ Send HTTP request.
 
         :param str method: HTTP method (GET, POST, DELETE, HEAD, OPTIONS)
@@ -53,13 +53,10 @@ class HTTPClient(object):
         :param str path: HTTP path
         :param bool ssl: True if HTTP uses SSL else False
         :param int timeout: connection timeout
-        :param bool output: True if wait for output else False
+        :param bool errors: True to display errors else False
         :param Any session: request handler
         :return Union[str, None]: output if output is True else None
         """
-
-        if not output:
-            timeout = 0
 
         kwargs.setdefault("timeout", timeout)
         kwargs.setdefault("verify", False)
@@ -73,8 +70,10 @@ class HTTPClient(object):
         try:
             return getattr(session, method.lower())(url, **kwargs)
         except (requests.exceptions.MissingSchema, requests.exceptions.InvalidSchema):
-            raise RuntimeError(f"Invalid URL schema in {url}!")
+            if errors:
+                raise RuntimeError(f"Invalid URL schema in {url}!")
         except requests.exceptions.ConnectionError:
-            raise RuntimeError(f"Connection failed for {url}!")
+            if errors:
+                raise RuntimeError(f"Connection failed for {url}!")
         except Exception:
             return None
