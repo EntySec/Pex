@@ -73,7 +73,7 @@ class ADBClient(object):
 
         self.sock.close()
 
-    def send_command(self, command: str) -> str:
+    def send_command(self, command: str, errors: bool = True, *args, **kwargs) -> str:
         """ Send command to the socket.
 
         :param str command: command to send
@@ -82,6 +82,7 @@ class ADBClient(object):
         """
 
         try:
-            return self.sock.shell(command)
+            return self.sock.shell(command, *args, **kwargs)
         except Exception:
-            raise RuntimeError(f"Socket {self.pair} is not connected!")
+            if errors:
+                raise RuntimeError(f"Socket {self.pair} is not connected!")
