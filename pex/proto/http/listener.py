@@ -28,7 +28,20 @@ import socketserver
 from .tools import HTTPTools
 
 
-class Handler(http.server.SimpleHTTPRequestHandler):
+class PrimitiveServer(socketserver.TCPServer):
+    """ Subclass of pex.proto.http module.
+
+    This subclass of pex.proto.http module represents
+    HTTP/TCP server.
+    """
+
+    allow_address_reuse = True
+
+    def __init__(self, server_address, RequestHandlerClass):
+        socketserver.TCPServer.__init__(self, server_address, RequestHandlerClass)
+
+
+class PrimitiveHandler(http.server.SimpleHTTPRequestHandler):
     """ Subclass of pex.proto.http module.
 
     This subclass of pex.proto.http module represents
@@ -62,7 +75,7 @@ class HTTPListener(object):
         """
 
         self.http_tools = HTTPTools()
-        self.handler = Handler
+        self.handler = PrimitiveHandler
 
         self.host = host
         self.port = int(port)
@@ -81,7 +94,7 @@ class HTTPListener(object):
             for method in self.methods:
                 setattr(self.handler, f"do_{method.upper()}", self.methods[method])
 
-            self.sock = socketserver.TCPServer((self.host, self.port), self.handler)
+            self.sock = PrimitiveServer((self.host, self.port), self.handler)
         except Exception:
             raise RuntimeError(f"Failed to start HTTP listener on port {str(self.port)}!")
 
