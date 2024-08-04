@@ -35,7 +35,7 @@ class PrimitiveServer(socketserver.TCPServer):
     HTTP/TCP server.
     """
 
-    allow_address_reuse = True
+    allow_reuse_address = True
 
     def __init__(self, server_address, RequestHandlerClass):
         socketserver.TCPServer.__init__(self, server_address, RequestHandlerClass)
