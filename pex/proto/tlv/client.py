@@ -82,7 +82,7 @@ class TLVClient(object):
         try:
             buffer = self.read_raw(4)
         except socket.error as e:
-            if e.errno == errno.EAGAIN:
+            if e.errno == errno.EAGAIN or e.errno == errno.EWOULDBLOCK:
                 return
 
         self.client.setblocking(True)
@@ -113,7 +113,14 @@ class TLVClient(object):
         if not self.client:
             raise RuntimeError("Socket is not connected!")
 
-        self.client.send(data)
+        while data:
+            try:
+                sent = self.client.send(data)
+                data = data[sent:]
+
+            except socket.error as e:
+                if e.errno == errno.EAGAIN or e.errno == errno.EWOULDBLOCK:
+                    continue
 
     def read_raw(self, size: int) -> bytes:
         """ Read raw data instead of TLV packet.

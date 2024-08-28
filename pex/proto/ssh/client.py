@@ -22,7 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import os
+import sys
+import tty
+import select
+import socket
+import termios
 import paramiko
+import subprocess
 
 from typing import Optional
 
@@ -73,8 +80,10 @@ class SSHClient(object):
                 password=self.password,
                 timeout=self.timeout
             )
+
         except paramiko.AuthenticationException:
             raise RuntimeError(f"Authentication via {self.username}:{self.password} failed for {self.pair}!")
+
         except Exception:
             raise RuntimeError(f"Connection failed for {self.pair}!")
 
@@ -102,3 +111,67 @@ class SSHClient(object):
             return self.sock.exec_command(command)
         except Exception:
             raise RuntimeError(f"Socket {self.pair} is not connected!")
+
+    def interact(self) -> None:
+        """ Spawn an interactive connection.
+
+        :return None: None
+        :raises RuntimeError: with trailing error message
+        """
+
+        oldtty_attrs = termios.tcgetattr(sys.stdin)
+
+        try:
+            channel = self.sock.invoke_shell()
+        except Exception:
+            raise RuntimeError(f"Socket {self.pair} is not connected!")
+
+        def submethod_resize_pty():
+            tty_height, tty_width = \
+                subprocess.check_output(['stty', 'size']).split()
+
+            try:
+                channel.resize_pty(width=int(tty_width), height=int(tty_height))
+            except paramiko.ssh_exception.SSHException:
+                pass
+
+        try:
+            stdin_fileno = sys.stdin.fileno()
+            tty.setraw(stdin_fileno)
+            tty.setcbreak(stdin_fileno)
+
+            channel.settimeout(0.0)
+
+            is_alive = True
+
+            while is_alive:
+                submethod_resize_pty()
+
+                read_ready, write_ready, exception_list = \
+                    select.select([channel, sys.stdin], [], [])
+
+                if channel in read_ready:
+                    try:
+                        out = channel.recv(1024)
+
+                        if len(out) == 0:
+                            is_alive = False
+                        else:
+                            sys.stdout.write(out.decode(errors='ignore'))
+                            sys.stdout.flush()
+
+                    except socket.timeout:
+                        pass
+
+                if sys.stdin in read_ready and is_alive:
+                    char = os.read(stdin_fileno, 1)
+
+                    if len(char) == 0:
+                        is_alive = False
+                    else:
+                        channel.send(char)
+
+            channel.shutdown(2)
+
+        finally:
+            termios.tcsetattr(sys.stdin, termios.TCSAFLUSH, oldtty_attrs)

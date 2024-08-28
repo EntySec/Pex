@@ -50,6 +50,10 @@ def select_method(methods: list, platform: Optional[Union[Platform, str]] = None
     """
 
     if not platform:
+        for _method in methods:
+            if method == _method.name:
+                return _method
+
         return methods[0]
 
     for _method in methods:
