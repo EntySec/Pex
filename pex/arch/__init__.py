@@ -37,6 +37,7 @@ class Arch(DataSet):
                  endian: str = 'little',
                  bits: int = 64,
                  interpreter: Optional[str] = None,
+                 triplet: str = '*-*-*',
                  *args, **kwargs) -> None:
         """ Set architecture.
 
@@ -45,6 +46,7 @@ class Arch(DataSet):
         (e.g. mipsle - mipsle, ppc - powerpc)
         :param Optional[str] interpreter: interpreter if architecture is not a CPU
         (e.g. python, php)
+        :param str triplet: triplet glob expression
         :return None: None
         """
 
@@ -92,62 +94,81 @@ ARCH_APPLESCRIPT = Arch(
 ARCH_X64 = Arch(
     name='x64',
     bits=64,
-    alter_names=['x86_64']
+    alter_names=['x86_64'],
+    triplet='x86_64-*-*'
 )
 ARCH_X86 = Arch(
     name='x86',
     bits=32,
-    alter_names=['i386']
+    alter_names=['i386', 'i486', 'i686'],
+    triplet='i?86-*-*'
 )
 ARCH_AARCH64 = Arch(
     name='aarch64',
     bits=64,
-    alter_names=['arm64']
+    alter_names=['arm64'],
+    triplet='aarch64-*-*'
 )
 ARCH_ARMLE = Arch(
     name='armle',
     bits=32,
-    alter_names=['armel', 'arm5l']
+    alter_names=['armel', 'arm5l'],
+    triplet='armv?l-*-*'
 )
 ARCH_ARMBE = Arch(
     name='armbe',
     endian='big',
     bits=32,
-    alter_names=['armeb', 'arm5b']
+    alter_names=['armeb', 'arm5b'],
+    triplet='armv?b-*-*'
 )
 ARCH_MIPSLE = Arch(
     name='mipsle',
     bits=32,
-    alter_names=['mipsel']
+    alter_names=['mipsel'],
+    triplet='mipsel-*-*'
 )
 ARCH_MIPSBE = Arch(
     name='mipsbe',
     endian='little',
     bits=32,
-    alter_names=['mipseb', 'mips']
+    alter_names=['mipseb', 'mips'],
+    triplet='mips-*-*'
 )
-ARCH_MIPS64 = Arch(
-    name='mips64',
+ARCH_MIPS64LE = Arch(
+    name='mips64le',
     endian='little',
     bits=64,
+    alter_names=['mips64el'],
+    triplet='mips64el-*-*'
+)
+ARCH_MIPS64BE = Arch(
+    name='mips64be',
+    endian='little',
+    bits=64,
+    alter_names=['mips64', 'mips64eb'],
+    triplet='mips64-*-*'
 )
 ARCH_PPC = Arch(
     name='ppc',
     endian='big',
     bits=32,
-    alter_names=['powerpc']
+    alter_names=['powerpc'],
+    triplet='powerpc-*-*'
 )
 ARCH_PPC64 = Arch(
     name='ppc64',
     endian='little',
     bits=64,
-    alter_names=['powerpc64', 'powerpc64le', 'powerpc64el']
+    alter_names=['powerpc64', 'powerpc64le', 'powerpc64el'],
+    triplet='powerpc64le-*-*'
 )
 ARCH_S390X = Arch(
     name='s390x',
     endian='big',
     bits=32,
-    alter_names=['zarch', 'ibmz']
+    alter_names=['zarch', 'ibmz'],
+    triplet='s390x-*-*'
 )
 ARCH_GENERIC = Arch(
     name='generic',

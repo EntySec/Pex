@@ -57,6 +57,7 @@ class X86(object):
 
             if reg <= 7 or reg >= 0:
                 return reg
+
         raise RuntimeError(f"Invalid register {reg}!")
 
     def jmp_reg(self, dest: str) -> bytes:
@@ -129,6 +130,7 @@ class X86(object):
 
         if 128 > byte >= -128:
             return b"\x6a" + bytes([byte & 0xff])
+
         raise RuntimeError("Only signed byte values allowed!")
 
     def mov_byte(self, byte: int, dest: str) -> bytes:
@@ -151,6 +153,7 @@ class X86(object):
 
         if num < 0 or num > 0xffff:
             raise RuntimeError("Only unsigned word values allowed!")
+
         return b"\x66" + bytes([0xb8 | self.get_reg_num(dest)]) + self.pack_word(num)
 
     def mov_dword(self, num: int, dest: str) -> bytes:

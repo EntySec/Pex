@@ -86,10 +86,11 @@ class Sparc(object):
 
         if 4096 >= const >= 0:
             return self.ori('g0', const, dest)
+
         elif const & 0x3ff != 0:
             return self.set_dword(const, dest)
-        else:
-            return self.sethi(const, dest)
+
+        return self.sethi(const, dest)
 
     def set_dword(self, const: int, dest: str) -> bytes:
         """ Pack sparc assembler instruction sethi and ori with const as double word.
