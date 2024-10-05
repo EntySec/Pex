@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from pysnmp.entity.rfc3413.oneliner import cmdgen
+from pysnmp.entity.rfc3413 import cmdgen
 
 
 class SNMPClient(object):
