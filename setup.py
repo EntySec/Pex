@@ -39,7 +39,7 @@ setup(name='pex',
           'alive_progress', 'scapy', 'pydantic',
           'netifaces', 'netaddr', 'manuf', 'pysnmp',
           'pychromecast', 'pyasyncore',
-          'pyOpenSSL',
+          'pyOpenSSL', 'pefile',
 
           'hatasm @ git+https://github.com/EntySec/HatAsm'
       ],
