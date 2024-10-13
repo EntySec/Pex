@@ -209,7 +209,10 @@ class TLVPacket(object):
         :return str: string
         """
 
-        return self.get_raw(*args, **kwargs).decode()
+        data = self.get_raw(*args, **kwargs)
+
+        if data:
+            return data.decode()
 
     def get_short(self, *args, **kwargs) -> Union[int, None]:
         """ Get short integer from packet.
@@ -250,8 +253,10 @@ class TLVPacket(object):
         :return TLVPacket: TLV packet
         """
 
-        return self.__class__(
-            buffer=self.get_raw(*args, **kwargs))
+        data = self.get_raw(*args, **kwargs)
+
+        if data:
+            return self.__class__(buffer=data)
 
     def add_raw(self, type: int, value: bytes) -> None:
         """ Add raw data to packet.
