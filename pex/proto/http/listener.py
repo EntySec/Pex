@@ -181,7 +181,7 @@ class HTTPListener(object):
 
         while self.running:
             try:
-                self.sock.accept()
+                self.accept()
 
             except Exception:
                 self.stop()
