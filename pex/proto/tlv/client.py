@@ -96,8 +96,8 @@ class TLVServerHTTP(object):
 
         self.server.methods.update({
             self.urlpath: {
-                'GET': get,
-                'POST': post
+                'get': get,
+                'post': post
             }
         })
 
@@ -116,8 +116,8 @@ class TLVServerHTTP(object):
 
         self.server.methods.update({
             self.urlpath: {
-                'GET': self.get,
-                'POST': self.post
+                'get': self.get,
+                'post': self.post
             }
         })
 
