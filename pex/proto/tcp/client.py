@@ -45,6 +45,7 @@ class TCPClient(object):
         self.port = int(port)
 
         self.pair = f"{self.host}:{str(self.port)}"
+        self.address = ()
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(timeout)
@@ -58,6 +59,7 @@ class TCPClient(object):
 
         try:
             self.sock.connect((self.host, self.port))
+            self.address = self.sock.getsockname()
         except Exception:
             raise RuntimeError(f"Connection failed for {self.pair}!")
 

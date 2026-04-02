@@ -24,7 +24,7 @@ SOFTWARE.
 
 import random
 
-from pex.arch import X86
+from pex.arch.x86 import X86
 from .opty2_tables import Opty2Tables
 
 

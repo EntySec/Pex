@@ -44,26 +44,26 @@ class StreamClient(object):
         self.path = path
         self.image = image
 
-        self.audio_streamer = '''
-        '''
-
         self.video_streamer = '''
 <html>
 <head>
 <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
 <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
-<title>HatSploit Framework - Streamer</title>
+<title>HatSploit Framework - Video Stream</title>
 <script language="javascript">
-function updateStatus(msg) {
+function updateStatus(msg)
+{
     var status = document.getElementById("status");
     status.innerText = msg;
 }
-function noImage() {
+function noImage()
+{
     document.getElementById("streamer").style = "display:none";
     updateStatus("Waiting");
 }
 var i = 0;
-function updateFrame() {
+function updateFrame()
+{
     var img = document.getElementById("streamer");
     img.src = "''' + image + '''#" + i;
     img.style = "display:";
@@ -87,23 +87,6 @@ Status : <span id="status"></span>
 </body>
 </html>
         '''
-
-    def create_audio(self) -> None:
-        """ Create audio streamer and write it to html file from path.
-
-        :return None: None
-        :raises RuntimeError: with trailing error message
-        """
-
-        if os.path.isdir(self.path):
-            self.path += '/streamer.html'
-
-        if os.access(os.path.split(self.path)[0], os.W_OK):
-            with open(self.path, 'w') as f:
-                f.write(self.audio_streamer)
-
-        else:
-            raise RuntimeError("Failed to create audio stream!")
 
     def create_video(self) -> None:
         """ Create video streamer and write it to html file from path.

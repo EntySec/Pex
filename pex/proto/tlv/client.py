@@ -26,8 +26,117 @@ import errno
 import struct
 import socket
 
-from typing import Union
+from typing import Union, Any, Callable
 from .packet import TLVPacket
+
+from pex.proto.http import HTTPListener
+from pex.string import String
+
+
+class TLVServerHTTP(object):
+    """ Subclass of pex.proto.tlv module.
+
+    This subclass of pex.proto.tlv module represents Python
+    implementation of the TLV HTTP server.
+    """
+
+    def __init__(self, server: HTTPListener, callback: Callable[[TLVPacket], None] = None,
+                 urlpath: str = '/') -> None:
+        """ Initialize TLVClient with socket.
+
+        :param HTTPListener server: server
+        :param Callable[[TLVpacket], None] callback: method that is executed on HTTP method
+        (NOTE: method should take one argument - TLVPacket)
+        :param str urlpath: URL path
+        :return None: None
+        """
+
+        self.server = server
+        self.callback = callback
+        self.urlpath = urlpath
+        self.egress = b''
+
+        def get(request: Any) -> None:
+            """ GET request handler to send commands to client.
+
+            :param Any request: request instance
+            :return None: None
+            """
+
+            if request.path != self.urlpath:
+                return
+
+            request.send_status(200)
+            request.wfile.write(self.egress)
+
+            self.egress = b''
+
+        def post(request: Any) -> None:
+            """ POST request handler to receive from client.
+
+            :param Any request: request instance
+            :return None: None
+            """
+
+            if request.path != self.urlpath:
+                return
+
+            length = int(request.headers['Content-Length'])
+            data = request.rfile.read(length)
+
+            request.send_status(200)
+
+            try:
+                request.wfile.write(self.egress)
+            except Exception:
+                pass
+
+            if self.callback:
+                self.callback(TLVPacket(data))
+
+        self.server.methods.update({
+            self.urlpath: {
+                'get': get,
+                'post': post
+            }
+        })
+
+        self.get = get
+        self.post = post
+
+    def set_urlpath(self, urlpath: str) -> None:
+        """ Set URL path.
+
+        :param str urlpath: URL path to set
+        :return None: None
+        """
+
+        self.server.methods.pop(self.urlpath)
+        self.urlpath = '/' + urlpath
+
+        self.server.methods.update({
+            self.urlpath: {
+                'get': self.get,
+                'post': self.post
+            }
+        })
+
+    def send(self, packet: TLVPacket) -> None:
+        """ Send TLV packet to the client.
+
+        :param TLVPacket packet: TLV packet
+        :return None: None
+        """
+
+        self.egress += packet.buffer
+
+    def close(self) -> None:
+        """ Close and stop server.
+
+        :return None: None
+        """
+
+        self.server.methods.pop(self.urlpath)
 
 
 class TLVClient(object):

@@ -43,6 +43,7 @@ class TLVPacket(object):
 
         self.buffer = buffer
         self.values = {}
+        self.serialized = False
 
         self.serialize()
 
@@ -146,6 +147,8 @@ class TLVPacket(object):
 
             self.values[cur_type].append(cur_value)
 
+        self.serialized = True
+
     def clean(self) -> None:
         """ Clean TLV packet buffer (e.g. from padding)
 
@@ -184,7 +187,7 @@ class TLVPacket(object):
         :return Union[bytes, list]: raw value or list of raw values
         """
 
-        if not self.values:
+        if not self.serialized:
             raise RuntimeError("TLV packet is not serialized!")
 
         value = self.values.get(type, b'')
